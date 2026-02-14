@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400">
+  <defs>
+    <marker id="arrDT" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+    <marker id="arrDTb" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4299e1"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Distributed Swarm Neuroevolution</text>
+
+  <!-- Evolution Coordinator -->
+  <rect x="250" y="50" width="200" height="90" rx="8" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="350" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#6b46c1" text-anchor="middle">Evolution Coordinator</text>
+  <rect x="270" y="85" width="160" height="22" rx="3" fill="#9f7aea"/>
+  <text x="350" y="100" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Population Management</text>
+  <rect x="270" y="112" width="160" height="22" rx="3" fill="#805ad5"/>
+  <text x="350" y="127" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Selection + Breeding</text>
+
+  <!-- Mesh layer -->
+  <rect x="100" y="180" width="500" height="50" rx="6" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="350" y="210" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#2b6cb0" text-anchor="middle">Macula Mesh (PubSub: swarm.networks, swarm.fitness)</text>
+
+  <!-- Robot swarm -->
+  <rect x="50" y="270" width="600" height="110" rx="8" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="350" y="295" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#276749" text-anchor="middle">Robot Swarm (Physical or Simulated)</text>
+
+  <!-- Individual robots -->
+  <g transform="translate(80, 310)">
+    <rect x="0" y="0" width="100" height="55" rx="4" fill="#48bb78"/>
+    <text x="50" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot 1</text>
+    <text x="50" y="35" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">Network A</text>
+    <text x="50" y="50" font-family="monospace" font-size="8" fill="#9ae6b4" text-anchor="middle">fitness: 0.82</text>
+  </g>
+
+  <g transform="translate(200, 310)">
+    <rect x="0" y="0" width="100" height="55" rx="4" fill="#48bb78"/>
+    <text x="50" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot 2</text>
+    <text x="50" y="35" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">Network A</text>
+    <text x="50" y="50" font-family="monospace" font-size="8" fill="#9ae6b4" text-anchor="middle">fitness: 0.78</text>
+  </g>
+
+  <g transform="translate(320, 310)">
+    <rect x="0" y="0" width="100" height="55" rx="4" fill="#38a169"/>
+    <text x="50" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot 3</text>
+    <text x="50" y="35" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">Network B</text>
+    <text x="50" y="50" font-family="monospace" font-size="8" fill="#9ae6b4" text-anchor="middle">fitness: 0.91</text>
+  </g>
+
+  <g transform="translate(440, 310)">
+    <rect x="0" y="0" width="100" height="55" rx="4" fill="#38a169"/>
+    <text x="50" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot N</text>
+    <text x="50" y="35" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">Network B</text>
+    <text x="50" y="50" font-family="monospace" font-size="8" fill="#9ae6b4" text-anchor="middle">fitness: 0.85</text>
+  </g>
+
+  <g transform="translate(560, 310)">
+    <rect x="0" y="0" width="70" height="55" rx="4" fill="#276749"/>
+    <text x="35" y="30" font-family="Inter, system-ui, sans-serif" font-size="16" fill="white" text-anchor="middle">...</text>
+  </g>
+
+  <!-- Arrows showing flow -->
+  <path d="M 350 140 L 350 175" stroke="#4a5568" stroke-width="2" marker-end="url(#arrDT)"/>
+  <text x="365" y="160" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096">broadcast networks</text>
+
+  <path d="M 350 230 L 350 265" stroke="#4a5568" stroke-width="2" marker-end="url(#arrDT)"/>
+  <text x="365" y="250" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096">deploy</text>
+
+  <!-- Feedback arrows -->
+  <path d="M 180 270 L 180 235" stroke="#4299e1" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrDTb)"/>
+  <path d="M 520 270 L 520 235" stroke="#4299e1" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrDTb)"/>
+  <text x="130" y="250" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1">fitness reports</text>
+  <text x="530" y="250" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1">fitness reports</text>
+
+  <!-- Aggregation note -->
+  <rect x="520" y="70" width="150" height="55" rx="4" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="595" y="90" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621" text-anchor="middle">Fitness Aggregation</text>
+  <text x="595" y="105" font-family="monospace" font-size="8" fill="#dd6b20" text-anchor="middle">avg(A) = 0.80</text>
+  <text x="595" y="118" font-family="monospace" font-size="8" fill="#dd6b20" text-anchor="middle">avg(B) = 0.88</text>
+</svg>

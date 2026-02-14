@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="levelNGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f6ad55;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ed8936;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="level2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fc8181;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f56565;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="level1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#805ad5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="level0Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#718096"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="400" fill="#f7fafc" rx="8"/>
+
+  <!-- Level N -->
+  <rect x="50" y="20" width="200" height="70" rx="6" fill="url(#levelNGrad)" stroke="#c05621" stroke-width="2"/>
+  <text x="60" y="42" fill="white" font-family="monospace" font-size="11" font-weight="bold">Level N (tau ~ 10000)</text>
+  <text x="60" y="58" fill="#fffaf0" font-family="sans-serif" font-size="10">Meta^N Controller</text>
+  <text x="60" y="78" fill="#fffaf0" font-family="sans-serif" font-size="9">Long-term strategy</text>
+
+  <rect x="280" y="35" width="250" height="40" rx="4" fill="white" stroke="#e2e8f0"/>
+  <text x="290" y="55" fill="#4a5568" font-family="sans-serif" font-size="9">Controls: Level N-1 parameters</text>
+  <text x="290" y="68" fill="#718096" font-family="sans-serif" font-size="8">Architecture, tau ranges, reward weights</text>
+
+  <!-- Arrow N to 2 -->
+  <line x1="150" y1="90" x2="150" y2="110" stroke="#718096" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="160" y="105" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">slow</text>
+
+  <!-- Level 2 -->
+  <rect x="50" y="115" width="200" height="70" rx="6" fill="url(#level2Grad)" stroke="#c53030" stroke-width="2"/>
+  <text x="60" y="137" fill="white" font-family="monospace" font-size="11" font-weight="bold">Level 2 (tau ~ 1000)</text>
+  <text x="60" y="153" fill="#fff5f5" font-family="sans-serif" font-size="10">Meta-Meta Controller</text>
+  <text x="60" y="173" fill="#fff5f5" font-family="sans-serif" font-size="9">Strategic decisions</text>
+
+  <rect x="280" y="130" width="250" height="40" rx="4" fill="white" stroke="#e2e8f0"/>
+  <text x="290" y="150" fill="#4a5568" font-family="sans-serif" font-size="9">Controls: Architecture, tau values</text>
+  <text x="290" y="163" fill="#718096" font-family="sans-serif" font-size="8">Network topology, learning parameters</text>
+
+  <!-- Arrow 2 to 1 -->
+  <line x1="150" y1="185" x2="150" y2="205" stroke="#718096" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="160" y="200" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">medium</text>
+
+  <!-- Level 1 -->
+  <rect x="50" y="210" width="200" height="70" rx="6" fill="url(#level1Grad)" stroke="#6b46c1" stroke-width="2"/>
+  <text x="60" y="232" fill="white" font-family="monospace" font-size="11" font-weight="bold">Level 1 (tau ~ 100)</text>
+  <text x="60" y="248" fill="#faf5ff" font-family="sans-serif" font-size="10">Meta Controller</text>
+  <text x="60" y="268" fill="#faf5ff" font-family="sans-serif" font-size="9">Tactical hyperparameters</text>
+
+  <rect x="280" y="225" width="250" height="40" rx="4" fill="white" stroke="#e2e8f0"/>
+  <text x="290" y="245" fill="#4a5568" font-family="sans-serif" font-size="9">Controls: mutation, selection</text>
+  <text x="290" y="258" fill="#718096" font-family="sans-serif" font-size="8">mutation_rate, mutation_strength, selection_ratio</text>
+
+  <!-- Arrow 1 to 0 -->
+  <line x1="150" y1="280" x2="150" y2="300" stroke="#718096" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="160" y="295" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">fast</text>
+
+  <!-- Level 0 -->
+  <rect x="50" y="305" width="200" height="70" rx="6" fill="url(#level0Grad)" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="60" y="327" fill="white" font-family="monospace" font-size="11" font-weight="bold">Level 0 (tau ~ 1)</text>
+  <text x="60" y="343" fill="#ebf8ff" font-family="sans-serif" font-size="10">Task Networks</text>
+  <text x="60" y="363" fill="#ebf8ff" font-family="sans-serif" font-size="9">Agent behavior</text>
+
+  <rect x="280" y="320" width="250" height="40" rx="4" fill="white" stroke="#e2e8f0"/>
+  <text x="290" y="340" fill="#4a5568" font-family="sans-serif" font-size="9">Controls: Actions in domain</text>
+  <text x="290" y="353" fill="#718096" font-family="sans-serif" font-size="8">Game moves, robot commands, trading signals</text>
+
+  <!-- Legend -->
+  <text x="300" y="390" text-anchor="middle" fill="#718096" font-family="sans-serif" font-size="9" font-style="italic">Each level provides stability to the level below</text>
+</svg>

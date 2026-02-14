@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="ecoGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80"/>
+      <stop offset="100%" style="stop-color:#22c55e"/>
+    </linearGradient>
+    <linearGradient id="ecoHeaderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a34a"/>
+      <stop offset="100%" style="stop-color:#15803d"/>
+    </linearGradient>
+    <filter id="shadowEco" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowEco" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Ecological Silo Architecture</text>
+
+  <!-- Main container -->
+  <rect x="50" y="60" width="700" height="520" rx="10" fill="white" stroke="#22c55e" stroke-width="2" filter="url(#shadowEco)"/>
+  <rect x="50" y="60" width="700" height="40" rx="10" fill="url(#ecoHeaderGrad)"/>
+  <rect x="50" y="90" width="700" height="10" fill="url(#ecoHeaderGrad)"/>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">ECOLOGICAL SILO</text>
+
+  <!-- L2 Strategic Layer -->
+  <rect x="80" y="120" width="640" height="70" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="100" y="145" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">L2 Strategic (environmental policy learning)</text>
+  <text x="100" y="163" font-family="Arial, sans-serif" font-size="10" fill="#166534">Learn optimal environmental pressure balance for robust evolution | Time constant: many runs</text>
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="10" fill="#166534">Controls: scarcity_tolerance, disease_severity, catastrophe_frequency, cycle_amplitude</text>
+
+  <!-- Arrow L2 to L1 -->
+  <path d="M400 190 L400 210" stroke="#64748b" stroke-width="2" marker-end="url(#arrowEco)"/>
+
+  <!-- L1 Tactical Layer -->
+  <rect x="80" y="215" width="640" height="90" rx="8" fill="#bbf7d0" stroke="#4ade80" stroke-width="1.5"/>
+  <text x="100" y="240" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">L1 Tactical (environmental dynamics)</text>
+  <text x="100" y="260" font-family="Arial, sans-serif" font-size="10" fill="#166534">Adapt carrying capacity and resource regeneration based on population state | Time constant: per generation</text>
+  <text x="100" y="280" font-family="Arial, sans-serif" font-size="10" fill="#166534">Track resource levels, disease prevalence, cycle phase, catastrophe risk</text>
+
+  <!-- L1 Components -->
+  <rect x="460" y="225" width="110" height="30" rx="4" fill="#86efac" opacity="0.3" stroke="#22c55e"/>
+  <text x="515" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#166534">resources{}</text>
+  <rect x="580" y="225" width="120" height="30" rx="4" fill="#86efac" opacity="0.3" stroke="#22c55e"/>
+  <text x="640" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#166534">diseases[]</text>
+  <rect x="460" y="265" width="240" height="30" rx="4" fill="#86efac" opacity="0.3" stroke="#22c55e"/>
+  <text x="580" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#166534">catastrophe_history[], niches{}</text>
+
+  <!-- Arrow L1 to L0 -->
+  <path d="M400 305 L400 325" stroke="#64748b" stroke-width="2" marker-end="url(#arrowEco)"/>
+
+  <!-- L0 Reactive Layer -->
+  <rect x="80" y="330" width="640" height="230" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="100" y="355" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">L0 Reactive (environmental events)</text>
+  <text x="100" y="375" font-family="Arial, sans-serif" font-size="10" fill="#166534">Process resources, diseases, catastrophes, cycles | Time constant: per generation</text>
+
+  <!-- Sensors Box -->
+  <rect x="100" y="390" width="250" height="150" rx="6" fill="white" stroke="#86efac" stroke-width="1"/>
+  <text x="225" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#166534">SENSORS (14 inputs)</text>
+  <text x="110" y="430" font-family="monospace" font-size="8" fill="#166534">resource_level, resource_trend</text>
+  <text x="110" y="445" font-family="monospace" font-size="8" fill="#166534">resource_variance</text>
+  <text x="110" y="460" font-family="monospace" font-size="8" fill="#166534">population_density, carrying_pressure</text>
+  <text x="110" y="475" font-family="monospace" font-size="8" fill="#166534">growth_rate</text>
+  <text x="110" y="490" font-family="monospace" font-size="8" fill="#166534">disease_prevalence, immunity_level</text>
+  <text x="110" y="505" font-family="monospace" font-size="8" fill="#166534">outbreak_risk, env_stability, cycle_phase</text>
+  <text x="110" y="520" font-family="monospace" font-size="8" fill="#166534">stress_level, niche_overlap, catastrophe_risk</text>
+
+  <!-- TWEANN Box -->
+  <rect x="370" y="430" width="100" height="60" rx="6" fill="url(#ecoGreen)" stroke="#166534" stroke-width="1"/>
+  <text x="420" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="420" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">LTC Network</text>
+
+  <!-- Arrows to/from TWEANN -->
+  <path d="M350 460 L370 460" stroke="#86efac" stroke-width="2" marker-end="url(#arrowEco)"/>
+  <path d="M470 460 L490 460" stroke="#86efac" stroke-width="2" marker-end="url(#arrowEco)"/>
+
+  <!-- Actuators Box -->
+  <rect x="490" y="390" width="210" height="150" rx="6" fill="white" stroke="#86efac" stroke-width="1"/>
+  <text x="595" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#166534">ACTUATORS (10 outputs)</text>
+  <text x="500" y="430" font-family="monospace" font-size="8" fill="#166534">resource_regeneration_mult</text>
+  <text x="500" y="445" font-family="monospace" font-size="8" fill="#166534">resource_decay_rate</text>
+  <text x="500" y="460" font-family="monospace" font-size="8" fill="#166534">capacity_softness, overflow_penalty</text>
+  <text x="500" y="475" font-family="monospace" font-size="8" fill="#166534">disease_virulence_cap</text>
+  <text x="500" y="490" font-family="monospace" font-size="8" fill="#166534">transmission_rate_modifier</text>
+  <text x="500" y="505" font-family="monospace" font-size="8" fill="#166534">catastrophe_frequency, severity_cap</text>
+  <text x="500" y="520" font-family="monospace" font-size="8" fill="#166534">cycle_amplitude, stress_threshold</text>
+
+  <!-- Legend -->
+  <rect x="60" y="565" width="15" height="15" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="80" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L2 Strategic</text>
+  <rect x="170" y="565" width="15" height="15" fill="#bbf7d0" stroke="#4ade80"/>
+  <text x="190" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L1 Tactical</text>
+  <rect x="280" y="565" width="15" height="15" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="300" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L0 Reactive</text>
+  <text x="420" y="577" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#64748b">Time constant: per generation (environmental dynamics)</text>
+</svg>

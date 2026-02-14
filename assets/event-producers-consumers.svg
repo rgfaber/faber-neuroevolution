@@ -1,0 +1,288 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 950">
+  <defs>
+    <linearGradient id="producerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4A90D9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="consumerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5CB85C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#449D44;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="eventBusGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F0AD4E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC971F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="topicGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#9B59B6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8E44AD;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowRight" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <marker id="arrowDown" markerWidth="7" markerHeight="10" refX="3.5" refY="9" orient="auto">
+      <polygon points="0 0, 3.5 10, 7 0" fill="#666"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="600" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#333">Event Producers &amp; Consumers</text>
+  <text x="600" y="55" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#666">faber-neuroevolution Event-Driven Architecture</text>
+
+  <!-- Legend -->
+  <g transform="translate(50, 70)">
+    <rect x="0" y="0" width="300" height="70" rx="5" fill="#fff" stroke="#ddd" stroke-width="1"/>
+    <text x="150" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Legend</text>
+    <rect x="15" y="28" width="20" height="14" rx="3" fill="url(#producerGrad)"/>
+    <text x="42" y="39" font-family="Arial, sans-serif" font-size="10" fill="#333">Producer (publishes events)</text>
+    <rect x="155" y="28" width="20" height="14" rx="3" fill="url(#consumerGrad)"/>
+    <text x="182" y="39" font-family="Arial, sans-serif" font-size="10" fill="#333">Consumer (subscribes)</text>
+    <rect x="15" y="48" width="20" height="14" rx="3" fill="url(#topicGrad)"/>
+    <text x="42" y="59" font-family="Arial, sans-serif" font-size="10" fill="#333">Event Topic</text>
+    <rect x="155" y="48" width="20" height="14" rx="3" fill="url(#eventBusGrad)"/>
+    <text x="182" y="59" font-family="Arial, sans-serif" font-size="10" fill="#333">Event Bus (pg groups)</text>
+  </g>
+
+  <!-- Event Bus (Central) -->
+  <g transform="translate(400, 380)">
+    <rect x="0" y="0" width="400" height="60" rx="10" fill="url(#eventBusGrad)" stroke="#d58512" stroke-width="2"/>
+    <text x="200" y="25" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#fff">neuroevolution_events (Erlang pg)</text>
+    <text x="200" y="45" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#fff">Topic-based Pub/Sub</text>
+  </g>
+
+  <!-- ========== PRODUCERS (Left Side) ========== -->
+
+  <!-- Task L0 Actuators -->
+  <g transform="translate(50, 160)">
+    <rect x="0" y="0" width="200" height="80" rx="8" fill="url(#producerGrad)" stroke="#2a5f8f" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">task_l0_actuators</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4e6f7">Task Silo L0</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">Publishes: 2 topics</text>
+    <text x="100" y="74" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">(evolution + archive params)</text>
+  </g>
+
+  <!-- Resource L0 Actuators -->
+  <g transform="translate(50, 260)">
+    <rect x="0" y="0" width="200" height="80" rx="8" fill="url(#producerGrad)" stroke="#2a5f8f" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">resource_l0_actuators</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4e6f7">Resource Silo L0</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">Publishes: 3 topics</text>
+    <text x="100" y="74" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">(resource + pressure + gc)</text>
+  </g>
+
+  <!-- Neuroevolution Server (as producer) -->
+  <g transform="translate(50, 480)">
+    <rect x="0" y="0" width="200" height="80" rx="8" fill="url(#producerGrad)" stroke="#2a5f8f" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">neuroevolution_server</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4e6f7">Evolution Engine</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">Publishes: generation events</text>
+    <text x="100" y="74" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">(started, complete, progress)</text>
+  </g>
+
+  <!-- LC Event Emitter -->
+  <g transform="translate(50, 580)">
+    <rect x="0" y="0" width="200" height="70" rx="8" fill="url(#producerGrad)" stroke="#2a5f8f" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">lc_event_emitter</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4e6f7">LC Persistence</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">Persists to esdb_lineage</text>
+  </g>
+
+  <!-- Temporal Silo -->
+  <g transform="translate(50, 670)">
+    <rect x="0" y="0" width="200" height="70" rx="8" fill="url(#producerGrad)" stroke="#2a5f8f" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">temporal_silo</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4e6f7">Temporal Silo</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">Publishes: hyperparams_adjusted</text>
+  </g>
+
+  <!-- ========== EVENT TOPICS (Center) ========== -->
+
+  <!-- L0 Evolution Params Topic -->
+  <g transform="translate(300, 160)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">l0.evolution_params</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">mutation rates, selection</text>
+  </g>
+
+  <!-- L0 Archive Params Topic -->
+  <g transform="translate(300, 205)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">l0.archive_params</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">threshold, sampling, prune</text>
+  </g>
+
+  <!-- L0 Resource Params Topic -->
+  <g transform="translate(300, 260)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">l0.resource_params</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">timeout, concurrency</text>
+  </g>
+
+  <!-- Silo Resource Pressure Topic -->
+  <g transform="translate(300, 305)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">silo.resource.pressure</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">cross-silo signal</text>
+  </g>
+
+  <!-- Silo Signals Topic (NEW - Phase 2) -->
+  <g transform="translate(520, 620)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">silo.*.signals</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">13 silos publish signals</text>
+  </g>
+
+  <!-- Silo Lifecycle Topic (NEW - Phase 2) -->
+  <g transform="translate(520, 665)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">silo.*.lifecycle</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">activated, deactivated</text>
+  </g>
+
+  <!-- Generation Complete Topic -->
+  <g transform="translate(520, 480)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">generation.complete</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">stats, best fitness</text>
+  </g>
+
+  <!-- Individual Evaluated Topic -->
+  <g transform="translate(520, 525)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">individual.evaluated</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">fitness, metrics</text>
+  </g>
+
+  <!-- Training Complete Topic -->
+  <g transform="translate(520, 570)">
+    <rect x="0" y="0" width="180" height="35" rx="5" fill="url(#topicGrad)" stroke="#7b4397" stroke-width="1"/>
+    <text x="90" y="15" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#fff">training.complete</text>
+    <text x="90" y="28" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#e8d5f0">champion, total evals</text>
+  </g>
+
+  <!-- ========== CONSUMERS (Right Side) ========== -->
+
+  <!-- Neuroevolution Server (as consumer) -->
+  <g transform="translate(950, 160)">
+    <rect x="0" y="0" width="200" height="100" rx="8" fill="url(#consumerGrad)" stroke="#3d8b3d" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">neuroevolution_server</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4f7d4">Evolution Engine</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4f7d4">Subscribes to:</text>
+    <text x="100" y="76" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">l0.evolution_params</text>
+    <text x="100" y="88" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">l0.resource_params</text>
+  </g>
+
+  <!-- Task L0 Sensors -->
+  <g transform="translate(950, 280)">
+    <rect x="0" y="0" width="200" height="80" rx="8" fill="url(#consumerGrad)" stroke="#3d8b3d" stroke-width="2"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">task_l0_sensors</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4f7d4">Task Silo L0</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4f7d4">Subscribes to:</text>
+    <text x="100" y="76" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">silo.resource.pressure</text>
+  </g>
+
+  <!-- Self Play Manager (Future) -->
+  <g transform="translate(950, 380)">
+    <rect x="0" y="0" width="200" height="80" rx="8" fill="url(#consumerGrad)" stroke="#3d8b3d" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">self_play_manager</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4f7d4">(Future)</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4f7d4">Will subscribe to:</text>
+    <text x="100" y="76" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">l0.archive_params</text>
+  </g>
+
+  <!-- External Apps -->
+  <g transform="translate(950, 480)">
+    <rect x="0" y="0" width="200" height="100" rx="8" fill="url(#consumerGrad)" stroke="#3d8b3d" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="100" y="22" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">External Apps</text>
+    <text x="100" y="38" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4f7d4">(Phoenix, Console, etc.)</text>
+    <line x1="10" y1="48" x2="190" y2="48" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="62" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4f7d4">Can subscribe to:</text>
+    <text x="100" y="76" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">generation.complete</text>
+    <text x="100" y="88" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">training.complete</text>
+  </g>
+
+  <!-- lc_cross_silo (Signal Aggregator) -->
+  <g transform="translate(950, 600)">
+    <rect x="0" y="0" width="200" height="90" rx="8" fill="url(#consumerGrad)" stroke="#3d8b3d" stroke-width="2"/>
+    <text x="100" y="18" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">lc_cross_silo</text>
+    <text x="100" y="32" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4f7d4">Signal Aggregator</text>
+    <line x1="10" y1="42" x2="190" y2="42" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="56" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4f7d4">Subscribes to ALL silos:</text>
+    <text x="100" y="70" font-family="monospace" font-size="8" text-anchor="middle" fill="#d4f7d4">silo.*.signals (13 topics)</text>
+    <text x="100" y="82" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#d4f7d4">Aggregates, routes, decays</text>
+  </g>
+
+  <!-- All Silos (Producers) -->
+  <g transform="translate(50, 760)">
+    <rect x="0" y="0" width="200" height="70" rx="8" fill="url(#producerGrad)" stroke="#2a5f8f" stroke-width="2"/>
+    <text x="100" y="18" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#fff">13 Silos</text>
+    <text x="100" y="32" font-family="monospace" font-size="9" text-anchor="middle" fill="#d4e6f7">(via silo_events module)</text>
+    <line x1="10" y1="42" x2="190" y2="42" stroke="#fff" stroke-opacity="0.3"/>
+    <text x="100" y="56" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">publish_signal(silo, name, val)</text>
+    <text x="100" y="68" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#d4e6f7">publish_lifecycle(silo, event)</text>
+  </g>
+
+  <!-- ========== ARROWS ========== -->
+
+  <!-- Producer to Topics -->
+  <line x1="250" y1="200" x2="298" y2="177" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <line x1="250" y1="200" x2="298" y2="222" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <line x1="250" y1="300" x2="298" y2="277" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <line x1="250" y1="300" x2="298" y2="322" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+  <!-- Topics to Event Bus -->
+  <line x1="390" y1="195" x2="500" y2="378" stroke="#8E44AD" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+  <line x1="390" y1="240" x2="520" y2="378" stroke="#8E44AD" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+  <line x1="390" y1="285" x2="540" y2="378" stroke="#8E44AD" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+  <line x1="390" y1="330" x2="560" y2="378" stroke="#8E44AD" stroke-width="1.5" marker-end="url(#arrowDown)"/>
+
+  <!-- Event Bus to Consumers -->
+  <line x1="700" y1="378" x2="948" y2="210" stroke="#449D44" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+  <line x1="700" y1="410" x2="948" y2="320" stroke="#449D44" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+  <line x1="700" y1="420" x2="948" y2="420" stroke="#449D44" stroke-width="1.5" marker-end="url(#arrowRight)" stroke-dasharray="5,3"/>
+  <line x1="700" y1="440" x2="948" y2="530" stroke="#449D44" stroke-width="1.5" marker-end="url(#arrowRight)" stroke-dasharray="5,3"/>
+  <line x1="700" y1="440" x2="948" y2="640" stroke="#449D44" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+  <!-- Producer events from neuroevolution_server -->
+  <line x1="250" y1="520" x2="518" y2="497" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <line x1="250" y1="520" x2="518" y2="542" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <line x1="250" y1="520" x2="518" y2="587" stroke="#357ABD" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+  <!-- Event Message Format Box -->
+  <g transform="translate(720, 160)">
+    <rect x="0" y="0" width="180" height="100" rx="5" fill="#fff" stroke="#ddd" stroke-width="1"/>
+    <text x="90" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Event Message Format</text>
+    <line x1="10" y1="26" x2="170" y2="26" stroke="#ddd"/>
+    <text x="10" y="42" font-family="monospace" font-size="8" fill="#666">{neuro_event,</text>
+    <text x="10" y="54" font-family="monospace" font-size="8" fill="#666">  Topic :: binary(),</text>
+    <text x="10" y="66" font-family="monospace" font-size="8" fill="#666">  #{event_type =&gt; ...,</text>
+    <text x="10" y="78" font-family="monospace" font-size="8" fill="#666">    timestamp =&gt; ...,</text>
+    <text x="10" y="90" font-family="monospace" font-size="8" fill="#666">    params =&gt; #{...}}}</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="870" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666">Dashed boxes/lines indicate future or optional components</text>
+  <text x="600" y="890" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#888">Event bus uses Erlang pg (process groups) for local pub/sub</text>
+  <text x="600" y="910" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#888">Phase 2 complete: All silos now use silo_events:publish_signal/3 instead of lc_cross_silo:emit/4</text>
+
+  <!-- Topic Hierarchy Box -->
+  <g transform="translate(720, 280)">
+    <rect x="0" y="0" width="180" height="80" rx="5" fill="#fff" stroke="#ddd" stroke-width="1"/>
+    <text x="90" y="18" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#333">Topic Hierarchy</text>
+    <line x1="10" y1="26" x2="170" y2="26" stroke="#ddd"/>
+    <text x="10" y="42" font-family="monospace" font-size="8" fill="#666">l0.*           L0 actuator events</text>
+    <text x="10" y="54" font-family="monospace" font-size="8" fill="#666">silo.*         Cross-silo signals</text>
+    <text x="10" y="66" font-family="monospace" font-size="8" fill="#666">generation.*   Evolution events</text>
+    <text x="10" y="78" font-family="monospace" font-size="8" fill="#666">training.*     Session events</text>
+  </g>
+</svg>

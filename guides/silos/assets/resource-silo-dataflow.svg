@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="resourcePurple2" x1="0%" y1="0%" x2="0%"  y2="100%">
+      <stop offset="0%" style="stop-color:#9b8afb"/>
+      <stop offset="100%" style="stop-color:#7B68EE"/>
+    </linearGradient>
+    <linearGradient id="engineGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="monitorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#0891b2"/>
+    </linearGradient>
+    <marker id="arrowPurple2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7B68EE"/>
+    </marker>
+    <marker id="arrowBlue2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4A90D9"/>
+    </marker>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0891b2"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <filter id="shadow3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Resource Silo Integration &amp; Dataflow</text>
+
+  <!-- BEAM VM / resource_monitor Box -->
+  <rect x="40" y="60" width="180" height="180" rx="10" fill="white" stroke="#0891b2" stroke-width="2" filter="url(#shadow3)"/>
+  <rect x="40" y="60" width="180" height="35" rx="10" fill="url(#monitorGrad)"/>
+  <rect x="40" y="85" width="180" height="10" fill="url(#monitorGrad)"/>
+  <text x="130" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">BEAM VM Metrics</text>
+
+  <text x="55" y="115" font-family="Arial, sans-serif" font-size="10" fill="#0e7490">erlang:memory/0</text>
+  <text x="55" y="130" font-family="Arial, sans-serif" font-size="10" fill="#0e7490">erlang:statistics/1</text>
+  <text x="55" y="145" font-family="Arial, sans-serif" font-size="10" fill="#0e7490">erlang:system_info/1</text>
+  <text x="55" y="160" font-family="Arial, sans-serif" font-size="10" fill="#0e7490">scheduler_wall_time</text>
+  <text x="55" y="175" font-family="Arial, sans-serif" font-size="10" fill="#0e7490">process_count</text>
+  <text x="55" y="190" font-family="Arial, sans-serif" font-size="10" fill="#0e7490">run_queue</text>
+
+  <rect x="55" y="200" width="150" height="25" rx="4" fill="#0891b2" opacity="0.2"/>
+  <text x="130" y="217" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#0e7490">resource_monitor</text>
+
+  <!-- Resource Silo Box -->
+  <rect x="300" y="60" width="300" height="200" rx="10" fill="white" stroke="#7B68EE" stroke-width="2" filter="url(#shadow3)"/>
+  <rect x="300" y="60" width="300" height="35" rx="10" fill="url(#resourcePurple2)"/>
+  <rect x="300" y="85" width="300" height="10" fill="url(#resourcePurple2)"/>
+  <text x="450" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Resource Silo</text>
+
+  <!-- L0 Sensors sub-box -->
+  <rect x="315" y="105" width="125" height="70" rx="5" fill="#fae8ff" stroke="#d946ef"/>
+  <text x="377" y="122" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#a21caf">L0 Sensors (15)</text>
+  <text x="322" y="140" font-family="monospace" font-size="8" fill="#86198f">memory_pressure</text>
+  <text x="322" y="152" font-family="monospace" font-size="8" fill="#86198f">cpu_pressure</text>
+  <text x="322" y="164" font-family="monospace" font-size="8" fill="#86198f">gc_frequency...</text>
+
+  <!-- L0 Actuators sub-box -->
+  <rect x="460" y="105" width="125" height="70" rx="5" fill="#fce7f3" stroke="#ec4899"/>
+  <text x="522" y="122" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#be185d">L0 Actuators (10)</text>
+  <text x="467" y="140" font-family="monospace" font-size="8" fill="#9d174d">max_concurrent</text>
+  <text x="467" y="152" font-family="monospace" font-size="8" fill="#9d174d">gc_trigger</text>
+  <text x="467" y="164" font-family="monospace" font-size="8" fill="#9d174d">pause_signal...</text>
+
+  <!-- L1 Reactive -->
+  <rect x="315" y="185" width="270" height="30" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="450" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#92400e">L1 Reactive: pressure_history[], adaptive concurrency</text>
+
+  <!-- L2 Predictive -->
+  <rect x="315" y="220" width="270" height="25" rx="4" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="450" y="237" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#0369a1">L2 Predictive: meta_controller guidance (future)</text>
+
+  <!-- Task Silo Box -->
+  <rect x="680" y="60" width="180" height="120" rx="10" fill="white" stroke="#4A90D9" stroke-width="2" filter="url(#shadow3)"/>
+  <rect x="680" y="60" width="180" height="30" rx="10" fill="#4A90D9"/>
+  <rect x="680" y="80" width="180" height="10" fill="#4A90D9"/>
+  <text x="770" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Task Silo</text>
+
+  <text x="695" y="110" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Receives:</text>
+  <text x="695" y="125" font-family="monospace" font-size="9" fill="#1e40af">pressure_signal</text>
+  <text x="695" y="140" font-family="monospace" font-size="9" fill="#1e40af">max_evals_per_ind</text>
+  <text x="695" y="155" font-family="monospace" font-size="9" fill="#1e40af">should_simplify</text>
+
+  <!-- Evolution Engine Box -->
+  <rect x="300" y="300" width="300" height="100" rx="10" fill="white" stroke="#7c3aed" stroke-width="2" filter="url(#shadow3)"/>
+  <rect x="300" y="300" width="300" height="30" rx="10" fill="url(#engineGrad2)"/>
+  <rect x="300" y="320" width="300" height="10" fill="url(#engineGrad2)"/>
+  <text x="450" y="322" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Neuroevolution Engine</text>
+
+  <text x="315" y="350" font-family="Arial, sans-serif" font-size="10" fill="#5b21b6">Consumes recommendations:</text>
+  <text x="315" y="365" font-family="monospace" font-size="9" fill="#5b21b6">max_concurrent, batch_size, eval_timeout</text>
+  <text x="315" y="380" font-family="monospace" font-size="9" fill="#5b21b6">action: continue | throttle | pause</text>
+
+  <!-- Event Bus Box -->
+  <rect x="680" y="300" width="180" height="100" rx="10" fill="white" stroke="#db2777" stroke-width="2" filter="url(#shadow3)"/>
+  <rect x="680" y="300" width="180" height="30" rx="10" fill="#ec4899"/>
+  <rect x="680" y="320" width="180" height="10" fill="#ec4899"/>
+  <text x="770" y="322" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Event Bus</text>
+
+  <text x="695" y="350" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">resource_alert</text>
+  <text x="695" y="365" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">resource_sensors_updated</text>
+  <text x="695" y="380" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">gc_triggered</text>
+
+  <!-- Arrows -->
+  <!-- resource_monitor to Resource Silo -->
+  <path d="M220 150 L290 150" stroke="#0891b2" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <text x="255" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#0891b2">metrics</text>
+
+  <!-- Resource Silo to Task Silo -->
+  <path d="M600 120 L670 120" stroke="#7B68EE" stroke-width="2" marker-end="url(#arrowPurple2)"/>
+  <text x="635" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#7B68EE">cross-silo</text>
+
+  <!-- Resource Silo to Engine -->
+  <path d="M450 260 L450 290" stroke="#7B68EE" stroke-width="2" marker-end="url(#arrowPurple2)"/>
+  <text x="485" y="280" text-anchor="start" font-family="Arial, sans-serif" font-size="9" fill="#7B68EE">recommendations</text>
+
+  <!-- Resource Silo to Event Bus -->
+  <path d="M600 200 L680 320" stroke="#db2777" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGray)"/>
+  <text x="655" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#db2777">events</text>
+
+  <!-- Control Flow Box -->
+  <rect x="40" y="420" width="820" height="85" rx="8" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="450" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Sample &amp; React Loop (every 1s)</text>
+
+  <text x="60" y="470" font-family="Arial, sans-serif" font-size="11" fill="#334155">
+    <tspan font-weight="bold">1.</tspan> resource_monitor samples BEAM VM metrics (memory, CPU, processes, run queue)
+  </text>
+  <text x="60" y="490" font-family="Arial, sans-serif" font-size="11" fill="#334155">
+    <tspan font-weight="bold">2.</tspan> Resource Silo updates pressure_history, computes L1 adaptive concurrency
+  </text>
+  <text x="450" y="470" font-family="Arial, sans-serif" font-size="11" fill="#334155">
+    <tspan font-weight="bold">3.</tspan> L0 checks emergency conditions, triggers GC if critical
+  </text>
+  <text x="450" y="490" font-family="Arial, sans-serif" font-size="11" fill="#334155">
+    <tspan font-weight="bold">4.</tspan> Emit events on state change, send cross-silo signals
+  </text>
+</svg>

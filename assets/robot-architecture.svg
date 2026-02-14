@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320">
+  <defs>
+    <marker id="arrRB" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Robotics: Embodied TWEANN Controller</text>
+
+  <!-- Physical Robot -->
+  <rect x="30" y="60" width="180" height="200" rx="8" fill="#fed7d7" stroke="#fc8181" stroke-width="2"/>
+  <text x="120" y="85" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#c53030" text-anchor="middle">Physical Robot</text>
+
+  <!-- Sensors -->
+  <g transform="translate(50, 100)">
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#fc8181"/>
+    <text x="70" y="17" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">IMU (orientation)</text>
+  </g>
+  <g transform="translate(50, 130)">
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#fc8181"/>
+    <text x="70" y="17" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">LiDAR (distance)</text>
+  </g>
+  <g transform="translate(50, 160)">
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#fc8181"/>
+    <text x="70" y="17" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Camera (vision)</text>
+  </g>
+  <g transform="translate(50, 190)">
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#fc8181"/>
+    <text x="70" y="17" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Joint encoders</text>
+  </g>
+  <g transform="translate(50, 220)">
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#c53030"/>
+    <text x="70" y="17" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Motor feedback</text>
+  </g>
+
+  <!-- Neural Controller -->
+  <rect x="260" y="80" width="180" height="160" rx="8" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="350" y="105" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#276749" text-anchor="middle">Neural Controller</text>
+
+  <rect x="280" y="115" width="140" height="50" rx="4" fill="#48bb78"/>
+  <text x="350" y="138" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">TWEANN + LTC</text>
+  <text x="350" y="155" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">continuous dynamics</text>
+
+  <rect x="280" y="175" width="140" height="50" rx="4" fill="#38a169"/>
+  <text x="350" y="198" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">State Estimator</text>
+  <text x="350" y="215" font-family="monospace" font-size="8" fill="#9ae6b4" text-anchor="middle">internal model</text>
+
+  <!-- Actuators -->
+  <rect x="490" y="60" width="180" height="200" rx="8" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="580" y="85" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#6b46c1" text-anchor="middle">Actuators</text>
+
+  <g transform="translate(510, 100)">
+    <rect x="0" y="0" width="140" height="30" rx="3" fill="#9f7aea"/>
+    <text x="70" y="20" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Joint motors (6)</text>
+  </g>
+  <g transform="translate(510, 140)">
+    <rect x="0" y="0" width="140" height="30" rx="3" fill="#805ad5"/>
+    <text x="70" y="20" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Wheel motors (4)</text>
+  </g>
+  <g transform="translate(510, 180)">
+    <rect x="0" y="0" width="140" height="30" rx="3" fill="#6b46c1"/>
+    <text x="70" y="20" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Gripper</text>
+  </g>
+  <g transform="translate(510, 220)">
+    <rect x="0" y="0" width="140" height="25" rx="3" fill="#553c9a"/>
+    <text x="70" y="17" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">LEDs / Audio</text>
+  </g>
+
+  <!-- Arrows -->
+  <path d="M 210 160 L 255 160" stroke="#4a5568" stroke-width="2" marker-end="url(#arrRB)"/>
+  <path d="M 445 160 L 485 160" stroke="#4a5568" stroke-width="2" marker-end="url(#arrRB)"/>
+
+  <!-- Control loop -->
+  <rect x="200" y="280" width="300" height="30" rx="4" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="350" y="300" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#c05621" text-anchor="middle">Control loop: 100-1000 Hz (1-10ms)</text>
+</svg>

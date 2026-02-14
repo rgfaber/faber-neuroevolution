@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 400">
+  <defs>
+    <marker id="arrLC" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+    <linearGradient id="lcGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.05"/>
+    </linearGradient>
+  </defs>
+
+  <text x="375" y="30" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="600" fill="#2d3748" text-anchor="middle">Liquid Conglomerate: Hierarchical Meta-Learning</text>
+
+  <!-- Background layers -->
+  <rect x="30" y="50" width="690" height="90" rx="6" fill="#faf5ff" stroke="#9f7aea" stroke-width="1"/>
+  <rect x="30" y="150" width="690" height="90" rx="6" fill="#ebf8ff" stroke="#4299e1" stroke-width="1"/>
+  <rect x="30" y="250" width="690" height="90" rx="6" fill="#f0fff4" stroke="#48bb78" stroke-width="1"/>
+
+  <!-- L2 Strategic -->
+  <text x="50" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#6b46c1">L2: Strategic (τ ~ 1000+)</text>
+  <rect x="150" y="65" width="150" height="55" rx="6" fill="#9f7aea" stroke="#805ad5" stroke-width="2"/>
+  <text x="225" y="88" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">Meta-Meta</text>
+  <text x="225" y="103" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#e9d8fd" text-anchor="middle">Controller</text>
+  <text x="225" y="115" font-family="monospace" font-size="8" fill="#e9d8fd" text-anchor="middle">learns meta-strategies</text>
+
+  <rect x="400" y="65" width="300" height="55" rx="4" fill="#faf5ff" stroke="#d6bcfa"/>
+  <text x="420" y="85" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#553c9a">Controls:</text>
+  <text x="420" y="100" font-family="monospace" font-size="8" fill="#6b46c1">• L1 tau values • L1 topology • reward weights</text>
+  <text x="420" y="112" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">Learns across experiments/domains</text>
+
+  <!-- L1 Tactical -->
+  <text x="50" y="175" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#2b6cb0">L1: Tactical (τ ~ 100)</text>
+  <rect x="150" y="165" width="150" height="55" rx="6" fill="#4299e1" stroke="#3182ce" stroke-width="2"/>
+  <text x="225" y="188" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">Meta</text>
+  <text x="225" y="203" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#bee3f8" text-anchor="middle">Controller</text>
+  <text x="225" y="215" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">LTC network</text>
+
+  <rect x="400" y="165" width="300" height="55" rx="4" fill="#ebf8ff" stroke="#90cdf4"/>
+  <text x="420" y="185" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#2c5282">Controls:</text>
+  <text x="420" y="200" font-family="monospace" font-size="8" fill="#2b6cb0">• mutation_rate • mutation_strength • selection_ratio</text>
+  <text x="420" y="212" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">Adapts per-generation based on training dynamics</text>
+
+  <!-- L0 Task Networks -->
+  <text x="50" y="275" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#276749">L0: Task Networks (τ ~ 1)</text>
+  <rect x="150" y="265" width="100" height="55" rx="6" fill="#48bb78" stroke="#38a169" stroke-width="2"/>
+  <text x="200" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">TWEANN</text>
+  <text x="200" y="305" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">agent 1</text>
+
+  <rect x="260" y="265" width="100" height="55" rx="6" fill="#48bb78" stroke="#38a169" stroke-width="2"/>
+  <text x="310" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">TWEANN</text>
+  <text x="310" y="305" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">agent 2</text>
+
+  <rect x="370" y="265" width="100" height="55" rx="6" fill="#48bb78" stroke="#38a169" stroke-width="2"/>
+  <text x="420" y="290" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">TWEANN</text>
+  <text x="420" y="305" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">agent N</text>
+
+  <text x="480" y="295" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#718096">...</text>
+
+  <rect x="520" y="265" width="180" height="55" rx="4" fill="#f0fff4" stroke="#9ae6b4"/>
+  <text x="540" y="285" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#22543d">Population of evolved networks</text>
+  <text x="540" y="300" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">React to environment in real-time</text>
+  <text x="540" y="312" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">Fitness evaluated by evaluator</text>
+
+  <!-- Arrows between levels -->
+  <path d="M 225 120 L 225 160" stroke="#4a5568" stroke-width="2" marker-end="url(#arrLC)"/>
+  <path d="M 225 220 L 225 260" stroke="#4a5568" stroke-width="2" marker-end="url(#arrLC)"/>
+  <text x="235" y="142" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">control</text>
+  <text x="235" y="242" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">control</text>
+
+  <!-- Feedback arrows -->
+  <path d="M 130 285 L 100 285 L 100 190 L 145 190" stroke="#ed8936" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrLC)"/>
+  <path d="M 130 190 L 80 190 L 80 90 L 145 90" stroke="#ed8936" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrLC)"/>
+  <text x="60" y="240" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#ed8936" transform="rotate(-90, 60, 240)">feedback</text>
+
+  <!-- Time scale -->
+  <rect x="30" y="355" width="690" height="35" rx="4" fill="#f7fafc" stroke="#e2e8f0"/>
+  <text x="50" y="377" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">Time Scale:</text>
+  <text x="130" y="377" font-family="monospace" font-size="9" fill="#48bb78">L0: milliseconds</text>
+  <text x="280" y="377" font-family="monospace" font-size="9" fill="#4299e1">L1: per-generation</text>
+  <text x="450" y="377" font-family="monospace" font-size="9" fill="#9f7aea">L2: across experiments</text>
+</svg>

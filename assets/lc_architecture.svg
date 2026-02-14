@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="distGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="l2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+    </marker>
+    <marker id="arrowheadGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" />
+    </marker>
+    <marker id="arrowheadBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+    </marker>
+    <marker id="arrowheadPink" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ec4899" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-size="24" font-weight="bold" fill="#1e293b">Liquid Conglomerate v2 Architecture</text>
+  <text x="450" y="55" text-anchor="middle" font-size="14" fill="#64748b">Hierarchical TWEANN Control with Cross-Silo Coordination</text>
+
+  <!-- L2 Controller (top) -->
+  <g transform="translate(350, 75)">
+    <rect x="0" y="0" width="200" height="50" rx="8" fill="url(#l2Grad)" filter="url(#shadow)"/>
+    <text x="100" y="22" text-anchor="middle" font-size="14" font-weight="bold" fill="white">L2 Strategic</text>
+    <text x="100" y="38" text-anchor="middle" font-size="11" fill="white" opacity="0.9">lc_l2_controller</text>
+  </g>
+
+  <!-- Cross-Silo Coordinator -->
+  <g transform="translate(700, 260)">
+    <rect x="0" y="0" width="150" height="80" rx="8" fill="#fbbf24" filter="url(#shadow)"/>
+    <text x="75" y="25" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Cross-Silo</text>
+    <text x="75" y="42" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Coordinator</text>
+    <text x="75" y="60" text-anchor="middle" font-size="10" fill="#1e293b" opacity="0.8">lc_cross_silo</text>
+    <text x="75" y="72" text-anchor="middle" font-size="9" fill="#1e293b" opacity="0.7">Signal Routing</text>
+  </g>
+
+  <!-- Resource Silo -->
+  <g transform="translate(50, 150)">
+    <rect x="0" y="0" width="180" height="280" rx="12" fill="white" stroke="#22c55e" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="180" height="40" rx="12" fill="url(#resourceGrad)"/>
+    <rect x="0" y="28" width="180" height="12" fill="url(#resourceGrad)"/>
+    <text x="90" y="27" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Resource Silo</text>
+
+    <!-- L1 -->
+    <rect x="15" y="55" width="150" height="45" rx="6" fill="#dcfce7" stroke="#22c55e" stroke-width="1"/>
+    <text x="90" y="75" text-anchor="middle" font-size="11" font-weight="600" fill="#166534">L1 Tactical</text>
+    <text x="90" y="90" text-anchor="middle" font-size="9" fill="#166534">lc_l1_controller</text>
+
+    <!-- L0 -->
+    <rect x="15" y="110" width="150" height="45" rx="6" fill="#bbf7d0" stroke="#22c55e" stroke-width="1"/>
+    <text x="90" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#166534">L0 Reactive</text>
+    <text x="90" y="145" text-anchor="middle" font-size="9" fill="#166534">TWEANN Controller</text>
+
+    <!-- Sensors -->
+    <rect x="15" y="165" width="70" height="50" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="50" y="185" text-anchor="middle" font-size="10" font-weight="600" fill="#166534">Sensors</text>
+    <text x="50" y="200" text-anchor="middle" font-size="9" fill="#166534">13 inputs</text>
+
+    <!-- Actuators -->
+    <rect x="95" y="165" width="70" height="50" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1"/>
+    <text x="130" y="185" text-anchor="middle" font-size="10" font-weight="600" fill="#166534">Actuators</text>
+    <text x="130" y="200" text-anchor="middle" font-size="9" fill="#166534">8 outputs</text>
+
+    <!-- Time constants -->
+    <text x="90" y="235" text-anchor="middle" font-size="9" fill="#64748b">Time Constants:</text>
+    <text x="90" y="248" text-anchor="middle" font-size="8" fill="#64748b">L0: 5s | L1: 30s | L2: 5min</text>
+
+    <!-- Metrics -->
+    <text x="90" y="268" text-anchor="middle" font-size="9" fill="#64748b">Memory, CPU, GC</text>
+  </g>
+
+  <!-- Task Silo -->
+  <g transform="translate(260, 150)">
+    <rect x="0" y="0" width="180" height="280" rx="12" fill="white" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="180" height="40" rx="12" fill="url(#taskGrad)"/>
+    <rect x="0" y="28" width="180" height="12" fill="url(#taskGrad)"/>
+    <text x="90" y="27" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Task Silo</text>
+
+    <!-- L1 -->
+    <rect x="15" y="55" width="150" height="45" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+    <text x="90" y="75" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">L1 Tactical</text>
+    <text x="90" y="90" text-anchor="middle" font-size="9" fill="#1e40af">lc_l1_controller</text>
+
+    <!-- L0 -->
+    <rect x="15" y="110" width="150" height="45" rx="6" fill="#bfdbfe" stroke="#3b82f6" stroke-width="1"/>
+    <text x="90" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">L0 Reactive</text>
+    <text x="90" y="145" text-anchor="middle" font-size="9" fill="#1e40af">TWEANN Controller</text>
+
+    <!-- Sensors -->
+    <rect x="15" y="165" width="70" height="50" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+    <text x="50" y="185" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Sensors</text>
+    <text x="50" y="200" text-anchor="middle" font-size="9" fill="#1e40af">16 inputs</text>
+
+    <!-- Actuators -->
+    <rect x="95" y="165" width="70" height="50" rx="4" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+    <text x="130" y="185" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Actuators</text>
+    <text x="130" y="200" text-anchor="middle" font-size="9" fill="#1e40af">12 outputs</text>
+
+    <!-- Time constants -->
+    <text x="90" y="235" text-anchor="middle" font-size="9" fill="#64748b">Time Constants:</text>
+    <text x="90" y="248" text-anchor="middle" font-size="8" fill="#64748b">L0: 1K | L1: 5K | L2: 10K evals</text>
+
+    <!-- Metrics -->
+    <text x="90" y="268" text-anchor="middle" font-size="9" fill="#64748b">Fitness, Diversity, Complexity</text>
+  </g>
+
+  <!-- Distribution Silo -->
+  <g transform="translate(470, 150)">
+    <rect x="0" y="0" width="180" height="280" rx="12" fill="white" stroke="#ec4899" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="180" height="40" rx="12" fill="url(#distGrad)"/>
+    <rect x="0" y="28" width="180" height="12" fill="url(#distGrad)"/>
+    <text x="90" y="27" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Distribution Silo</text>
+
+    <!-- L1 -->
+    <rect x="15" y="55" width="150" height="45" rx="6" fill="#fce7f3" stroke="#ec4899" stroke-width="1"/>
+    <text x="90" y="75" text-anchor="middle" font-size="11" font-weight="600" fill="#9d174d">L1 Tactical</text>
+    <text x="90" y="90" text-anchor="middle" font-size="9" fill="#9d174d">lc_l1_controller</text>
+
+    <!-- L0 -->
+    <rect x="15" y="110" width="150" height="45" rx="6" fill="#fbcfe8" stroke="#ec4899" stroke-width="1"/>
+    <text x="90" y="130" text-anchor="middle" font-size="11" font-weight="600" fill="#9d174d">L0 Reactive</text>
+    <text x="90" y="145" text-anchor="middle" font-size="9" fill="#9d174d">TWEANN Controller</text>
+
+    <!-- Sensors -->
+    <rect x="15" y="165" width="70" height="50" rx="4" fill="#fdf2f8" stroke="#f9a8d4" stroke-width="1"/>
+    <text x="50" y="185" text-anchor="middle" font-size="10" font-weight="600" fill="#9d174d">Sensors</text>
+    <text x="50" y="200" text-anchor="middle" font-size="9" fill="#9d174d">14 inputs</text>
+
+    <!-- Actuators -->
+    <rect x="95" y="165" width="70" height="50" rx="4" fill="#fdf2f8" stroke="#f9a8d4" stroke-width="1"/>
+    <text x="130" y="185" text-anchor="middle" font-size="10" font-weight="600" fill="#9d174d">Actuators</text>
+    <text x="130" y="200" text-anchor="middle" font-size="9" fill="#9d174d">10 outputs</text>
+
+    <!-- Time constants -->
+    <text x="90" y="235" text-anchor="middle" font-size="9" fill="#64748b">Time Constants:</text>
+    <text x="90" y="248" text-anchor="middle" font-size="8" fill="#64748b">L0: 1s | L1: 10s | L2: 1min</text>
+
+    <!-- Metrics -->
+    <text x="90" y="268" text-anchor="middle" font-size="9" fill="#64748b">Peers, Migration, Load</text>
+  </g>
+
+  <!-- Reward Computation -->
+  <g transform="translate(700, 380)">
+    <rect x="0" y="0" width="150" height="60" rx="8" fill="#f97316" filter="url(#shadow)"/>
+    <text x="75" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Reward</text>
+    <text x="75" y="38" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Computation</text>
+    <text x="75" y="52" text-anchor="middle" font-size="9" fill="white" opacity="0.9">lc_reward</text>
+  </g>
+
+  <!-- L2 to L1 arrows -->
+  <path d="M 400 125 L 140 150" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
+  <path d="M 450 125 L 350 150" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
+  <path d="M 500 125 L 560 150" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowhead)" stroke-dasharray="5,3"/>
+
+  <!-- Cross-silo signal arrows -->
+  <path d="M 230 300 L 260 300" stroke="#22c55e" stroke-width="2" fill="none" marker-end="url(#arrowheadBlue)"/>
+  <path d="M 260 310 L 230 310" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowheadGreen)"/>
+
+  <path d="M 440 300 L 470 300" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowheadPink)"/>
+  <path d="M 470 310 L 440 310" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowheadBlue)"/>
+
+  <path d="M 650 300 L 700 300" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+  <!-- Silos to Cross-Silo Coordinator -->
+  <path d="M 230 350 Q 400 500 700 340" stroke="#64748b" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+  <path d="M 440 350 Q 550 450 700 340" stroke="#64748b" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+
+  <!-- Legend -->
+  <g transform="translate(50, 470)">
+    <rect x="0" y="0" width="800" height="100" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e293b">Architecture Legend</text>
+
+    <!-- Time constant explanation -->
+    <g transform="translate(20, 35)">
+      <rect x="0" y="0" width="12" height="12" fill="#8b5cf6" rx="2"/>
+      <text x="18" y="10" font-size="10" fill="#1e293b">L2: Strategic (slowest) - tunes L1 hyperparameters</text>
+    </g>
+    <g transform="translate(20, 55)">
+      <rect x="0" y="0" width="12" height="12" fill="#60a5fa" rx="2"/>
+      <text x="18" y="10" font-size="10" fill="#1e293b">L1: Tactical (medium) - tunes L0 hyperparameters</text>
+    </g>
+    <g transform="translate(20, 75)">
+      <rect x="0" y="0" width="12" height="12" fill="#4ade80" rx="2"/>
+      <text x="18" y="10" font-size="10" fill="#1e293b">L0: Reactive (fastest) - TWEANN sensor→actuator mapping</text>
+    </g>
+
+    <!-- Signal types -->
+    <g transform="translate(380, 35)">
+      <line x1="0" y1="6" x2="30" y2="6" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+      <text x="38" y="10" font-size="10" fill="#1e293b">Cross-silo signals (pressure, diversity, etc.)</text>
+    </g>
+    <g transform="translate(380, 55)">
+      <line x1="0" y1="6" x2="30" y2="6" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowhead)"/>
+      <text x="38" y="10" font-size="10" fill="#1e293b">Hyperparameter adjustments (L2→L1→L0)</text>
+    </g>
+    <g transform="translate(380, 75)">
+      <rect x="0" y="0" width="12" height="12" fill="#fbbf24" rx="2"/>
+      <text x="18" y="10" font-size="10" fill="#1e293b">Cooperative coordination (signal routing, rewards)</text>
+    </g>
+  </g>
+</svg>

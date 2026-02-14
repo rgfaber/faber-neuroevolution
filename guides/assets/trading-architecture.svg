@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 230" width="550" height="230">
+  <!-- Background -->
+  <rect width="550" height="230" fill="#f7fafc" rx="8"/>
+
+  <!-- Trading System container -->
+  <rect x="20" y="20" width="510" height="190" rx="8" fill="#edf2f7" stroke="#a0aec0" stroke-width="2"/>
+  <text x="275" y="45" text-anchor="middle" fill="#2d3748" font-family="sans-serif" font-size="14" font-weight="bold">Trading System</text>
+
+  <!-- Market Data -->
+  <rect x="50" y="70" width="100" height="50" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="100" y="100" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Market Data</text>
+
+  <!-- Arrow -->
+  <line x1="150" y1="95" x2="185" y2="95" stroke="#718096" stroke-width="2"/>
+  <polygon points="185 95, 175 90, 175 100" fill="#718096"/>
+
+  <!-- Strategy -->
+  <rect x="195" y="70" width="120" height="50" rx="6" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="255" y="92" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Strategy</text>
+  <text x="255" y="108" text-anchor="middle" fill="#e9d8fd" font-family="sans-serif" font-size="9">(evolved)</text>
+
+  <!-- Arrow -->
+  <line x1="315" y1="95" x2="350" y2="95" stroke="#718096" stroke-width="2"/>
+  <polygon points="350 95, 340 90, 340 100" fill="#718096"/>
+
+  <!-- Order Manager -->
+  <rect x="360" y="70" width="110" height="50" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="415" y="100" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Order Manager</text>
+
+  <!-- Arrow down from Strategy -->
+  <line x1="255" y1="120" x2="255" y2="145" stroke="#718096" stroke-width="2"/>
+  <polygon points="255 145, 250 135, 260 135" fill="#718096"/>
+
+  <!-- Risk Manager -->
+  <rect x="170" y="150" width="170" height="45" rx="6" fill="#fc8181" stroke="#c53030" stroke-width="2"/>
+  <text x="255" y="170" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10" font-weight="bold">Risk Manager</text>
+  <text x="255" y="185" text-anchor="middle" fill="#fff5f5" font-family="sans-serif" font-size="8">(rule-based)</text>
+
+  <!-- Risk labels -->
+  <text x="365" y="165" fill="#718096" font-family="sans-serif" font-size="8">Position limits</text>
+  <text x="365" y="180" fill="#718096" font-family="sans-serif" font-size="8">Drawdown limits</text>
+  <line x1="340" y1="172" x2="360" y2="168" stroke="#c53030" stroke-width="1"/>
+  <line x1="340" y1="172" x2="360" y2="177" stroke="#c53030" stroke-width="1"/>
+</svg>

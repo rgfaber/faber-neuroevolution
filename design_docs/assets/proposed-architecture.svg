@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="700" height="500">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+    <linearGradient id="serverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="evaluatorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#48bb78;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#38a169;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="uiGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#805ad5;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="500" fill="#f7fafc" rx="8"/>
+
+  <!-- Title -->
+  <text x="350" y="20" text-anchor="middle" fill="#2d3748" font-family="sans-serif" font-size="14" font-weight="bold">Proposed Architecture: Message-Passing + PubSub</text>
+
+  <!-- neuroevolution_server box -->
+  <rect x="30" y="40" width="640" height="130" rx="8" fill="url(#serverGrad)" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="350" y="65" text-anchor="middle" fill="white" font-family="monospace" font-size="13" font-weight="bold">neuroevolution_server</text>
+
+  <text x="50" y="90" fill="#bee3f8" font-family="monospace" font-size="10">evaluate_population(Population, Config)</text>
+  <line x1="65" y1="95" x2="65" y2="108" stroke="#bee3f8" stroke-width="1"/>
+
+  <text x="70" y="120" fill="white" font-family="monospace" font-size="9">PUBLISH: {evaluate_request, RequestId, Individual, Options}</text>
+  <text x="70" y="135" fill="#90cdf4" font-family="monospace" font-size="9">to topic: "neuro.{realm}.evaluate"</text>
+  <line x1="65" y1="140" x2="65" y2="153" stroke="#bee3f8" stroke-width="1"/>
+
+  <text x="50" y="165" fill="#bee3f8" font-family="monospace" font-size="10">PUBLISH: {generation_complete, GenStats} to "neuro.{realm}.events"</text>
+
+  <!-- Message flow indicator -->
+  <rect x="30" y="175" width="640" height="25" rx="4" fill="#edf2f7"/>
+  <text x="350" y="192" text-anchor="middle" fill="#718096" font-family="sans-serif" font-size="10" font-style="italic">(messages flow through PubSub / Macula DHT)</text>
+
+  <!-- Evaluator Pool box -->
+  <rect x="30" y="210" width="640" height="120" rx="8" fill="url(#evaluatorGrad)" stroke="#276749" stroke-width="2"/>
+  <text x="350" y="235" text-anchor="middle" fill="white" font-family="monospace" font-size="13" font-weight="bold">EVALUATOR POOL (any node)</text>
+
+  <text x="50" y="260" fill="#c6f6d5" font-family="monospace" font-size="10">SUBSCRIBE: "neuro.{realm}.evaluate"</text>
+  <line x1="65" y1="265" x2="65" y2="278" stroke="#c6f6d5" stroke-width="1"/>
+
+  <text x="70" y="290" fill="white" font-family="monospace" font-size="9">receive: {evaluate_request, RequestId, Individual, Options}</text>
+  <line x1="65" y1="295" x2="65" y2="308" stroke="#c6f6d5" stroke-width="1"/>
+
+  <text x="50" y="320" fill="#c6f6d5" font-family="monospace" font-size="10">run evaluation (physics, game, etc.) -> PUBLISH: {evaluate_response, ...}</text>
+
+  <!-- UI / Application box -->
+  <rect x="30" y="345" width="640" height="100" rx="8" fill="url(#uiGrad)" stroke="#6b46c1" stroke-width="2"/>
+  <text x="350" y="370" text-anchor="middle" fill="white" font-family="monospace" font-size="13" font-weight="bold">UI / APPLICATION (any node)</text>
+
+  <text x="50" y="395" fill="#e9d8fd" font-family="monospace" font-size="10">SUBSCRIBE: "neuro.{realm}.events"</text>
+  <line x1="65" y1="400" x2="65" y2="413" stroke="#e9d8fd" stroke-width="1"/>
+
+  <text x="70" y="425" fill="white" font-family="monospace" font-size="9">receive: {generation_complete, GenStats} -> update UI, store history</text>
+
+  <!-- Arrows between boxes -->
+  <line x1="350" y1="170" x2="350" y2="205" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="350" y1="330" x2="350" y2="340" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Legend -->
+  <rect x="540" y="455" width="150" height="35" rx="4" fill="#edf2f7" stroke="#cbd5e0"/>
+  <text x="615" y="475" text-anchor="middle" fill="#4a5568" font-family="sans-serif" font-size="10">Distributed evaluation</text>
+</svg>

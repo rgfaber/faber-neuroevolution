@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320">
+  <defs>
+    <marker id="arrow2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f6e05e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#ecc94b;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="300" y="30" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Subsequent Generations: Archive Populated</text>
+
+  <!-- Archive box (populated) -->
+  <rect x="30" y="50" width="250" height="90" rx="6" fill="#fffaf0" stroke="#d69e2e" stroke-width="2"/>
+  <text x="50" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#744210">Champion Archive:</text>
+
+  <!-- Champion entries -->
+  <g transform="translate(50, 85)">
+    <rect x="0" y="0" width="100" height="25" rx="4" fill="url(#goldGrad)" stroke="#d69e2e" stroke-width="1"/>
+    <text x="50" y="17" font-family="monospace" font-size="10" fill="#744210" text-anchor="middle">Champ_1 (0.95)</text>
+  </g>
+  <g transform="translate(160, 85)">
+    <rect x="0" y="0" width="100" height="25" rx="4" fill="#fef3c7" stroke="#d69e2e" stroke-width="1"/>
+    <text x="50" y="17" font-family="monospace" font-size="10" fill="#744210" text-anchor="middle">Champ_2 (0.87)</text>
+  </g>
+  <text x="155" y="130" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#a0aec0" text-anchor="middle">... more champions</text>
+
+  <!-- Network being evaluated -->
+  <rect x="320" y="50" width="250" height="90" rx="6" fill="#ebf8ff" stroke="#4299e1" stroke-width="1.5"/>
+  <text x="340" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#2b6cb0">Evaluating:</text>
+  <g transform="translate(380, 85)">
+    <rect x="0" y="0" width="80" height="35" rx="6" fill="#4299e1" stroke="#3182ce" stroke-width="2"/>
+    <text x="40" y="22" font-family="monospace" font-size="12" fill="white" text-anchor="middle">Net_X</text>
+  </g>
+
+  <!-- Decision flow -->
+  <rect x="30" y="160" width="540" height="70" rx="6" fill="#f7fafc" stroke="#a0aec0" stroke-width="1"/>
+  <text x="50" y="185" font-family="monospace" font-size="10" fill="#718096">get_opponent(Manager, Batch)</text>
+  <text x="50" y="205" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#48bb78">Archive has opponents?</text>
+  <text x="200" y="205" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#38a169">YES</text>
+  <text x="250" y="205" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#718096">Weighted sample by fitness</text>
+  <text x="450" y="205" font-family="monospace" font-size="10" fill="#d69e2e" font-weight="600">Champ_1</text>
+
+  <!-- Weighted selection visual -->
+  <rect x="50" y="215" width="100" height="8" rx="2" fill="#ecc94b"/>
+  <rect x="150" y="215" width="60" height="8" rx="2" fill="#f6e05e"/>
+  <rect x="210" y="215" width="30" height="8" rx="2" fill="#fef3c7"/>
+  <text x="145" y="215" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#a0aec0" text-anchor="middle">higher fitness = higher probability</text>
+
+  <!-- Result box -->
+  <rect x="150" y="260" width="300" height="50" rx="8" fill="#48bb78" stroke="#38a169" stroke-width="2"/>
+  <text x="300" y="285" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">Result: Net_X vs Champ_1</text>
+  <text x="300" y="302" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#c6f6d5" text-anchor="middle">(compete against past champion)</text>
+
+  <!-- Arrows -->
+  <path d="M 100 140 L 100 160" stroke="#d69e2e" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <path d="M 420 140 L 420 160" stroke="#4299e1" stroke-width="1.5" marker-end="url(#arrow2)"/>
+  <path d="M 300 230 L 300 260" stroke="#48bb78" stroke-width="2" marker-end="url(#arrow2)"/>
+</svg>

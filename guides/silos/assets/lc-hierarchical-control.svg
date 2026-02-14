@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+  <defs>
+    <linearGradient id="l2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="l1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="l0Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#0891b2"/>
+    </linearGradient>
+    <linearGradient id="targetGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="rewardGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <filter id="shadowHC" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowDown" markerWidth="10" markerHeight="7" refX="5" refY="0" orient="auto">
+      <polygon points="0 0, 10 0, 5 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrowUp" markerWidth="10" markerHeight="7" refX="5" refY="7" orient="auto">
+      <polygon points="0 7, 10 7, 5 0" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrowRight" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="700" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Hierarchical Control: L2 -> L1 -> L0 Cascade</text>
+  <text x="450" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">Chained LTC TWEANN Controllers with Different Time Constants</text>
+
+  <!-- Time scale indicator -->
+  <rect x="60" y="80" width="20" height="520" rx="5" fill="#e2e8f0"/>
+  <text x="40" y="90" font-family="Arial, sans-serif" font-size="9" fill="#64748b" text-anchor="end">Slow</text>
+  <text x="40" y="590" font-family="Arial, sans-serif" font-size="9" fill="#64748b" text-anchor="end">Fast</text>
+  <text x="70" y="340" font-family="Arial, sans-serif" font-size="10" fill="#64748b" transform="rotate(-90 70 340)">Time Scale</text>
+
+  <!-- ========== L2 STRATEGIC LAYER ========== -->
+  <rect x="110" y="85" width="740" height="145" rx="12" fill="#eef2ff" stroke="#6366f1" stroke-width="2" filter="url(#shadowHC)"/>
+  <rect x="110" y="85" width="740" height="35" rx="12" fill="url(#l2Grad)"/>
+  <rect x="110" y="110" width="740" height="10" fill="url(#l2Grad)"/>
+  <text x="130" y="108" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">L2 STRATEGIC</text>
+  <text x="750" y="108" font-family="monospace" font-size="11" fill="#c7d2fe">tau = 100.0</text>
+
+  <!-- L2 Description -->
+  <text x="130" y="145" font-family="Arial, sans-serif" font-size="11" fill="#4338ca">Time constant: Many runs | Learns optimal communication policies for task classes</text>
+
+  <!-- L2 Inputs -->
+  <rect x="130" y="160" width="200" height="55" rx="6" fill="white" stroke="#6366f1" stroke-width="1"/>
+  <text x="230" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#4338ca">L2 Inputs (evolution_metrics)</text>
+  <text x="140" y="200" font-family="monospace" font-size="8" fill="#4f46e5">best_fitness, improvement, variance</text>
+  <text x="140" y="212" font-family="monospace" font-size="8" fill="#4f46e5">stagnation, diversity, species</text>
+
+  <!-- L2 TWEANN -->
+  <rect x="370" y="155" width="120" height="60" rx="8" fill="url(#l2Grad)" filter="url(#shadowHC)"/>
+  <text x="430" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="430" y="200" text-anchor="middle" font-family="monospace" font-size="9" fill="#c7d2fe">[8,4] hidden</text>
+
+  <!-- L2 Outputs (L2 Guidance) -->
+  <rect x="530" y="145" width="300" height="70" rx="6" fill="white" stroke="#6366f1" stroke-width="1"/>
+  <text x="680" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#4338ca">L2 Outputs (l2_guidance record)</text>
+  <text x="540" y="180" font-family="monospace" font-size="8" fill="#4f46e5">aggression_factor [0-2]       topology_aggression [1-3]</text>
+  <text x="540" y="192" font-family="monospace" font-size="8" fill="#4f46e5">exploration_step [0.05-0.5]   exploitation_weight [0.2-0.8]</text>
+  <text x="540" y="204" font-family="monospace" font-size="8" fill="#4f46e5">stagnation_sensitivity        memory_thresholds, cpu_thresholds</text>
+
+  <!-- Arrow L2 Inputs -> TWEANN -->
+  <path d="M330 185 L370 185" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <!-- Arrow L2 TWEANN -> Outputs -->
+  <path d="M490 185 L530 185" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+  <!-- Arrow L2 -> L1 -->
+  <path d="M450 230 L450 255" stroke="#64748b" stroke-width="2" marker-end="url(#arrowDown)"/>
+  <text x="465" y="245" font-family="Arial, sans-serif" font-size="9" fill="#64748b">guidance</text>
+
+  <!-- ========== L1 TACTICAL LAYER ========== -->
+  <rect x="110" y="260" width="740" height="145" rx="12" fill="#faf5ff" stroke="#8b5cf6" stroke-width="2" filter="url(#shadowHC)"/>
+  <rect x="110" y="260" width="740" height="35" rx="12" fill="url(#l1Grad)"/>
+  <rect x="110" y="285" width="740" height="10" fill="url(#l1Grad)"/>
+  <text x="130" y="283" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">L1 TACTICAL</text>
+  <text x="750" y="283" font-family="monospace" font-size="11" fill="#ddd6fe">tau = 50.0</text>
+
+  <!-- L1 Description -->
+  <text x="130" y="320" font-family="Arial, sans-serif" font-size="11" fill="#6b21a8">Time constant: Per generation | Adapt parameters based on L2 guidance + sensors</text>
+
+  <!-- L1 Inputs -->
+  <rect x="130" y="335" width="200" height="55" rx="6" fill="white" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="230" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#6b21a8">L1 Inputs (+ L2 outputs)</text>
+  <text x="140" y="373" font-family="monospace" font-size="8" fill="#7c3aed">L0 performance metrics</text>
+  <text x="140" y="385" font-family="monospace" font-size="8" fill="#7c3aed">velocity_state, cross_silo signals</text>
+
+  <!-- L1 TWEANN/Rule -->
+  <rect x="370" y="330" width="120" height="60" rx="8" fill="url(#l1Grad)" filter="url(#shadowHC)"/>
+  <text x="430" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="430" y="375" text-anchor="middle" font-family="monospace" font-size="9" fill="#ddd6fe">[6,4] hidden</text>
+
+  <!-- L1 Outputs -->
+  <rect x="530" y="320" width="300" height="70" rx="6" fill="white" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="680" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#6b21a8">L1 Outputs (L0 hyperparameters)</text>
+  <text x="540" y="355" font-family="monospace" font-size="8" fill="#7c3aed">exploration_boost [0-1]    exploitation_boost [0-1]</text>
+  <text x="540" y="367" font-family="monospace" font-size="8" fill="#7c3aed">topology_mutations_boost   concurrency_scale</text>
+  <text x="540" y="379" font-family="monospace" font-size="8" fill="#7c3aed">intervention_level [warning|intervention|critical]</text>
+
+  <!-- Arrow L1 Inputs -> TWEANN -->
+  <path d="M330 360 L370 360" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <!-- Arrow L1 TWEANN -> Outputs -->
+  <path d="M490 360 L530 360" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+  <!-- Arrow L1 -> L0 -->
+  <path d="M450 405 L450 430" stroke="#64748b" stroke-width="2" marker-end="url(#arrowDown)"/>
+  <text x="465" y="420" font-family="Arial, sans-serif" font-size="9" fill="#64748b">hyperparams</text>
+
+  <!-- ========== L0 REACTIVE LAYER ========== -->
+  <rect x="110" y="435" width="740" height="145" rx="12" fill="#ecfeff" stroke="#06b6d4" stroke-width="2" filter="url(#shadowHC)"/>
+  <rect x="110" y="435" width="740" height="35" rx="12" fill="url(#l0Grad)"/>
+  <rect x="110" y="460" width="740" height="10" fill="url(#l0Grad)"/>
+  <text x="130" y="458" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">L0 REACTIVE</text>
+  <text x="750" y="458" font-family="monospace" font-size="11" fill="#a5f3fc">tau = 10.0</text>
+
+  <!-- L0 Description -->
+  <text x="130" y="495" font-family="Arial, sans-serif" font-size="11" fill="#0e7490">Time constant: Per operation | Real-time hyperparameter adjustment</text>
+
+  <!-- L0 Inputs -->
+  <rect x="130" y="510" width="200" height="55" rx="6" fill="white" stroke="#06b6d4" stroke-width="1"/>
+  <text x="230" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#0e7490">L0 Inputs (21 sensors)</text>
+  <text x="140" y="548" font-family="monospace" font-size="8" fill="#0891b2">fitness metrics, stagnation</text>
+  <text x="140" y="560" font-family="monospace" font-size="8" fill="#0891b2">+ emergent_metrics + L1 outputs</text>
+
+  <!-- L0 TWEANN -->
+  <rect x="370" y="505" width="120" height="60" rx="8" fill="url(#l0Grad)" filter="url(#shadowHC)"/>
+  <text x="430" y="530" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="430" y="550" text-anchor="middle" font-family="monospace" font-size="9" fill="#a5f3fc">[10,6] hidden</text>
+
+  <!-- L0 Outputs -->
+  <rect x="530" y="495" width="300" height="70" rx="6" fill="white" stroke="#06b6d4" stroke-width="1"/>
+  <text x="680" y="515" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#0e7490">L0 Outputs (lc_hyperparams)</text>
+  <text x="540" y="530" font-family="monospace" font-size="8" fill="#0891b2">mutation_rate [0.01-0.5]   mutation_strength [0.05-1]</text>
+  <text x="540" y="542" font-family="monospace" font-size="8" fill="#0891b2">selection_ratio [0.1-0.5]  add_node_rate [0-0.1]</text>
+  <text x="540" y="554" font-family="monospace" font-size="8" fill="#0891b2">add_connection_rate [0-0.2] complexity_penalty [0-0.5]</text>
+
+  <!-- Arrow L0 Inputs -> TWEANN -->
+  <path d="M330 535 L370 535" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRight)"/>
+  <!-- Arrow L0 TWEANN -> Outputs -->
+  <path d="M490 535 L530 535" stroke="#64748b" stroke-width="2" marker-end="url(#arrowRight)"/>
+
+  <!-- Arrow L0 -> Target Population -->
+  <path d="M450 580 L450 605" stroke="#64748b" stroke-width="2" marker-end="url(#arrowDown)"/>
+  <text x="465" y="595" font-family="Arial, sans-serif" font-size="9" fill="#64748b">apply</text>
+
+  <!-- Target Population -->
+  <rect x="300" y="610" width="300" height="50" rx="8" fill="url(#targetGrad)" filter="url(#shadowHC)"/>
+  <text x="450" y="635" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Target Population (Model Under Training)</text>
+  <text x="450" y="650" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#d1fae5">Evolving neural networks</text>
+
+  <!-- Reward feedback loop -->
+  <path d="M600 635 Q750 635 780 500 Q800 350 780 200 Q760 100 680 100 L550 100" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#arrowUp)"/>
+  <text x="800" y="350" font-family="Arial, sans-serif" font-size="10" fill="#f59e0b" transform="rotate(-90 800 350)">Reward Signal (lc_reward)</text>
+
+  <!-- Reward component box -->
+  <rect x="610" y="615" width="240" height="75" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1"/>
+  <text x="730" y="633" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#92400e">Reward Computation</text>
+  <text x="620" y="650" font-family="monospace" font-size="8" fill="#b45309">40% velocity + 20% efficiency</text>
+  <text x="620" y="662" font-family="monospace" font-size="8" fill="#b45309">20% convergence + 20% resources</text>
+  <text x="620" y="674" font-family="monospace" font-size="8" fill="#b45309">+ 10% global_health_bonus</text>
+
+  <!-- Legend -->
+  <rect x="110" y="670" width="15" height="15" rx="2" fill="url(#l2Grad)"/>
+  <text x="130" y="682" font-family="Arial, sans-serif" font-size="9" fill="#475569">L2 Strategic (tau=100)</text>
+  <rect x="240" y="670" width="15" height="15" rx="2" fill="url(#l1Grad)"/>
+  <text x="260" y="682" font-family="Arial, sans-serif" font-size="9" fill="#475569">L1 Tactical (tau=50)</text>
+  <rect x="370" y="670" width="15" height="15" rx="2" fill="url(#l0Grad)"/>
+  <text x="390" y="682" font-family="Arial, sans-serif" font-size="9" fill="#475569">L0 Reactive (tau=10)</text>
+  <rect x="500" y="670" width="15" height="15" rx="2" fill="url(#rewardGrad)"/>
+  <text x="520" y="682" font-family="Arial, sans-serif" font-size="9" fill="#475569">Reward Feedback</text>
+</svg>

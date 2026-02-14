@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="socialBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="socialHeaderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+    <filter id="shadowSocial" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowSocial" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Social Silo Architecture</text>
+
+  <!-- Main container -->
+  <rect x="50" y="60" width="700" height="520" rx="10" fill="white" stroke="#3b82f6" stroke-width="2" filter="url(#shadowSocial)"/>
+  <rect x="50" y="60" width="700" height="40" rx="10" fill="url(#socialHeaderGrad)"/>
+  <rect x="50" y="90" width="700" height="10" fill="url(#socialHeaderGrad)"/>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">SOCIAL SILO</text>
+
+  <!-- L2 Strategic Layer -->
+  <rect x="80" y="120" width="640" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="100" y="145" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e40af">L2 Strategic (social policy learning)</text>
+  <text x="100" y="163" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Learn optimal cooperation/competition balance for task domains | Time constant: many runs</text>
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Controls: cooperation_emphasis, coalition_stability, kin_recognition_level, reputation_sensitivity</text>
+
+  <!-- Arrow L2 to L1 -->
+  <path d="M400 190 L400 210" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSocial)"/>
+
+  <!-- L1 Tactical Layer -->
+  <rect x="80" y="215" width="640" height="90" rx="8" fill="#bfdbfe" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="100" y="240" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e40af">L1 Tactical (social dynamics)</text>
+  <text x="100" y="260" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Adapt cooperation rewards and coalition incentives based on performance | Time constant: per generation</text>
+  <text x="100" y="280" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Track reputation distribution, coalition stability, kin helping rate</text>
+
+  <!-- L1 Components -->
+  <rect x="460" y="225" width="110" height="30" rx="4" fill="#93c5fd" opacity="0.3" stroke="#3b82f6"/>
+  <text x="515" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1e40af">reputations{}</text>
+  <rect x="580" y="225" width="120" height="30" rx="4" fill="#93c5fd" opacity="0.3" stroke="#3b82f6"/>
+  <text x="640" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1e40af">coalitions[]</text>
+  <rect x="460" y="265" width="240" height="30" rx="4" fill="#93c5fd" opacity="0.3" stroke="#3b82f6"/>
+  <text x="580" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1e40af">interactions[], kin_matrix</text>
+
+  <!-- Arrow L1 to L0 -->
+  <path d="M400 305 L400 325" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSocial)"/>
+
+  <!-- L0 Reactive Layer -->
+  <rect x="80" y="330" width="640" height="230" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="100" y="355" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#1e40af">L0 Reactive (social events)</text>
+  <text x="100" y="375" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Track reputation, process interactions, manage coalitions | Time constant: per interaction</text>
+
+  <!-- Sensors Box -->
+  <rect x="100" y="390" width="250" height="150" rx="6" fill="white" stroke="#93c5fd" stroke-width="1"/>
+  <text x="225" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e40af">SENSORS (12 inputs)</text>
+  <text x="110" y="430" font-family="monospace" font-size="8" fill="#1e40af">mean_reputation, reputation_variance</text>
+  <text x="110" y="445" font-family="monospace" font-size="8" fill="#1e40af">reputation_trend</text>
+  <text x="110" y="460" font-family="monospace" font-size="8" fill="#1e40af">coalition_count, avg_coalition_size</text>
+  <text x="110" y="475" font-family="monospace" font-size="8" fill="#1e40af">mean_relatedness, kin_help_rate</text>
+  <text x="110" y="490" font-family="monospace" font-size="8" fill="#1e40af">cooperation_rate, defection_rate</text>
+  <text x="110" y="505" font-family="monospace" font-size="8" fill="#1e40af">hierarchy_steepness, network_density</text>
+  <text x="110" y="520" font-family="monospace" font-size="8" fill="#1e40af">interaction_frequency</text>
+
+  <!-- TWEANN Box -->
+  <rect x="370" y="430" width="100" height="60" rx="6" fill="url(#socialBlue)" stroke="#1e40af" stroke-width="1"/>
+  <text x="420" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="420" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">LTC Network</text>
+
+  <!-- Arrows to/from TWEANN -->
+  <path d="M350 460 L370 460" stroke="#93c5fd" stroke-width="2" marker-end="url(#arrowSocial)"/>
+  <path d="M470 460 L490 460" stroke="#93c5fd" stroke-width="2" marker-end="url(#arrowSocial)"/>
+
+  <!-- Actuators Box -->
+  <rect x="490" y="390" width="210" height="150" rx="6" fill="white" stroke="#93c5fd" stroke-width="1"/>
+  <text x="595" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e40af">ACTUATORS (8 outputs)</text>
+  <text x="500" y="430" font-family="monospace" font-size="8" fill="#1e40af">reputation_decay_rate</text>
+  <text x="500" y="445" font-family="monospace" font-size="8" fill="#1e40af">reputation_boost_factor</text>
+  <text x="500" y="460" font-family="monospace" font-size="8" fill="#1e40af">coalition_formation_incentive</text>
+  <text x="500" y="475" font-family="monospace" font-size="8" fill="#1e40af">kin_selection_bonus</text>
+  <text x="500" y="490" font-family="monospace" font-size="8" fill="#1e40af">kin_recognition_threshold</text>
+  <text x="500" y="505" font-family="monospace" font-size="8" fill="#1e40af">cooperation_reward, defection_penalty</text>
+  <text x="500" y="520" font-family="monospace" font-size="8" fill="#1e40af">sucker_penalty</text>
+
+  <!-- Legend -->
+  <rect x="60" y="565" width="15" height="15" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="80" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L2 Strategic</text>
+  <rect x="170" y="565" width="15" height="15" fill="#bfdbfe" stroke="#60a5fa"/>
+  <text x="190" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L1 Tactical</text>
+  <rect x="280" y="565" width="15" height="15" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="300" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L0 Reactive</text>
+  <text x="420" y="577" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#64748b">Time constant: per interaction (reputation updates)</text>
+</svg>

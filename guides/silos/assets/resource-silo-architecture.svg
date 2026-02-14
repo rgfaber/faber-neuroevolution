@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550">
+  <defs>
+    <linearGradient id="resourcePurple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9b8afb"/>
+      <stop offset="100%" style="stop-color:#7B68EE"/>
+    </linearGradient>
+    <linearGradient id="headerPurple" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6d5fd0"/>
+      <stop offset="100%" style="stop-color:#5a4eb8"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="550" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Resource Silo Architecture</text>
+
+  <!-- Main container -->
+  <rect x="50" y="55" width="700" height="475" rx="10" fill="white" stroke="#7B68EE" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="55" width="700" height="40" rx="10" fill="url(#headerPurple)"/>
+  <rect x="50" y="85" width="700" height="10" fill="url(#headerPurple)"/>
+  <text x="400" y="83" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">RESOURCE SILO</text>
+
+  <!-- L2 Predictive Layer -->
+  <rect x="80" y="110" width="640" height="70" rx="8" fill="#fae8ff" stroke="#d946ef" stroke-width="1.5"/>
+  <text x="100" y="135" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#a21caf">L2 Predictive (future)</text>
+  <text x="100" y="155" font-family="Arial, sans-serif" font-size="10" fill="#86198f">Learn resource patterns, anticipate needs | Time constant: 5 min</text>
+  <text x="100" y="170" font-family="Arial, sans-serif" font-size="10" fill="#86198f">Controls: pressure_scale_factor, min_scale_factor, pressure_change_threshold</text>
+
+  <!-- Arrow L2 to L1 -->
+  <path d="M400 180 L400 195" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- L1 Reactive Layer -->
+  <rect x="80" y="200" width="640" height="90" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="100" y="225" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#b45309">L1 Reactive (resource_silo)</text>
+  <text x="100" y="245" font-family="Arial, sans-serif" font-size="10" fill="#78350f">Adjust concurrency based on current pressure | Time constant: 5 updates</text>
+  <text x="100" y="265" font-family="Arial, sans-serif" font-size="10" fill="#78350f">Pressure history tracking | Adaptive throttling | Event emission</text>
+
+  <!-- L1 Components -->
+  <rect x="450" y="210" width="130" height="30" rx="4" fill="#fbbf24" opacity="0.3" stroke="#f59e0b"/>
+  <text x="515" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">pressure_history[]</text>
+  <rect x="590" y="210" width="110" height="30" rx="4" fill="#fbbf24" opacity="0.3" stroke="#f59e0b"/>
+  <text x="645" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">current_concurrency</text>
+  <rect x="450" y="250" width="250" height="30" rx="4" fill="#fbbf24" opacity="0.3" stroke="#f59e0b"/>
+  <text x="575" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">action: continue | throttle | pause</text>
+
+  <!-- Arrow L1 to L0 -->
+  <path d="M400 290 L400 310" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- L0 Emergency Layer -->
+  <rect x="80" y="315" width="640" height="195" rx="8" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="100" y="340" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#be185d">L0 Emergency (ALWAYS ACTIVE)</text>
+  <text x="100" y="358" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Hard limits, GC triggers, pause if critical | Enforces safety bounds</text>
+
+  <!-- Sensors Box -->
+  <rect x="100" y="370" width="250" height="120" rx="6" fill="white" stroke="#ec4899" stroke-width="1"/>
+  <text x="225" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#be185d">SENSORS (13 inputs)</text>
+  <text x="110" y="410" font-family="monospace" font-size="8" fill="#be185d">memory_pressure, cpu_pressure</text>
+  <text x="110" y="425" font-family="monospace" font-size="8" fill="#be185d">process_count_ratio, gc_rate</text>
+  <text x="110" y="440" font-family="monospace" font-size="8" fill="#be185d">scheduler_utilization</text>
+  <text x="110" y="455" font-family="monospace" font-size="8" fill="#be185d">io_pending_ratio, run_queue_depth</text>
+  <text x="110" y="470" font-family="monospace" font-size="8" fill="#be185d">message_queue_pressure, ...</text>
+
+  <!-- resource_monitor Box -->
+  <rect x="370" y="380" width="100" height="50" rx="6" fill="url(#resourcePurple)" stroke="#6d28d9" stroke-width="1"/>
+  <text x="420" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">resource_</text>
+  <text x="420" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="white">monitor</text>
+
+  <!-- Arrows to/from monitor -->
+  <path d="M350 420 L370 420" stroke="#ec4899" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M470 420 L490 420" stroke="#ec4899" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Actuators Box -->
+  <rect x="490" y="370" width="210" height="120" rx="6" fill="white" stroke="#ec4899" stroke-width="1"/>
+  <text x="595" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#be185d">ACTUATORS (8 outputs)</text>
+  <text x="500" y="410" font-family="monospace" font-size="8" fill="#be185d">max_concurrent_evals</text>
+  <text x="500" y="425" font-family="monospace" font-size="8" fill="#be185d">gc_trigger_threshold</text>
+  <text x="500" y="440" font-family="monospace" font-size="8" fill="#be185d">pause_signal (0/1)</text>
+  <text x="500" y="455" font-family="monospace" font-size="8" fill="#be185d">throttle_factor</text>
+  <text x="500" y="470" font-family="monospace" font-size="8" fill="#be185d">batch_size, priority_boost, ...</text>
+
+  <!-- Legend -->
+  <rect x="60" y="520" width="15" height="15" fill="#fae8ff" stroke="#d946ef"/>
+  <text x="80" y="532" font-family="Arial, sans-serif" font-size="10" fill="#475569">L2 Predictive</text>
+  <rect x="180" y="520" width="15" height="15" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="200" y="532" font-family="Arial, sans-serif" font-size="10" fill="#475569">L1 Reactive</text>
+  <rect x="300" y="520" width="15" height="15" fill="#fce7f3" stroke="#ec4899"/>
+  <text x="320" y="532" font-family="Arial, sans-serif" font-size="10" fill="#475569">L0 Emergency</text>
+  <text x="450" y="532" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#64748b">Time constant: 5 (fast response for stability)</text>
+</svg>

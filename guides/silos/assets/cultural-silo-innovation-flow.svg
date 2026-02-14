@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 480">
+  <defs>
+    <linearGradient id="innovGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="tradGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="imitGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#34d399"/>
+      <stop offset="100%" style="stop-color:#10b981"/>
+    </linearGradient>
+    <marker id="innovArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <marker id="tradArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6"/>
+    </marker>
+    <marker id="imitArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <filter id="shadowInnov" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="850" height="480" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="425" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Cultural Innovation &amp; Tradition Flow</text>
+
+  <!-- Innovation Discovery Box -->
+  <rect x="40" y="60" width="200" height="150" rx="10" fill="white" stroke="#f59e0b" stroke-width="2" filter="url(#shadowInnov)"/>
+  <rect x="40" y="60" width="200" height="30" rx="10" fill="url(#innovGrad)"/>
+  <rect x="40" y="80" width="200" height="10" fill="url(#innovGrad)"/>
+  <text x="140" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Innovation Discovery</text>
+
+  <text x="55" y="115" font-family="Arial, sans-serif" font-size="10" fill="#b45309">Novel behavior detected</text>
+  <text x="55" y="135" font-family="monospace" font-size="9" fill="#92400e">novelty_score > threshold</text>
+  <text x="55" y="155" font-family="monospace" font-size="9" fill="#92400e">fitness_advantage > 0</text>
+  <text x="55" y="180" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#b45309">Result:</text>
+  <text x="55" y="195" font-family="monospace" font-size="9" fill="#92400e">innovation_emerged event</text>
+
+  <!-- Spread Box -->
+  <rect x="280" y="60" width="200" height="150" rx="10" fill="white" stroke="#10b981" stroke-width="2" filter="url(#shadowInnov)"/>
+  <rect x="280" y="60" width="200" height="30" rx="10" fill="url(#imitGrad)"/>
+  <rect x="280" y="80" width="200" height="10" fill="url(#imitGrad)"/>
+  <text x="380" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Imitation &amp; Spread</text>
+
+  <text x="295" y="115" font-family="Arial, sans-serif" font-size="10" fill="#065f46">Observers copy behavior</text>
+  <text x="295" y="135" font-family="monospace" font-size="9" fill="#047857">success = fidelity * capacity</text>
+  <text x="295" y="155" font-family="monospace" font-size="9" fill="#047857">adopters += 1</text>
+  <text x="295" y="180" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#065f46">Result:</text>
+  <text x="295" y="195" font-family="monospace" font-size="9" fill="#047857">skill_imitated event</text>
+
+  <!-- Tradition Formation Box -->
+  <rect x="520" y="60" width="200" height="150" rx="10" fill="white" stroke="#8b5cf6" stroke-width="2" filter="url(#shadowInnov)"/>
+  <rect x="520" y="60" width="200" height="30" rx="10" fill="url(#tradGrad)"/>
+  <rect x="520" y="80" width="200" height="10" fill="url(#tradGrad)"/>
+  <text x="620" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Tradition Formation</text>
+
+  <text x="535" y="115" font-family="Arial, sans-serif" font-size="10" fill="#5b21b6">Prevalence crosses threshold</text>
+  <text x="535" y="135" font-family="monospace" font-size="9" fill="#7c3aed">prevalence >= 0.5</text>
+  <text x="535" y="155" font-family="monospace" font-size="9" fill="#7c3aed">status = established</text>
+  <text x="535" y="180" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#5b21b6">Result:</text>
+  <text x="535" y="195" font-family="monospace" font-size="9" fill="#7c3aed">tradition_established event</text>
+
+  <!-- Arrows between stages -->
+  <path d="M240 135 L270 135" stroke="#f59e0b" stroke-width="2" marker-end="url(#innovArrow)"/>
+  <path d="M480 135 L510 135" stroke="#10b981" stroke-width="2" marker-end="url(#tradArrow)"/>
+
+  <!-- Cumulative Culture Box -->
+  <rect x="40" y="240" width="680" height="100" rx="10" fill="white" stroke="#fb923c" stroke-width="2" filter="url(#shadowInnov)"/>
+  <rect x="40" y="240" width="680" height="30" rx="10" fill="#fb923c"/>
+  <rect x="40" y="260" width="680" height="10" fill="#fb923c"/>
+  <text x="380" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Cumulative Culture (Cultural Ratchet)</text>
+
+  <!-- Innovation chain visualization -->
+  <circle cx="100" cy="300" r="20" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="100" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">Base</text>
+
+  <path d="M120 300 L160 300" stroke="#f59e0b" stroke-width="2" marker-end="url(#innovArrow)"/>
+
+  <circle cx="190" cy="300" r="20" fill="#fed7aa" stroke="#f59e0b" stroke-width="2"/>
+  <text x="190" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">L1</text>
+
+  <path d="M210 300 L250 300" stroke="#f59e0b" stroke-width="2" marker-end="url(#innovArrow)"/>
+
+  <circle cx="280" cy="300" r="20" fill="#fdba74" stroke="#f59e0b" stroke-width="2"/>
+  <text x="280" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">L2</text>
+
+  <path d="M300 300 L340 300" stroke="#f59e0b" stroke-width="2" marker-end="url(#innovArrow)"/>
+
+  <circle cx="370" cy="300" r="20" fill="#fb923c" stroke="#ea580c" stroke-width="2"/>
+  <text x="370" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">L3</text>
+
+  <text x="450" y="295" font-family="Arial, sans-serif" font-size="10" fill="#92400e">Innovations build on previous innovations</text>
+  <text x="450" y="315" font-family="monospace" font-size="9" fill="#c2410c">depth=3: Tool → Improved Tool → Complex Tool → Advanced Tool</text>
+
+  <!-- Tradition Lifecycle Box -->
+  <rect x="40" y="360" width="770" height="100" rx="8" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="425" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Tradition Lifecycle</text>
+
+  <!-- Timeline -->
+  <line x1="80" y1="430" x2="760" y2="430" stroke="#94a3b8" stroke-width="2"/>
+
+  <!-- Emerging -->
+  <circle cx="140" cy="430" r="8" fill="#86efac"/>
+  <text x="140" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#166534">Emerging</text>
+  <text x="140" y="450" text-anchor="middle" font-family="monospace" font-size="8" fill="#64748b">prevalence &lt; 50%</text>
+
+  <!-- Established -->
+  <circle cx="320" cy="430" r="8" fill="#8b5cf6"/>
+  <text x="320" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#5b21b6">Established</text>
+  <text x="320" y="450" text-anchor="middle" font-family="monospace" font-size="8" fill="#64748b">prevalence >= 50%</text>
+
+  <!-- Peak -->
+  <circle cx="500" cy="430" r="8" fill="#f59e0b"/>
+  <text x="500" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">Peak</text>
+  <text x="500" y="450" text-anchor="middle" font-family="monospace" font-size="8" fill="#64748b">max practitioners</text>
+
+  <!-- Declining -->
+  <circle cx="600" cy="430" r="8" fill="#f87171"/>
+  <text x="600" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#dc2626">Declining</text>
+  <text x="600" y="450" text-anchor="middle" font-family="monospace" font-size="8" fill="#64748b">strength decay</text>
+
+  <!-- Abandoned -->
+  <circle cx="700" cy="430" r="8" fill="#94a3b8"/>
+  <text x="700" y="415" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#475569">Abandoned</text>
+  <text x="700" y="450" text-anchor="middle" font-family="monospace" font-size="8" fill="#64748b">strength &lt; 10%</text>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 280">
+  <defs>
+    <marker id="arrHL" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="300" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Hierarchy Levels: Separation of Timescales</text>
+
+  <!-- L2 -->
+  <rect x="30" y="50" width="540" height="60" rx="8" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="50" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#6b46c1">L2: Strategic</text>
+  <text x="50" y="92" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#9f7aea">Multi-experiment patterns, domain transfer</text>
+  <rect x="400" y="60" width="150" height="35" rx="4" fill="#9f7aea"/>
+  <text x="475" y="82" font-family="monospace" font-size="10" fill="white" text-anchor="middle">τ = 1000+</text>
+
+  <!-- L1 -->
+  <rect x="30" y="120" width="540" height="60" rx="8" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="50" y="145" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#2b6cb0">L1: Tactical</text>
+  <text x="50" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4299e1">Per-generation hyperparameter adaptation</text>
+  <rect x="400" y="130" width="150" height="35" rx="4" fill="#4299e1"/>
+  <text x="475" y="152" font-family="monospace" font-size="10" fill="white" text-anchor="middle">τ = 50-100</text>
+
+  <!-- L0 -->
+  <rect x="30" y="190" width="540" height="60" rx="8" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="50" y="215" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#276749">L0: Reactive</text>
+  <text x="50" y="232" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#48bb78">Real-time agent actions, immediate response</text>
+  <rect x="400" y="200" width="150" height="35" rx="4" fill="#48bb78"/>
+  <text x="475" y="222" font-family="monospace" font-size="10" fill="white" text-anchor="middle">τ = 1-5</text>
+
+  <!-- Arrows -->
+  <path d="M 300 110 L 300 118" stroke="#4a5568" stroke-width="2" marker-end="url(#arrHL)"/>
+  <path d="M 300 180 L 300 188" stroke="#4a5568" stroke-width="2" marker-end="url(#arrHL)"/>
+
+  <!-- Principle -->
+  <rect x="130" y="255" width="340" height="20" rx="4" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="300" y="269" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#c05621" text-anchor="middle">Each level provides stability to the level below</text>
+</svg>

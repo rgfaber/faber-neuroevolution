@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="reservoirGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="readoutGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="inputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="bold" fill="#1e293b">Reservoir vs Readout Architecture</text>
+  <text x="400" y="50" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Two training strategies: Full Evolution vs Reservoir Computing</text>
+
+  <!-- ==================== FULL EVOLUTION (TOP) ==================== -->
+  <g transform="translate(0, 70)">
+    <text x="400" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Full Evolution (faber-neuroevolution default)</text>
+
+    <!-- Input nodes -->
+    <g transform="translate(80, 60)">
+      <circle cx="0" cy="0" r="18" fill="url(#inputGrad)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <circle cx="0" cy="50" r="18" fill="url(#inputGrad)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <circle cx="0" cy="100" r="18" fill="url(#inputGrad)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="-30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#2563eb">Input</text>
+    </g>
+
+    <!-- Hidden (All Evolvable) -->
+    <g transform="translate(230, 30)">
+      <rect x="-50" y="-15" width="100" height="160" rx="8" fill="#eef2ff" stroke="#818cf8" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#6366f1">Hidden</text>
+      <circle cx="0" cy="30" r="15" fill="url(#reservoirGrad)" stroke="#4f46e5" stroke-width="2"/>
+      <circle cx="0" cy="65" r="15" fill="url(#reservoirGrad)" stroke="#4f46e5" stroke-width="2"/>
+      <circle cx="0" cy="100" r="15" fill="url(#reservoirGrad)" stroke="#4f46e5" stroke-width="2"/>
+      <text x="0" y="130" text-anchor="middle" font-family="monospace" font-size="9" fill="#6366f1">EVOLVABLE</text>
+    </g>
+
+    <!-- Output (All Evolvable) -->
+    <g transform="translate(380, 50)">
+      <rect x="-50" y="-15" width="100" height="120" rx="8" fill="#ecfdf5" stroke="#34d399" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#059669">Output</text>
+      <circle cx="0" cy="35" r="15" fill="url(#readoutGrad)" stroke="#059669" stroke-width="2"/>
+      <circle cx="0" cy="75" r="15" fill="url(#readoutGrad)" stroke="#059669" stroke-width="2"/>
+      <text x="0" y="100" text-anchor="middle" font-family="monospace" font-size="9" fill="#059669">EVOLVABLE</text>
+    </g>
+
+    <!-- Connections -->
+    <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+      <line x1="98" y1="60" x2="180" y2="60"/>
+      <line x1="98" y1="110" x2="180" y2="95"/>
+      <line x1="98" y1="160" x2="180" y2="130"/>
+      <line x1="280" y1="60" x2="330" y2="85"/>
+      <line x1="280" y1="95" x2="330" y2="85"/>
+      <line x1="280" y1="95" x2="330" y2="125"/>
+      <line x1="280" y1="130" x2="330" y2="125"/>
+    </g>
+
+    <!-- Description -->
+    <g transform="translate(500, 40)">
+      <rect x="0" y="0" width="250" height="110" rx="6" fill="white" stroke="#e2e8f0" filter="url(#shadow)"/>
+      <text x="125" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#1e293b">Full Evolution</text>
+      <text x="10" y="40" font-family="system-ui, sans-serif" font-size="10" fill="#475569">+ All weights evolved</text>
+      <text x="10" y="55" font-family="system-ui, sans-serif" font-size="10" fill="#475569">+ Maximum expressiveness</text>
+      <text x="10" y="70" font-family="system-ui, sans-serif" font-size="10" fill="#475569">+ NEAT topology search</text>
+      <text x="10" y="90" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">- Slower training</text>
+      <text x="10" y="105" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">- More hyperparameters</text>
+    </g>
+  </g>
+
+  <!-- ==================== RESERVOIR MODE (BOTTOM) ==================== -->
+  <g transform="translate(0, 260)">
+    <text x="400" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Reservoir Mode (Fixed Hidden, Trainable Readout)</text>
+
+    <!-- Input nodes -->
+    <g transform="translate(80, 60)">
+      <circle cx="0" cy="0" r="18" fill="url(#inputGrad)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <circle cx="0" cy="50" r="18" fill="url(#inputGrad)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <circle cx="0" cy="100" r="18" fill="url(#inputGrad)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="-30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#2563eb">Input</text>
+    </g>
+
+    <!-- Reservoir (Fixed) -->
+    <g transform="translate(230, 30)">
+      <rect x="-50" y="-15" width="100" height="160" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,2" filter="url(#shadow)"/>
+      <text x="0" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#64748b">Reservoir</text>
+      <circle cx="0" cy="30" r="15" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+      <circle cx="0" cy="65" r="15" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+      <circle cx="0" cy="100" r="15" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
+      <text x="0" y="130" text-anchor="middle" font-family="monospace" font-size="9" fill="#94a3b8">FIXED</text>
+    </g>
+
+    <!-- Readout (Trainable) -->
+    <g transform="translate(380, 50)">
+      <rect x="-50" y="-15" width="100" height="120" rx="8" fill="#ecfdf5" stroke="#34d399" stroke-width="2" filter="url(#shadow)"/>
+      <text x="0" y="0" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#059669">Readout</text>
+      <circle cx="0" cy="35" r="15" fill="url(#readoutGrad)" stroke="#059669" stroke-width="2"/>
+      <circle cx="0" cy="75" r="15" fill="url(#readoutGrad)" stroke="#059669" stroke-width="2"/>
+      <text x="0" y="100" text-anchor="middle" font-family="monospace" font-size="9" fill="#059669">EVOLVABLE</text>
+    </g>
+
+    <!-- Connections -->
+    <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+      <line x1="98" y1="60" x2="180" y2="60"/>
+      <line x1="98" y1="110" x2="180" y2="95"/>
+      <line x1="98" y1="160" x2="180" y2="130"/>
+      <line x1="280" y1="60" x2="330" y2="85" stroke="#10b981" stroke-width="2"/>
+      <line x1="280" y1="95" x2="330" y2="85" stroke="#10b981" stroke-width="2"/>
+      <line x1="280" y1="95" x2="330" y2="125" stroke="#10b981" stroke-width="2"/>
+      <line x1="280" y1="130" x2="330" y2="125" stroke="#10b981" stroke-width="2"/>
+    </g>
+
+    <!-- Description -->
+    <g transform="translate(500, 40)">
+      <rect x="0" y="0" width="250" height="110" rx="6" fill="white" stroke="#e2e8f0" filter="url(#shadow)"/>
+      <text x="125" y="20" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#1e293b">Reservoir Mode</text>
+      <text x="10" y="40" font-family="system-ui, sans-serif" font-size="10" fill="#475569">+ Very fast training</text>
+      <text x="10" y="55" font-family="system-ui, sans-serif" font-size="10" fill="#475569">+ Low overfitting risk</text>
+      <text x="10" y="70" font-family="system-ui, sans-serif" font-size="10" fill="#475569">+ Proven theory (ESN)</text>
+      <text x="10" y="90" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">- Fixed dynamics</text>
+      <text x="10" y="105" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">- Limited expressiveness</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <text x="400" y="435" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Based on Lukoševičius &amp; Jaeger (2009) "Reservoir computing approaches to recurrent neural network training"</text>
+</svg>

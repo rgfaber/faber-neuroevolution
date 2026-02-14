@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="regGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+    <linearGradient id="regHeaderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#db2777"/>
+      <stop offset="100%" style="stop-color:#be185d"/>
+    </linearGradient>
+    <filter id="shadowReg" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowReg" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Regulatory Silo Architecture</text>
+
+  <!-- Main container -->
+  <rect x="50" y="60" width="700" height="520" rx="10" fill="white" stroke="#ec4899" stroke-width="2" filter="url(#shadowReg)"/>
+  <rect x="50" y="60" width="700" height="40" rx="10" fill="url(#regHeaderGrad)"/>
+  <rect x="50" y="90" width="700" height="10" fill="url(#regHeaderGrad)"/>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">REGULATORY SILO</text>
+
+  <!-- L2 Strategic Layer -->
+  <rect x="80" y="120" width="640" height="70" rx="8" fill="#fce7f3" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="100" y="145" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#9d174d">L2 Strategic (expression program learning)</text>
+  <text x="100" y="163" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Learn optimal gene expression programs for task classes | Time constant: many runs</text>
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Controls: context_profiles, module_combinations, epigenetic_strategies, dormancy_policies</text>
+
+  <!-- Arrow L2 to L1 -->
+  <path d="M400 190 L400 210" stroke="#64748b" stroke-width="2" marker-end="url(#arrowReg)"/>
+
+  <!-- L1 Tactical Layer -->
+  <rect x="80" y="215" width="640" height="90" rx="8" fill="#fbcfe8" stroke="#f472b6" stroke-width="1.5"/>
+  <text x="100" y="240" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#9d174d">L1 Tactical (context-aware expression)</text>
+  <text x="100" y="260" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Adjust expression based on current context | Time constant: per generation</text>
+  <text x="100" y="280" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Track active genes, module states, epigenetic marks, context history</text>
+
+  <!-- L1 Components -->
+  <rect x="460" y="225" width="110" height="30" rx="4" fill="#f9a8d4" opacity="0.3" stroke="#ec4899"/>
+  <text x="515" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">gene_registry{}</text>
+  <rect x="580" y="225" width="120" height="30" rx="4" fill="#f9a8d4" opacity="0.3" stroke="#ec4899"/>
+  <text x="640" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">module_states{}</text>
+  <rect x="460" y="265" width="240" height="30" rx="4" fill="#f9a8d4" opacity="0.3" stroke="#ec4899"/>
+  <text x="580" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">epigenetic_marks[], context_history[]</text>
+
+  <!-- Arrow L1 to L0 -->
+  <path d="M400 305 L400 325" stroke="#64748b" stroke-width="2" marker-end="url(#arrowReg)"/>
+
+  <!-- L0 Reactive Layer -->
+  <rect x="80" y="330" width="640" height="230" rx="8" fill="#fdf2f8" stroke="#f9a8d4" stroke-width="1.5"/>
+  <text x="100" y="355" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#9d174d">L0 Reactive (gene expression dynamics)</text>
+  <text x="100" y="375" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Process expression, modules, epigenetics, context switching | Time constant: per operation</text>
+
+  <!-- Sensors Box -->
+  <rect x="100" y="390" width="250" height="150" rx="6" fill="white" stroke="#f9a8d4" stroke-width="1"/>
+  <text x="225" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#9d174d">SENSORS (10 inputs)</text>
+  <text x="110" y="430" font-family="monospace" font-size="8" fill="#9d174d">active_gene_ratio, dormant_capability</text>
+  <text x="110" y="445" font-family="monospace" font-size="8" fill="#9d174d">module_activation_pattern</text>
+  <text x="110" y="460" font-family="monospace" font-size="8" fill="#9d174d">context_switch_frequency</text>
+  <text x="110" y="475" font-family="monospace" font-size="8" fill="#9d174d">regulatory_network_complexity</text>
+  <text x="110" y="490" font-family="monospace" font-size="8" fill="#9d174d">expression_noise, epigenetic_density</text>
+  <text x="110" y="505" font-family="monospace" font-size="8" fill="#9d174d">transcription_factor_diversity</text>
+  <text x="110" y="520" font-family="monospace" font-size="8" fill="#9d174d">conditional_ratio, fitness_contrib</text>
+
+  <!-- TWEANN Box -->
+  <rect x="370" y="430" width="100" height="60" rx="6" fill="url(#regGrad)" stroke="#be185d" stroke-width="1"/>
+  <text x="420" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="420" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">LTC Network</text>
+
+  <!-- Arrows to/from TWEANN -->
+  <path d="M350 460 L370 460" stroke="#f9a8d4" stroke-width="2" marker-end="url(#arrowReg)"/>
+  <path d="M470 460 L490 460" stroke="#f9a8d4" stroke-width="2" marker-end="url(#arrowReg)"/>
+
+  <!-- Actuators Box -->
+  <rect x="490" y="390" width="210" height="150" rx="6" fill="white" stroke="#f9a8d4" stroke-width="1"/>
+  <text x="595" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#9d174d">ACTUATORS (8 outputs)</text>
+  <text x="500" y="430" font-family="monospace" font-size="8" fill="#9d174d">expression_threshold</text>
+  <text x="500" y="445" font-family="monospace" font-size="8" fill="#9d174d">regulatory_mutation_rate</text>
+  <text x="500" y="460" font-family="monospace" font-size="8" fill="#9d174d">context_sensitivity</text>
+  <text x="500" y="475" font-family="monospace" font-size="8" fill="#9d174d">module_switching_cost</text>
+  <text x="500" y="490" font-family="monospace" font-size="8" fill="#9d174d">dormancy_maintenance_cost</text>
+  <text x="500" y="505" font-family="monospace" font-size="8" fill="#9d174d">epigenetic_inheritance</text>
+  <text x="500" y="520" font-family="monospace" font-size="8" fill="#9d174d">constitutive_bonus, complexity_pen</text>
+
+  <!-- Legend -->
+  <rect x="60" y="565" width="15" height="15" fill="#fce7f3" stroke="#ec4899"/>
+  <text x="80" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L2 Strategic</text>
+  <rect x="170" y="565" width="15" height="15" fill="#fbcfe8" stroke="#f472b6"/>
+  <text x="190" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L1 Tactical</text>
+  <rect x="280" y="565" width="15" height="15" fill="#fdf2f8" stroke="#f9a8d4"/>
+  <text x="300" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L0 Reactive</text>
+  <text x="420" y="577" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#64748b">Time constant: per generation (expression dynamics)</text>
+</svg>

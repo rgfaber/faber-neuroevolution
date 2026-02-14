@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 320">
+  <text x="325" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">MAP-Elites: Quality-Diversity Grid</text>
+
+  <!-- Grid -->
+  <g transform="translate(50, 50)">
+    <!-- Grid cells 5x5 -->
+    <rect x="0" y="0" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="50" y="0" width="50" height="50" fill="#c6f6d5" stroke="#e2e8f0"/>
+    <rect x="100" y="0" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="150" y="0" width="50" height="50" fill="#9ae6b4" stroke="#e2e8f0"/>
+    <rect x="200" y="0" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+
+    <rect x="0" y="50" width="50" height="50" fill="#68d391" stroke="#e2e8f0"/>
+    <rect x="50" y="50" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="100" y="50" width="50" height="50" fill="#48bb78" stroke="#e2e8f0"/>
+    <rect x="150" y="50" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="200" y="50" width="50" height="50" fill="#c6f6d5" stroke="#e2e8f0"/>
+
+    <rect x="0" y="100" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="50" y="100" width="50" height="50" fill="#38a169" stroke="#e2e8f0"/>
+    <rect x="100" y="100" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="150" y="100" width="50" height="50" fill="#68d391" stroke="#e2e8f0"/>
+    <rect x="200" y="100" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+
+    <rect x="0" y="150" width="50" height="50" fill="#9ae6b4" stroke="#e2e8f0"/>
+    <rect x="50" y="150" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="100" y="150" width="50" height="50" fill="#c6f6d5" stroke="#e2e8f0"/>
+    <rect x="150" y="150" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="200" y="150" width="50" height="50" fill="#48bb78" stroke="#e2e8f0"/>
+
+    <rect x="0" y="200" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="50" y="200" width="50" height="50" fill="#68d391" stroke="#e2e8f0"/>
+    <rect x="100" y="200" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="150" y="200" width="50" height="50" fill="#f7fafc" stroke="#e2e8f0"/>
+    <rect x="200" y="200" width="50" height="50" fill="#9ae6b4" stroke="#e2e8f0"/>
+
+    <!-- Fitness labels in cells -->
+    <text x="75" y="30" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.72</text>
+    <text x="175" y="30" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.85</text>
+    <text x="25" y="80" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.68</text>
+    <text x="125" y="80" font-family="monospace" font-size="9" fill="white" text-anchor="middle">0.91</text>
+    <text x="225" y="80" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.55</text>
+    <text x="75" y="130" font-family="monospace" font-size="9" fill="white" text-anchor="middle">0.95</text>
+    <text x="175" y="130" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.78</text>
+    <text x="25" y="180" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.82</text>
+    <text x="125" y="180" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.61</text>
+    <text x="225" y="180" font-family="monospace" font-size="9" fill="white" text-anchor="middle">0.89</text>
+    <text x="75" y="230" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.73</text>
+    <text x="225" y="230" font-family="monospace" font-size="9" fill="#276749" text-anchor="middle">0.66</text>
+
+    <!-- Axes labels -->
+    <text x="125" y="270" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568" text-anchor="middle">Behavior Dimension 1</text>
+    <text x="-20" y="125" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568" transform="rotate(-90, -20, 125)">Behavior Dimension 2</text>
+  </g>
+
+  <!-- Explanation panel -->
+  <rect x="320" y="50" width="300" height="200" rx="6" fill="#f7fafc" stroke="#a0aec0"/>
+  <text x="470" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#2d3748" text-anchor="middle">How MAP-Elites Works</text>
+
+  <text x="340" y="100" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">1. Grid divides behavior space into cells</text>
+  <text x="340" y="120" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">2. Each cell stores ONE elite (best fitness)</text>
+  <text x="340" y="140" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">3. New individual maps to cell by behavior</text>
+  <text x="340" y="160" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">4. Replaces elite only if fitness is higher</text>
+
+  <rect x="340" y="175" width="260" height="60" rx="4" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="470" y="195" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#c05621" text-anchor="middle">Key Metrics</text>
+  <text x="360" y="215" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4a5568">Coverage: 12/25 cells = 48%</text>
+  <text x="360" y="230" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4a5568">QD-Score: sum of all elite fitnesses = 9.15</text>
+
+  <!-- Legend -->
+  <rect x="320" y="260" width="300" height="45" rx="4" fill="#f0fff4" stroke="#48bb78"/>
+  <rect x="340" y="275" width="20" height="15" fill="#38a169"/>
+  <text x="370" y="286" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4a5568">High fitness elite</text>
+  <rect x="450" y="275" width="20" height="15" fill="#c6f6d5"/>
+  <text x="480" y="286" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4a5568">Lower fitness elite</text>
+  <rect x="560" y="275" width="20" height="15" fill="#f7fafc" stroke="#e2e8f0"/>
+  <text x="590" y="286" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4a5568">Empty</text>
+</svg>

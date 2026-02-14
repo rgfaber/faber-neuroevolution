@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 350" width="700" height="350">
+  <defs>
+    <linearGradient id="fitnessGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#48bb78;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#38a169;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="350" fill="#f7fafc" rx="8"/>
+
+  <!-- Title -->
+  <text x="350" y="25" text-anchor="middle" fill="#2d3748" font-family="sans-serif" font-size="14" font-weight="bold">Adaptive Hyperparameters with Liquid Conglomerate</text>
+
+  <!-- Chart area -->
+  <rect x="80" y="50" width="550" height="200" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Y axis -->
+  <line x1="80" y1="50" x2="80" y2="250" stroke="#4a5568" stroke-width="2"/>
+  <text x="40" y="150" text-anchor="middle" fill="#4a5568" font-family="sans-serif" font-size="10" transform="rotate(-90 40,150)">Value</text>
+  <text x="75" y="60" text-anchor="end" fill="#718096" font-family="monospace" font-size="8">1.0</text>
+  <text x="75" y="150" text-anchor="end" fill="#718096" font-family="monospace" font-size="8">0.5</text>
+  <text x="75" y="250" text-anchor="end" fill="#718096" font-family="monospace" font-size="8">0.0</text>
+
+  <!-- X axis -->
+  <line x1="80" y1="250" x2="630" y2="250" stroke="#4a5568" stroke-width="2"/>
+  <text x="350" y="275" text-anchor="middle" fill="#4a5568" font-family="sans-serif" font-size="10">Generation</text>
+  <text x="80" y="265" fill="#718096" font-family="monospace" font-size="8">0</text>
+  <text x="217" y="265" fill="#718096" font-family="monospace" font-size="8">25</text>
+  <text x="355" y="265" fill="#718096" font-family="monospace" font-size="8">50</text>
+  <text x="493" y="265" fill="#718096" font-family="monospace" font-size="8">75</text>
+  <text x="630" y="265" fill="#718096" font-family="monospace" font-size="8">100</text>
+
+  <!-- Phase annotations -->
+  <rect x="80" y="50" width="137" height="200" fill="#faf5ff" fill-opacity="0.3"/>
+  <text x="148" y="45" text-anchor="middle" fill="#6b46c1" font-family="sans-serif" font-size="9">Exploration</text>
+
+  <rect x="217" y="50" width="138" height="200" fill="#f0fff4" fill-opacity="0.3"/>
+  <text x="286" y="45" text-anchor="middle" fill="#276749" font-family="sans-serif" font-size="9">Refinement</text>
+
+  <rect x="355" y="50" width="138" height="200" fill="#fed7d7" fill-opacity="0.3"/>
+  <text x="424" y="45" text-anchor="middle" fill="#c53030" font-family="sans-serif" font-size="9">Stagnation</text>
+
+  <rect x="493" y="50" width="137" height="200" fill="#ebf8ff" fill-opacity="0.3"/>
+  <text x="561" y="45" text-anchor="middle" fill="#2b6cb0" font-family="sans-serif" font-size="9">Convergence</text>
+
+  <!-- Fitness curve (green) -->
+  <path d="M 80 230 Q 150 220, 217 180 Q 280 150, 355 140 Q 420 135, 493 90 Q 560 70, 630 60"
+        stroke="#48bb78" stroke-width="3" fill="none"/>
+
+  <!-- Mutation rate curve (purple) - adapts to fitness -->
+  <path d="M 80 110 Q 120 120, 150 140 Q 180 160, 217 170 Q 260 175, 300 180 Q 340 130, 380 100 Q 420 120, 450 140 Q 493 160, 550 200 Q 590 210, 630 220"
+        stroke="#9f7aea" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+
+  <!-- Selection ratio curve (blue) -->
+  <path d="M 80 200 Q 120 195, 160 180 Q 200 160, 217 150 Q 260 140, 300 130 Q 340 150, 380 170 Q 420 155, 460 140 Q 493 120, 550 100 Q 590 90, 630 80"
+        stroke="#4299e1" stroke-width="2" fill="none" stroke-dasharray="2,2"/>
+
+  <!-- Legend -->
+  <rect x="100" y="290" width="500" height="45" rx="4" fill="white" stroke="#e2e8f0"/>
+
+  <line x1="120" y1="305" x2="160" y2="305" stroke="#48bb78" stroke-width="3"/>
+  <text x="170" y="309" fill="#4a5568" font-family="sans-serif" font-size="9">Best Fitness</text>
+
+  <line x1="280" y1="305" x2="320" y2="305" stroke="#9f7aea" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="330" y="309" fill="#4a5568" font-family="sans-serif" font-size="9">Mutation Rate (adapted)</text>
+
+  <line x1="480" y1="305" x2="520" y2="305" stroke="#4299e1" stroke-width="2" stroke-dasharray="2,2"/>
+  <text x="530" y="309" fill="#4a5568" font-family="sans-serif" font-size="9">Selection Ratio</text>
+
+  <text x="350" y="328" text-anchor="middle" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">Meta-controller adapts hyperparameters based on training dynamics</text>
+</svg>

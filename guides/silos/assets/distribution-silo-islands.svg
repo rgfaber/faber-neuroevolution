@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="islandGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="islandGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34d399"/>
+      <stop offset="100%" style="stop-color:#10b981"/>
+    </linearGradient>
+    <linearGradient id="islandGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6"/>
+      <stop offset="100%" style="stop-color:#ec4899"/>
+    </linearGradient>
+    <linearGradient id="islandGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa"/>
+      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    </linearGradient>
+    <marker id="migrationArrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f59e0b"/>
+    </marker>
+    <marker id="signalArrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="450" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Island Model &amp; Migration Topology</text>
+
+  <!-- Island 1 (Blue) - Top Left -->
+  <ellipse cx="180" cy="150" rx="100" ry="70" fill="url(#islandGrad1)" opacity="0.3" stroke="#3b82f6" stroke-width="2"/>
+  <text x="180" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e40af">Island 1</text>
+  <text x="180" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Species A, B</text>
+  <text x="180" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Pop: 50 | Load: 0.65</text>
+  <!-- Individuals (dots) -->
+  <circle cx="140" cy="170" r="5" fill="#3b82f6"/>
+  <circle cx="160" cy="175" r="5" fill="#3b82f6"/>
+  <circle cx="180" cy="180" r="5" fill="#2563eb"/>
+  <circle cx="200" cy="175" r="5" fill="#3b82f6"/>
+  <circle cx="220" cy="170" r="5" fill="#2563eb"/>
+
+  <!-- Island 2 (Green) - Top Right -->
+  <ellipse cx="620" cy="150" rx="100" ry="70" fill="url(#islandGrad2)" opacity="0.3" stroke="#10b981" stroke-width="2"/>
+  <text x="620" y="120" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#065f46">Island 2</text>
+  <text x="620" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#065f46">Species C, D</text>
+  <text x="620" y="158" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#065f46">Pop: 45 | Load: 0.45</text>
+  <!-- Individuals (dots) -->
+  <circle cx="580" cy="170" r="5" fill="#10b981"/>
+  <circle cx="600" cy="175" r="5" fill="#10b981"/>
+  <circle cx="620" cy="180" r="5" fill="#059669"/>
+  <circle cx="640" cy="175" r="5" fill="#10b981"/>
+  <circle cx="660" cy="170" r="5" fill="#059669"/>
+
+  <!-- Island 3 (Pink) - Bottom Left -->
+  <ellipse cx="180" cy="320" rx="100" ry="70" fill="url(#islandGrad3)" opacity="0.3" stroke="#ec4899" stroke-width="2"/>
+  <text x="180" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#9d174d">Island 3</text>
+  <text x="180" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Species E</text>
+  <text x="180" y="328" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#9d174d">Pop: 30 | Load: 0.80</text>
+  <!-- Individuals (dots) -->
+  <circle cx="150" cy="345" r="5" fill="#ec4899"/>
+  <circle cx="180" cy="350" r="5" fill="#db2777"/>
+  <circle cx="210" cy="345" r="5" fill="#ec4899"/>
+
+  <!-- Island 4 (Purple) - Bottom Right -->
+  <ellipse cx="620" cy="320" rx="100" ry="70" fill="url(#islandGrad4)" opacity="0.3" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="620" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#5b21b6">Island 4</text>
+  <text x="620" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#5b21b6">Species A, F</text>
+  <text x="620" y="328" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#5b21b6">Pop: 55 | Load: 0.35</text>
+  <!-- Individuals (dots) -->
+  <circle cx="580" cy="345" r="5" fill="#8b5cf6"/>
+  <circle cx="600" cy="350" r="5" fill="#8b5cf6"/>
+  <circle cx="620" cy="355" r="5" fill="#7c3aed"/>
+  <circle cx="640" cy="350" r="5" fill="#8b5cf6"/>
+  <circle cx="660" cy="345" r="5" fill="#7c3aed"/>
+
+  <!-- Migration arrows between islands -->
+  <!-- Island 1 to Island 2 -->
+  <path d="M280 130 Q400 80 520 130" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#migrationArrow)"/>
+  <text x="400" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">migration_rate: 0.05</text>
+
+  <!-- Island 3 to Island 4 -->
+  <path d="M280 340 Q400 390 520 340" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#migrationArrow)"/>
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">select_pressure: 0.7</text>
+
+  <!-- Island 1 to Island 3 (vertical) -->
+  <path d="M150 220 Q120 235 150 250" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#migrationArrow)"/>
+
+  <!-- Island 2 to Island 4 (vertical) -->
+  <path d="M650 220 Q680 235 650 250" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="5,3" marker-end="url(#migrationArrow)"/>
+
+  <!-- Cross arrows (diagonal) -->
+  <path d="M250 200 Q400 235 550 280" stroke="#f59e0b" stroke-width="1.5" fill="none" opacity="0.5" stroke-dasharray="3,2" marker-end="url(#migrationArrow)"/>
+  <path d="M550 200 Q400 235 250 280" stroke="#f59e0b" stroke-width="1.5" fill="none" opacity="0.5" stroke-dasharray="3,2" marker-end="url(#migrationArrow)"/>
+
+  <!-- Center Distribution Silo Controller -->
+  <rect x="340" y="200" width="120" height="70" rx="8" fill="#f59e0b" stroke="#d97706" stroke-width="2"/>
+  <text x="400" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Distribution</text>
+  <text x="400" y="242" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Silo</text>
+  <text x="400" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">Controls migration</text>
+
+  <!-- Legend -->
+  <rect x="40" y="410" width="720" height="30" rx="5" fill="white" stroke="#cbd5e1"/>
+  <circle cx="70" cy="425" r="6" fill="#f59e0b"/>
+  <text x="85" y="430" font-family="Arial, sans-serif" font-size="10" fill="#475569">Migration (individuals)</text>
+  <text x="220" y="430" font-family="Arial, sans-serif" font-size="10" fill="#475569">| target_island_selection: 0=random, 1=most different</text>
+  <text x="520" y="430" font-family="Arial, sans-serif" font-size="10" fill="#475569">| topology_change_rate: 0.02</text>
+</svg>

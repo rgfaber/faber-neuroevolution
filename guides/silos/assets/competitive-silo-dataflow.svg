@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="compGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f87171"/>
+      <stop offset="100%" style="stop-color:#ef4444"/>
+    </linearGradient>
+    <linearGradient id="cultGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fb923c"/>
+      <stop offset="100%" style="stop-color:#f97316"/>
+    </linearGradient>
+    <linearGradient id="socialGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa"/>
+      <stop offset="100%" style="stop-color:#3b82f6"/>
+    </linearGradient>
+    <marker id="arrowRed2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444"/>
+    </marker>
+    <marker id="arrowOrange2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <marker id="arrowBlue6" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <filter id="shadowComp2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Competitive Silo Integration &amp; Dataflow</text>
+
+  <!-- Match Engine Box -->
+  <rect x="40" y="60" width="200" height="170" rx="10" fill="white" stroke="#16a34a" stroke-width="2" filter="url(#shadowComp2)"/>
+  <rect x="40" y="60" width="200" height="30" rx="10" fill="#22c55e"/>
+  <rect x="40" y="80" width="200" height="10" fill="#22c55e"/>
+  <text x="140" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Match Engine</text>
+
+  <text x="55" y="110" font-family="Arial, sans-serif" font-size="10" fill="#166534">Requests:</text>
+  <text x="55" y="125" font-family="monospace" font-size="9" fill="#166534">get_opponent(player_id)</text>
+  <text x="55" y="140" font-family="monospace" font-size="9" fill="#166534">execute_match(a, b)</text>
+  <text x="55" y="155" font-family="monospace" font-size="9" fill="#166534">calculate_fitness_bonus()</text>
+  <text x="55" y="180" font-family="Arial, sans-serif" font-size="10" fill="#166534">Receives:</text>
+  <text x="55" y="195" font-family="monospace" font-size="9" fill="#166534">opponent, elo_changes</text>
+  <text x="55" y="210" font-family="monospace" font-size="9" fill="#166534">fitness_bonus</text>
+
+  <!-- Competitive Silo Box -->
+  <rect x="300" y="55" width="300" height="200" rx="10" fill="white" stroke="#ef4444" stroke-width="2" filter="url(#shadowComp2)"/>
+  <rect x="300" y="55" width="300" height="35" rx="10" fill="url(#compGrad2)"/>
+  <rect x="300" y="80" width="300" height="10" fill="url(#compGrad2)"/>
+  <text x="450" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Competitive Silo</text>
+
+  <text x="315" y="110" font-family="Arial, sans-serif" font-size="10" fill="#dc2626">get_opponent(player_id)</text>
+  <text x="315" y="128" font-family="Arial, sans-serif" font-size="10" fill="#dc2626">record_match(match_result)</text>
+  <text x="315" y="146" font-family="Arial, sans-serif" font-size="10" fill="#dc2626">update_elo(winner, loser)</text>
+  <text x="315" y="164" font-family="Arial, sans-serif" font-size="10" fill="#dc2626">add_to_archive(opponent)</text>
+  <text x="315" y="182" font-family="Arial, sans-serif" font-size="10" fill="#dc2626">get_competitive_params()</text>
+
+  <!-- L0 Components -->
+  <rect x="480" y="105" width="105" height="25" rx="4" fill="#fecaca" opacity="0.3" stroke="#ef4444"/>
+  <text x="532" y="122" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#dc2626">elo system</text>
+  <rect x="480" y="135" width="105" height="25" rx="4" fill="#fecaca" opacity="0.3" stroke="#ef4444"/>
+  <text x="532" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#dc2626">matchmaking</text>
+  <rect x="480" y="165" width="105" height="25" rx="4" fill="#fecaca" opacity="0.3" stroke="#ef4444"/>
+  <text x="532" y="182" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#dc2626">archive mgmt</text>
+
+  <!-- Cross-silo notes -->
+  <rect x="315" y="210" width="270" height="35" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="450" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">Cross-silo: innovation_rate, resource_abundance, social_structure</text>
+
+  <!-- Cultural Silo Box -->
+  <rect x="660" y="60" width="200" height="100" rx="10" fill="white" stroke="#f97316" stroke-width="2" filter="url(#shadowComp2)"/>
+  <rect x="660" y="60" width="200" height="30" rx="10" fill="url(#cultGrad)"/>
+  <rect x="660" y="80" width="200" height="10" fill="url(#cultGrad)"/>
+  <text x="760" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Cultural Silo</text>
+
+  <text x="675" y="110" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Receives:</text>
+  <text x="675" y="125" font-family="monospace" font-size="9" fill="#c2410c">strategy_diversity</text>
+  <text x="675" y="140" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Sends:</text>
+  <text x="675" y="155" font-family="monospace" font-size="9" fill="#c2410c">innovation_rate</text>
+
+  <!-- Social Silo Box -->
+  <rect x="660" y="180" width="200" height="100" rx="10" fill="white" stroke="#3b82f6" stroke-width="2" filter="url(#shadowComp2)"/>
+  <rect x="660" y="180" width="200" height="30" rx="10" fill="url(#socialGrad)"/>
+  <rect x="660" y="200" width="200" height="10" fill="url(#socialGrad)"/>
+  <text x="760" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Social Silo</text>
+
+  <text x="675" y="230" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Receives:</text>
+  <text x="675" y="245" font-family="monospace" font-size="9" fill="#1e40af">competitive_pressure</text>
+  <text x="675" y="260" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Sends:</text>
+  <text x="675" y="275" font-family="monospace" font-size="9" fill="#1e40af">coalition_structure</text>
+
+  <!-- Opponent Archive Box -->
+  <rect x="300" y="310" width="300" height="90" rx="10" fill="white" stroke="#8b5cf6" stroke-width="2" filter="url(#shadowComp2)"/>
+  <rect x="300" y="310" width="300" height="30" rx="10" fill="#8b5cf6"/>
+  <rect x="300" y="330" width="300" height="10" fill="#8b5cf6"/>
+  <text x="450" y="332" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Opponent Archive</text>
+
+  <text x="315" y="360" font-family="Arial, sans-serif" font-size="10" fill="#5b21b6">Per-opponent tracking:</text>
+  <text x="315" y="375" font-family="monospace" font-size="9" fill="#5b21b6">elo, strategy_fingerprint, win_rate, diversity</text>
+  <text x="315" y="390" font-family="monospace" font-size="9" fill="#5b21b6">games_played, archived_at, network_weights</text>
+
+  <!-- Event Bus Box -->
+  <rect x="660" y="310" width="200" height="90" rx="10" fill="white" stroke="#db2777" stroke-width="2" filter="url(#shadowComp2)"/>
+  <rect x="660" y="310" width="200" height="30" rx="10" fill="#ec4899"/>
+  <rect x="660" y="330" width="200" height="10" fill="#ec4899"/>
+  <text x="760" y="332" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Event Bus</text>
+
+  <text x="675" y="360" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">match_completed</text>
+  <text x="675" y="375" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">elo_updated</text>
+  <text x="675" y="390" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">counter_strategy_emerged</text>
+
+  <!-- Arrows -->
+  <!-- Engine to Competitive -->
+  <path d="M240 140 L290 140" stroke="#22c55e" stroke-width="2" marker-end="url(#arrowRed2)"/>
+  <text x="265" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#22c55e">request</text>
+
+  <!-- Competitive to Engine -->
+  <path d="M290 180 L240 180" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowRed2)"/>
+  <text x="265" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ef4444">opponent</text>
+
+  <!-- Cultural to Competitive -->
+  <path d="M660 110 L610 130" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrowOrange2)"/>
+  <text x="640" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#f97316">innovation</text>
+
+  <!-- Social to Competitive -->
+  <path d="M660 230 L610 180" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrowBlue6)"/>
+  <text x="640" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#3b82f6">coalition</text>
+
+  <!-- Competitive to Archive -->
+  <path d="M450 255 L450 300" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowRed2)"/>
+  <text x="480" y="280" text-anchor="start" font-family="Arial, sans-serif" font-size="9" fill="#ef4444">archive</text>
+
+  <!-- Competitive to Events -->
+  <path d="M600 200 L660 330" stroke="#db2777" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="635" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#db2777">events</text>
+
+  <!-- Control Flow Box -->
+  <rect x="40" y="420" width="820" height="85" rx="8" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="450" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Competitive Control Loop (per match)</text>
+
+  <text x="60" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">1.</tspan> Select opponent (self/archive/current)
+  </text>
+  <text x="60" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">2.</tspan> Execute match, record result
+  </text>
+  <text x="290" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">3.</tspan> Update Elo ratings
+  </text>
+  <text x="290" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">4.</tspan> Check archive qualification
+  </text>
+  <text x="530" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">5.</tspan> Detect counter-strategies
+  </text>
+  <text x="530" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">6.</tspan> Emit events, calculate fitness bonus
+  </text>
+</svg>

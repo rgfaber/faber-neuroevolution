@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 350">
+  <defs>
+    <marker id="arrSB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Selection and Breeding Process</text>
+
+  <!-- Population before -->
+  <rect x="30" y="50" width="200" height="120" rx="6" fill="#ebf8ff" stroke="#4299e1" stroke-width="1.5"/>
+  <text x="130" y="70" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#2b6cb0" text-anchor="middle">Population (N=10)</text>
+
+  <!-- Individuals with fitness -->
+  <g font-family="monospace" font-size="9">
+    <rect x="45" y="80" width="50" height="18" rx="2" fill="#48bb78"/><text x="70" y="93" fill="white" text-anchor="middle">0.95</text>
+    <rect x="100" y="80" width="50" height="18" rx="2" fill="#48bb78"/><text x="125" y="93" fill="white" text-anchor="middle">0.87</text>
+    <rect x="155" y="80" width="50" height="18" rx="2" fill="#68d391"/><text x="180" y="93" fill="white" text-anchor="middle">0.72</text>
+    <rect x="45" y="103" width="50" height="18" rx="2" fill="#68d391"/><text x="70" y="116" fill="white" text-anchor="middle">0.65</text>
+    <rect x="100" y="103" width="50" height="18" rx="2" fill="#9ae6b4"/><text x="125" y="116" fill="#276749" text-anchor="middle">0.58</text>
+    <rect x="155" y="103" width="50" height="18" rx="2" fill="#9ae6b4"/><text x="180" y="116" fill="#276749" text-anchor="middle">0.45</text>
+    <rect x="45" y="126" width="50" height="18" rx="2" fill="#c6f6d5"/><text x="70" y="139" fill="#276749" text-anchor="middle">0.32</text>
+    <rect x="100" y="126" width="50" height="18" rx="2" fill="#c6f6d5"/><text x="125" y="139" fill="#276749" text-anchor="middle">0.28</text>
+    <rect x="155" y="126" width="50" height="18" rx="2" fill="#e2e8f0"/><text x="180" y="139" fill="#718096" text-anchor="middle">0.15</text>
+  </g>
+
+  <!-- Selection arrow -->
+  <line x1="235" y1="110" x2="270" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#arrSB)"/>
+  <text x="252" y="100" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" text-anchor="middle">Select</text>
+  <text x="252" y="125" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" text-anchor="middle">top 20%</text>
+
+  <!-- Selected parents -->
+  <rect x="275" y="70" width="120" height="80" rx="6" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="335" y="90" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#276749" text-anchor="middle">Parents (2)</text>
+  <g font-family="monospace" font-size="10">
+    <rect x="290" y="100" width="90" height="20" rx="3" fill="#48bb78"/><text x="335" y="115" fill="white" text-anchor="middle">Elite: 0.95</text>
+    <rect x="290" y="125" width="90" height="20" rx="3" fill="#48bb78"/><text x="335" y="140" fill="white" text-anchor="middle">0.87</text>
+  </g>
+
+  <!-- Breeding arrow -->
+  <line x1="400" y1="110" x2="435" y2="110" stroke="#4a5568" stroke-width="2" marker-end="url(#arrSB)"/>
+  <text x="417" y="100" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" text-anchor="middle">Breed</text>
+
+  <!-- Offspring -->
+  <rect x="440" y="50" width="230" height="120" rx="6" fill="#faf5ff" stroke="#9f7aea" stroke-width="1.5"/>
+  <text x="555" y="70" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#6b46c1" text-anchor="middle">Offspring (8 new)</text>
+
+  <g font-family="monospace" font-size="9">
+    <rect x="455" y="80" width="65" height="18" rx="2" fill="#d6bcfa"/><text x="487" y="93" fill="#44337a" text-anchor="middle">crossover</text>
+    <rect x="525" y="80" width="65" height="18" rx="2" fill="#d6bcfa"/><text x="557" y="93" fill="#44337a" text-anchor="middle">crossover</text>
+    <rect x="595" y="80" width="65" height="18" rx="2" fill="#d6bcfa"/><text x="627" y="93" fill="#44337a" text-anchor="middle">crossover</text>
+    <rect x="455" y="103" width="65" height="18" rx="2" fill="#e9d8fd"/><text x="487" y="116" fill="#553c9a" text-anchor="middle">mutate</text>
+    <rect x="525" y="103" width="65" height="18" rx="2" fill="#e9d8fd"/><text x="557" y="116" fill="#553c9a" text-anchor="middle">mutate</text>
+    <rect x="595" y="103" width="65" height="18" rx="2" fill="#e9d8fd"/><text x="627" y="116" fill="#553c9a" text-anchor="middle">mutate</text>
+    <rect x="455" y="126" width="65" height="18" rx="2" fill="#e9d8fd"/><text x="487" y="139" fill="#553c9a" text-anchor="middle">mutate</text>
+    <rect x="525" y="126" width="65" height="18" rx="2" fill="#e9d8fd"/><text x="557" y="139" fill="#553c9a" text-anchor="middle">mutate</text>
+  </g>
+
+  <!-- New generation -->
+  <rect x="180" y="200" width="340" height="130" rx="6" fill="#fffaf0" stroke="#ed8936" stroke-width="1.5"/>
+  <text x="350" y="225" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#c05621" text-anchor="middle">Next Generation (N=10)</text>
+
+  <g font-family="Inter, system-ui, sans-serif" font-size="10">
+    <rect x="200" y="240" width="80" height="25" rx="3" fill="#48bb78"/><text x="240" y="257" fill="white" text-anchor="middle">1 Elite</text>
+    <text x="240" y="275" fill="#718096" font-size="9" text-anchor="middle">(preserved)</text>
+
+    <rect x="300" y="240" width="80" height="25" rx="3" fill="#9f7aea"/><text x="340" y="257" fill="white" text-anchor="middle">8 Offspring</text>
+    <text x="340" y="275" fill="#718096" font-size="9" text-anchor="middle">(new)</text>
+
+    <rect x="400" y="240" width="80" height="25" rx="3" fill="#4299e1"/><text x="440" y="257" fill="white" text-anchor="middle">1 Parent</text>
+    <text x="440" y="275" fill="#718096" font-size="9" text-anchor="middle">(survivor)</text>
+  </g>
+
+  <!-- Arrows to new gen -->
+  <path d="M 335 150 L 335 195" stroke="#48bb78" stroke-width="1.5" marker-end="url(#arrSB)"/>
+  <path d="M 555 170 L 555 185 L 400 185 L 400 195" stroke="#9f7aea" stroke-width="1.5" marker-end="url(#arrSB)"/>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 280" width="700" height="280">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+    <linearGradient id="serverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="280" fill="#f7fafc" rx="8"/>
+
+  <!-- Title -->
+  <text x="350" y="20" text-anchor="middle" fill="#2d3748" font-family="sans-serif" font-size="14" font-weight="bold">Current Architecture: Direct Calls + Callbacks</text>
+
+  <!-- Main server box -->
+  <rect x="30" y="40" width="640" height="170" rx="8" fill="url(#serverGrad)" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="350" y="65" text-anchor="middle" fill="white" font-family="monospace" font-size="13" font-weight="bold">neuroevolution_server</text>
+
+  <!-- Code flow -->
+  <text x="50" y="95" fill="#bee3f8" font-family="monospace" font-size="10">evaluate_population_parallel(Population, Config, ServerPid)</text>
+  <line x1="65" y1="100" x2="65" y2="115" stroke="#bee3f8" stroke-width="1"/>
+
+  <text x="70" y="125" fill="#bee3f8" font-family="monospace" font-size="10">for each Individual:</text>
+  <text x="85" y="140" fill="white" font-family="monospace" font-size="10">spawn_link(fun() -></text>
+  <text x="100" y="155" fill="#fbd38d" font-family="monospace" font-size="10">EvaluatorModule:evaluate(Individual, Options)</text>
+  <rect x="435" y="143" width="55" height="15" rx="3" fill="#ed8936"/>
+  <text x="462" y="154" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">DIRECT</text>
+  <text x="85" y="170" fill="white" font-family="monospace" font-size="10">end)</text>
+
+  <line x1="65" y1="175" x2="65" y2="185" stroke="#bee3f8" stroke-width="1"/>
+  <text x="50" y="198" fill="#bee3f8" font-family="monospace" font-size="10">collect results via {eval_result, Ref, Result}</text>
+
+  <!-- Notification section -->
+  <line x1="65" y1="210" x2="65" y2="225" stroke="#718096" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="510" y="95" fill="#fbd38d" font-family="monospace" font-size="10">Module:handle_event(Event, InitArg)</text>
+  <rect x="620" y="83" width="45" height="15" rx="3" fill="#ed8936"/>
+  <text x="642" y="94" text-anchor="middle" fill="white" font-family="monospace" font-size="8" font-weight="bold">CALLBACK</text>
+
+  <!-- Bottom arrow to application -->
+  <line x1="350" y1="210" x2="350" y2="255" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="360" y="245" fill="#4a5568" font-family="sans-serif" font-size="10">Application code (EvolutionOrchestrator)</text>
+</svg>

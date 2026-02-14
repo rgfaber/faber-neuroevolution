@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+  <defs>
+    <linearGradient id="commGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5eead4"/>
+      <stop offset="100%" style="stop-color:#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="taskGrad5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#facc15"/>
+      <stop offset="100%" style="stop-color:#eab308"/>
+    </linearGradient>
+    <linearGradient id="culturalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fb923c"/>
+      <stop offset="100%" style="stop-color:#f97316"/>
+    </linearGradient>
+    <linearGradient id="socialGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#818cf8"/>
+      <stop offset="100%" style="stop-color:#6366f1"/>
+    </linearGradient>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#14b8a6"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1"/>
+    </marker>
+    <marker id="arrowOrange2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f97316"/>
+    </marker>
+    <filter id="shadowComm3" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Communication Silo Integration &amp; Dataflow</text>
+
+  <!-- Population Box -->
+  <rect x="40" y="60" width="200" height="170" rx="10" fill="white" stroke="#6366f1" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="40" y="60" width="200" height="30" rx="10" fill="#6366f1"/>
+  <rect x="40" y="80" width="200" height="10" fill="#6366f1"/>
+  <text x="140" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Population Agents</text>
+
+  <text x="55" y="110" font-family="Arial, sans-serif" font-size="10" fill="#4338ca">Provides:</text>
+  <text x="55" y="125" font-family="monospace" font-size="9" fill="#4338ca">messages[]</text>
+  <text x="55" y="140" font-family="monospace" font-size="9" fill="#4338ca">signal_inventions[]</text>
+  <text x="55" y="155" font-family="monospace" font-size="9" fill="#4338ca">coordination_attempts[]</text>
+  <text x="55" y="180" font-family="Arial, sans-serif" font-size="10" fill="#4338ca">Receives:</text>
+  <text x="55" y="195" font-family="monospace" font-size="9" fill="#4338ca">comm_cost, coord_reward</text>
+  <text x="55" y="210" font-family="monospace" font-size="9" fill="#4338ca">lying_penalty, vocab_rate</text>
+
+  <!-- Communication Silo Box -->
+  <rect x="300" y="55" width="300" height="200" rx="10" fill="white" stroke="#14b8a6" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="300" y="55" width="300" height="35" rx="10" fill="url(#commGrad3)"/>
+  <rect x="300" y="80" width="300" height="10" fill="url(#commGrad3)"/>
+  <text x="450" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Communication Silo</text>
+
+  <text x="315" y="110" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">record_message(msg)</text>
+  <text x="315" y="128" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">record_signal_invention(sig)</text>
+  <text x="315" y="146" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">record_coordination(attempt)</text>
+  <text x="315" y="164" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">record_deception(event)</text>
+  <text x="315" y="182" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">manage_dialects()</text>
+
+  <!-- L0 Components -->
+  <rect x="480" y="105" width="105" height="25" rx="4" fill="#ccfbf1" opacity="0.5" stroke="#14b8a6"/>
+  <text x="532" y="122" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#0f766e">signal_registry{}</text>
+  <rect x="480" y="135" width="105" height="25" rx="4" fill="#ccfbf1" opacity="0.5" stroke="#14b8a6"/>
+  <text x="532" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#0f766e">dialect_map{}</text>
+  <rect x="480" y="165" width="105" height="25" rx="4" fill="#ccfbf1" opacity="0.5" stroke="#14b8a6"/>
+  <text x="532" y="182" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#0f766e">message_history[]</text>
+
+  <!-- Cross-silo notes -->
+  <rect x="315" y="210" width="270" height="35" rx="4" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="450" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">Cross-silo: network_density, coalition_structure, diversity</text>
+
+  <!-- Task Silo Box -->
+  <rect x="660" y="60" width="200" height="100" rx="10" fill="white" stroke="#eab308" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="660" y="60" width="200" height="30" rx="10" fill="url(#taskGrad5)"/>
+  <rect x="660" y="80" width="200" height="10" fill="url(#taskGrad5)"/>
+  <text x="760" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Task Silo</text>
+
+  <text x="675" y="110" font-family="Arial, sans-serif" font-size="10" fill="#a16207">Receives:</text>
+  <text x="675" y="125" font-family="monospace" font-size="9" fill="#a16207">coordination_capability</text>
+  <text x="675" y="140" font-family="Arial, sans-serif" font-size="10" fill="#a16207">Sends:</text>
+  <text x="675" y="155" font-family="monospace" font-size="9" fill="#a16207">task_type (coop/comp)</text>
+
+  <!-- Cultural Silo Box -->
+  <rect x="660" y="180" width="200" height="100" rx="10" fill="white" stroke="#f97316" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="660" y="180" width="200" height="30" rx="10" fill="url(#culturalGrad)"/>
+  <rect x="660" y="200" width="200" height="10" fill="url(#culturalGrad)"/>
+  <text x="760" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Cultural Silo</text>
+
+  <text x="675" y="230" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Receives:</text>
+  <text x="675" y="245" font-family="monospace" font-size="9" fill="#c2410c">information_sharing</text>
+  <text x="675" y="260" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Sends:</text>
+  <text x="675" y="275" font-family="monospace" font-size="9" fill="#c2410c">cultural_diversity</text>
+
+  <!-- Social Silo Box -->
+  <rect x="40" y="260" width="200" height="100" rx="10" fill="white" stroke="#6366f1" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="40" y="260" width="200" height="30" rx="10" fill="url(#socialGrad2)"/>
+  <rect x="40" y="280" width="200" height="10" fill="url(#socialGrad2)"/>
+  <text x="140" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Social Silo</text>
+
+  <text x="55" y="310" font-family="Arial, sans-serif" font-size="10" fill="#4338ca">Receives:</text>
+  <text x="55" y="325" font-family="monospace" font-size="9" fill="#4338ca">trust_network</text>
+  <text x="55" y="340" font-family="Arial, sans-serif" font-size="10" fill="#4338ca">Sends:</text>
+  <text x="55" y="355" font-family="monospace" font-size="9" fill="#4338ca">network_density, coalitions</text>
+
+  <!-- Signal Registry Box -->
+  <rect x="300" y="310" width="300" height="90" rx="10" fill="white" stroke="#14b8a6" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="300" y="310" width="300" height="30" rx="10" fill="#14b8a6"/>
+  <rect x="300" y="330" width="300" height="10" fill="#14b8a6"/>
+  <text x="450" y="332" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Signal Registry &amp; Dialect State</text>
+
+  <text x="315" y="360" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">Per-population tracking:</text>
+  <text x="315" y="375" font-family="monospace" font-size="9" fill="#0f766e">signals{id => meaning}, dialects{id => members}</text>
+  <text x="315" y="390" font-family="monospace" font-size="9" fill="#0f766e">coordination_history[], deception_history[]</text>
+
+  <!-- Event Bus Box -->
+  <rect x="660" y="310" width="200" height="90" rx="10" fill="white" stroke="#db2777" stroke-width="2" filter="url(#shadowComm3)"/>
+  <rect x="660" y="310" width="200" height="30" rx="10" fill="#ec4899"/>
+  <rect x="660" y="330" width="200" height="10" fill="#ec4899"/>
+  <text x="760" y="332" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Event Bus</text>
+
+  <text x="675" y="360" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">signal_invented/adopted</text>
+  <text x="675" y="375" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">coordination_succeeded/failed</text>
+  <text x="675" y="390" font-family="Arial, sans-serif" font-size="9" fill="#9d174d">deception_detected, dialect_emerged</text>
+
+  <!-- Arrows -->
+  <!-- Population to Communication -->
+  <path d="M240 140 L290 140" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowTeal)"/>
+  <text x="265" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#6366f1">msgs</text>
+
+  <!-- Communication to Population -->
+  <path d="M290 180 L240 180" stroke="#14b8a6" stroke-width="2" marker-end="url(#arrowIndigo)"/>
+  <text x="265" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#14b8a6">params</text>
+
+  <!-- Communication to Task -->
+  <path d="M600 110 L650 110" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <text x="625" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#14b8a6">coord</text>
+
+  <!-- Communication to Cultural -->
+  <path d="M600 180 L650 220" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <text x="630" y="195" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#14b8a6">info</text>
+
+  <!-- Cultural to Communication -->
+  <path d="M660 250 L610 200" stroke="#f97316" stroke-width="1.5" marker-end="url(#arrowOrange2)"/>
+  <text x="640" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#f97316">diversity</text>
+
+  <!-- Communication to Social -->
+  <path d="M300 200 L240 280" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#arrowTeal)"/>
+  <text x="260" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#14b8a6">trust</text>
+
+  <!-- Social to Communication -->
+  <path d="M240 310 L290 200" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrowIndigo)"/>
+  <text x="255" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#6366f1">density</text>
+
+  <!-- Communication to State -->
+  <path d="M450 255 L450 300" stroke="#14b8a6" stroke-width="2" marker-end="url(#arrowTeal)"/>
+  <text x="480" y="280" text-anchor="start" font-family="Arial, sans-serif" font-size="9" fill="#14b8a6">update</text>
+
+  <!-- Communication to Events -->
+  <path d="M600 200 L660 330" stroke="#db2777" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="635" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#db2777">events</text>
+
+  <!-- Control Flow Box -->
+  <rect x="40" y="420" width="820" height="85" rx="8" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="450" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e293b">Communication Control Loop (per generation)</text>
+
+  <text x="60" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">1.</tspan> Collect messages/signals
+  </text>
+  <text x="60" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">2.</tspan> Process signal inventions
+  </text>
+  <text x="250" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">3.</tspan> Track coordination attempts
+  </text>
+  <text x="250" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">4.</tspan> Record deception events
+  </text>
+  <text x="480" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">5.</tspan> Update dialect membership
+  </text>
+  <text x="480" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">6.</tspan> Apply actuator outputs
+  </text>
+  <text x="700" y="468" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">7.</tspan> Emit communication events
+  </text>
+  <text x="700" y="488" font-family="Arial, sans-serif" font-size="10" fill="#334155">
+    <tspan font-weight="bold">8.</tspan> Send cross-silo signals
+  </text>
+</svg>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="distGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#22c55e" />
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3b82f6" />
+    </marker>
+    <marker id="arrowPink" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#ec4899" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">Detailed Cross-Silo Interaction Flow</text>
+  <text x="600" y="58" text-anchor="middle" font-size="13" fill="#64748b">Bidirectional signal routing via lc_cross_silo coordinator</text>
+
+  <!-- ================ SILOS (Triangle Layout) ================ -->
+
+  <!-- Resource Silo (left) -->
+  <g transform="translate(100, 250)">
+    <rect x="0" y="0" width="220" height="200" rx="16" fill="white" stroke="#22c55e" stroke-width="4" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="220" height="50" rx="16" fill="url(#resourceGrad)"/>
+    <rect x="0" y="34" width="220" height="16" fill="url(#resourceGrad)"/>
+    <text x="110" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Resource Silo</text>
+
+    <text x="110" y="75" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">System Stability</text>
+    <text x="110" y="95" text-anchor="middle" font-size="10" fill="#166534">tau = 5 seconds</text>
+
+    <rect x="15" y="110" width="190" height="75" rx="6" fill="#dcfce7" stroke="#86efac"/>
+    <text x="110" y="130" text-anchor="middle" font-size="10" font-weight="600" fill="#166534">Monitors:</text>
+    <text x="110" y="145" text-anchor="middle" font-size="9" fill="#166534">Memory pressure, CPU load</text>
+    <text x="110" y="158" text-anchor="middle" font-size="9" fill="#166534">GC frequency, run queues</text>
+    <text x="110" y="171" text-anchor="middle" font-size="9" fill="#166534">Concurrency, throughput</text>
+  </g>
+
+  <!-- Task Silo (right) -->
+  <g transform="translate(880, 250)">
+    <rect x="0" y="0" width="220" height="200" rx="16" fill="white" stroke="#3b82f6" stroke-width="4" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="220" height="50" rx="16" fill="url(#taskGrad)"/>
+    <rect x="0" y="34" width="220" height="16" fill="url(#taskGrad)"/>
+    <text x="110" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Task Silo</text>
+
+    <text x="110" y="75" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">Evolution Quality</text>
+    <text x="110" y="95" text-anchor="middle" font-size="10" fill="#1e40af">tau = 10 generations</text>
+
+    <rect x="15" y="110" width="190" height="75" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+    <text x="110" y="130" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Monitors:</text>
+    <text x="110" y="145" text-anchor="middle" font-size="9" fill="#1e40af">Fitness improvement velocity</text>
+    <text x="110" y="158" text-anchor="middle" font-size="9" fill="#1e40af">Diversity, stagnation</text>
+    <text x="110" y="171" text-anchor="middle" font-size="9" fill="#1e40af">Complexity, speciation</text>
+  </g>
+
+  <!-- Distribution Silo (bottom center) -->
+  <g transform="translate(490, 550)">
+    <rect x="0" y="0" width="220" height="200" rx="16" fill="white" stroke="#ec4899" stroke-width="4" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="220" height="50" rx="16" fill="url(#distGrad)"/>
+    <rect x="0" y="34" width="220" height="16" fill="url(#distGrad)"/>
+    <text x="110" y="35" text-anchor="middle" font-size="16" font-weight="bold" fill="white">Distribution Silo</text>
+
+    <text x="110" y="75" text-anchor="middle" font-size="12" font-weight="600" fill="#9d174d">Network Efficiency</text>
+    <text x="110" y="95" text-anchor="middle" font-size="10" fill="#9d174d">tau = 1 second</text>
+
+    <rect x="15" y="110" width="190" height="75" rx="6" fill="#fce7f3" stroke="#f9a8d4"/>
+    <text x="110" y="130" text-anchor="middle" font-size="10" font-weight="600" fill="#9d174d">Monitors:</text>
+    <text x="110" y="145" text-anchor="middle" font-size="9" fill="#9d174d">Peer load, network latency</text>
+    <text x="110" y="158" text-anchor="middle" font-size="9" fill="#9d174d">Island diversity, migration</text>
+    <text x="110" y="171" text-anchor="middle" font-size="9" fill="#9d174d">Load balance, topology</text>
+  </g>
+
+  <!-- ================ SIGNAL FLOWS ================ -->
+
+  <!-- Resource → Task (top) -->
+  <g transform="translate(320, 200)">
+    <rect x="0" y="0" width="560" height="100" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+    <text x="280" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Resource → Task</text>
+
+    <g transform="translate(20, 30)">
+      <path d="M 0 20 L 500 20" stroke="#22c55e" stroke-width="3" marker-end="url(#arrowBlue)"/>
+      <rect x="80" y="5" width="140" height="30" rx="4" fill="white" stroke="#22c55e"/>
+      <text x="150" y="25" text-anchor="middle" font-size="9" fill="#166534">pressure_signal: 0-1</text>
+
+      <rect x="240" y="5" width="160" height="30" rx="4" fill="white" stroke="#22c55e"/>
+      <text x="320" y="25" text-anchor="middle" font-size="9" fill="#166534">max_evals_per_individual</text>
+    </g>
+
+    <g transform="translate(20, 60)">
+      <rect x="80" y="5" width="140" height="30" rx="4" fill="white" stroke="#22c55e"/>
+      <text x="150" y="25" text-anchor="middle" font-size="9" fill="#166534">should_simplify: 0-1</text>
+
+      <text x="320" y="25" text-anchor="middle" font-size="9" fill="#64748b" font-style="italic">"I'm under pressure, reduce complexity"</text>
+    </g>
+  </g>
+
+  <!-- Task → Resource (top) -->
+  <g transform="translate(320, 305)">
+    <rect x="0" y="0" width="560" height="100" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+    <text x="280" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">Task → Resource</text>
+
+    <g transform="translate(20, 30)">
+      <path d="M 500 20 L 0 20" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrowGreen)"/>
+      <rect x="70" y="5" width="130" height="30" rx="4" fill="white" stroke="#3b82f6"/>
+      <text x="135" y="25" text-anchor="middle" font-size="9" fill="#1e40af">exploration_boost: 0-1</text>
+
+      <rect x="220" y="5" width="180" height="30" rx="4" fill="white" stroke="#3b82f6"/>
+      <text x="310" y="25" text-anchor="middle" font-size="9" fill="#1e40af">desired_evals_per_individual</text>
+    </g>
+
+    <g transform="translate(20, 60)">
+      <rect x="70" y="5" width="180" height="30" rx="4" fill="white" stroke="#3b82f6"/>
+      <text x="160" y="25" text-anchor="middle" font-size="9" fill="#1e40af">expected_complexity_growth</text>
+
+      <text x="350" y="25" text-anchor="middle" font-size="9" fill="#64748b" font-style="italic">"I need more evals, expect growth"</text>
+    </g>
+  </g>
+
+  <!-- Resource → Distribution (left diagonal) -->
+  <g transform="translate(120, 470)">
+    <rect x="0" y="0" width="280" height="100" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+    <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#166534">Resource → Distribution</text>
+
+    <path d="M 30 50 L 250 85" stroke="#22c55e" stroke-width="3" marker-end="url(#arrowPink)"/>
+
+    <g transform="translate(15, 35)">
+      <rect x="35" y="0" width="150" height="25" rx="4" fill="white" stroke="#22c55e"/>
+      <text x="110" y="17" text-anchor="middle" font-size="9" fill="#166534">offload_preference: 0-1</text>
+    </g>
+    <g transform="translate(15, 62)">
+      <rect x="85" y="0" width="130" height="25" rx="4" fill="white" stroke="#22c55e"/>
+      <text x="150" y="17" text-anchor="middle" font-size="9" fill="#166534">local_capacity: 0-1</text>
+    </g>
+  </g>
+
+  <!-- Distribution → Resource (left diagonal) -->
+  <g transform="translate(120, 575)">
+    <rect x="0" y="0" width="280" height="100" rx="10" fill="#fce7f3" stroke="#f9a8d4" stroke-width="2"/>
+    <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#9d174d">Distribution → Resource</text>
+
+    <path d="M 250 50 L 30 85" stroke="#ec4899" stroke-width="3" marker-end="url(#arrowGreen)"/>
+
+    <g transform="translate(15, 35)">
+      <rect x="55" y="0" width="185" height="25" rx="4" fill="white" stroke="#ec4899"/>
+      <text x="147" y="17" text-anchor="middle" font-size="9" fill="#9d174d">network_load_contribution: 0-1</text>
+    </g>
+    <g transform="translate(15, 62)">
+      <rect x="35" y="0" width="180" height="25" rx="4" fill="white" stroke="#ec4899"/>
+      <text x="125" y="17" text-anchor="middle" font-size="9" fill="#9d174d">remote_capacity_available: 0-1</text>
+    </g>
+  </g>
+
+  <!-- Task → Distribution (right diagonal) -->
+  <g transform="translate(800, 470)">
+    <rect x="0" y="0" width="280" height="100" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+    <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">Task → Distribution</text>
+
+    <path d="M 250 50 L 30 85" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrowPink)"/>
+
+    <g transform="translate(15, 35)">
+      <rect x="75" y="0" width="140" height="25" rx="4" fill="white" stroke="#3b82f6"/>
+      <text x="145" y="17" text-anchor="middle" font-size="9" fill="#1e40af">diversity_need: 0-1</text>
+    </g>
+    <g transform="translate(15, 62)">
+      <rect x="35" y="0" width="160" height="25" rx="4" fill="white" stroke="#3b82f6"/>
+      <text x="115" y="17" text-anchor="middle" font-size="9" fill="#1e40af">speciation_pressure: 0-1</text>
+    </g>
+  </g>
+
+  <!-- Distribution → Task (right diagonal) -->
+  <g transform="translate(800, 575)">
+    <rect x="0" y="0" width="280" height="100" rx="10" fill="#fce7f3" stroke="#f9a8d4" stroke-width="2"/>
+    <text x="140" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#9d174d">Distribution → Task</text>
+
+    <path d="M 30 50 L 250 85" stroke="#ec4899" stroke-width="3" marker-end="url(#arrowBlue)"/>
+
+    <g transform="translate(15, 35)">
+      <rect x="55" y="0" width="160" height="25" rx="4" fill="white" stroke="#ec4899"/>
+      <text x="135" y="17" text-anchor="middle" font-size="9" fill="#9d174d">island_diversity_score: 0-1</text>
+    </g>
+    <g transform="translate(15, 62)">
+      <rect x="75" y="0" width="150" height="25" rx="4" fill="white" stroke="#ec4899"/>
+      <text x="150" y="17" text-anchor="middle" font-size="9" fill="#9d174d">migration_activity: 0-1</text>
+    </g>
+  </g>
+
+  <!-- ================ CENTER: Cross-Silo Coordinator ================ -->
+  <g transform="translate(500, 410)">
+    <rect x="0" y="0" width="200" height="100" rx="12" fill="#fbbf24" filter="url(#shadow)"/>
+    <text x="100" y="28" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e293b">lc_cross_silo</text>
+    <text x="100" y="48" text-anchor="middle" font-size="11" fill="#1e293b">Signal Router</text>
+
+    <line x1="20" y1="60" x2="180" y2="60" stroke="#1e293b" stroke-width="1" opacity="0.3"/>
+
+    <text x="100" y="75" text-anchor="middle" font-size="9" fill="#1e293b">Route validation</text>
+    <text x="100" y="88" text-anchor="middle" font-size="9" fill="#1e293b">Value clamping + decay</text>
+  </g>
+
+  <!-- ================ LEGEND: Shared Resource Resolution ================ -->
+  <g transform="translate(400, 100)">
+    <rect x="0" y="0" width="400" height="85" rx="10" fill="#fef3c7" stroke="#fbbf24" stroke-width="2"/>
+    <text x="200" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#92400e">Shared Resource Resolution</text>
+
+    <text x="20" y="45" font-size="10" fill="#92400e">Resource sets:</text>
+    <text x="120" y="45" font-size="10" fill="#92400e" font-weight="600">max_evals_per_individual = f(pressure)</text>
+
+    <text x="20" y="62" font-size="10" fill="#92400e">Task requests:</text>
+    <text x="120" y="62" font-size="10" fill="#92400e" font-weight="600">desired_evals_per_individual = f(variance)</text>
+
+    <text x="20" y="79" font-size="10" fill="#92400e">Effective:</text>
+    <text x="120" y="79" font-size="10" fill="#92400e" font-weight="bold">min(resource_max, task_desired)</text>
+  </g>
+
+  <!-- Color Legend -->
+  <g transform="translate(20, 720)">
+    <rect x="0" y="0" width="1160" height="60" rx="8" fill="white" stroke="#e2e8f0"/>
+    <text x="580" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#0f172a">Signal Color Legend</text>
+
+    <g transform="translate(100, 35)">
+      <circle cx="6" cy="6" r="5" fill="#22c55e"/>
+      <text x="18" y="10" font-size="10" fill="#0f172a">Resource signals: pressure, capacity, throttling</text>
+    </g>
+
+    <g transform="translate(420, 35)">
+      <circle cx="6" cy="6" r="5" fill="#3b82f6"/>
+      <text x="18" y="10" font-size="10" fill="#0f172a">Task signals: exploration, diversity, complexity</text>
+    </g>
+
+    <g transform="translate(750, 35)">
+      <circle cx="6" cy="6" r="5" fill="#ec4899"/>
+      <text x="18" y="10" font-size="10" fill="#0f172a">Distribution signals: network load, island diversity</text>
+    </g>
+  </g>
+</svg>

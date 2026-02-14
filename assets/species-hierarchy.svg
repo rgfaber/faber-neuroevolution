@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400">
+  <defs>
+    <marker id="arrSH" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Liquid Conglomerate: Species-Level Meta-Control</text>
+
+  <!-- L2: Global Strategic -->
+  <rect x="250" y="50" width="200" height="60" rx="8" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="350" y="75" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="white" text-anchor="middle">L2: Global Strategy</text>
+  <text x="350" y="95" font-family="monospace" font-size="8" fill="#e9d8fd" text-anchor="middle">inter-species resource allocation</text>
+
+  <!-- L1: Species Meta-Controllers -->
+  <rect x="50" y="150" width="160" height="70" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="130" y="175" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="white" text-anchor="middle">L1: Species A Meta</text>
+  <text x="130" y="195" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">topology_rate: 0.1</text>
+  <text x="130" y="210" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">complexity_pen: 0.01</text>
+
+  <rect x="270" y="150" width="160" height="70" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="350" y="175" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="white" text-anchor="middle">L1: Species B Meta</text>
+  <text x="350" y="195" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">topology_rate: 0.05</text>
+  <text x="350" y="210" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">complexity_pen: 0.005</text>
+
+  <rect x="490" y="150" width="160" height="70" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="570" y="175" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="white" text-anchor="middle">L1: Species C Meta</text>
+  <text x="570" y="195" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">topology_rate: 0.02</text>
+  <text x="570" y="210" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">complexity_pen: 0.02</text>
+
+  <!-- L0: Species Populations -->
+  <rect x="50" y="260" width="160" height="60" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="130" y="285" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="white" text-anchor="middle">L0: Species A (25)</text>
+  <text x="130" y="305" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">minimal, exploring</text>
+
+  <rect x="270" y="260" width="160" height="60" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="350" y="285" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="white" text-anchor="middle">L0: Species B (40)</text>
+  <text x="350" y="305" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">medium, exploiting</text>
+
+  <rect x="490" y="260" width="160" height="60" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="570" y="285" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="white" text-anchor="middle">L0: Species C (35)</text>
+  <text x="570" y="305" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">complex, refining</text>
+
+  <!-- Arrows from L2 to L1 -->
+  <path d="M 280 110 L 160 145" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrSH)"/>
+  <path d="M 350 110 L 350 145" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrSH)"/>
+  <path d="M 420 110 L 540 145" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrSH)"/>
+
+  <!-- Arrows from L1 to L0 -->
+  <path d="M 130 220 L 130 255" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrSH)"/>
+  <path d="M 350 220 L 350 255" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrSH)"/>
+  <path d="M 570 220 L 570 255" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrSH)"/>
+
+  <!-- Timescale labels -->
+  <text x="30" y="80" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#9f7aea" text-anchor="end">slow</text>
+  <text x="30" y="185" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4299e1" text-anchor="end">medium</text>
+  <text x="30" y="290" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#48bb78" text-anchor="end">fast</text>
+
+  <!-- Key insight -->
+  <rect x="150" y="345" width="400" height="40" rx="4" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="350" y="362" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621" text-anchor="middle">Each species has its own meta-controller learning</text>
+  <text x="350" y="378" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621" text-anchor="middle">optimal topology evolution strategy for its niche</text>
+</svg>

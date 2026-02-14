@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="eliteGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f5e9"/>
+      <stop offset="100%" style="stop-color:#c8e6c9"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="1" stdDeviation="1" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#333">
+    MAP-Elites: Quality-Diversity Grid
+  </text>
+
+  <!-- Grid background -->
+  <rect x="150" y="50" width="300" height="300" fill="#fafafa" stroke="#666" stroke-width="1"/>
+
+  <!-- Axes labels -->
+  <text x="300" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666">Behavior Dimension 1 (e.g., speed)</text>
+  <text x="100" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#666" transform="rotate(-90 100 200)">Behavior Dimension 2 (e.g., size)</text>
+
+  <!-- Grid lines (6x6) -->
+  <line x1="150" y1="100" x2="450" y2="100" stroke="#ddd" stroke-width="1"/>
+  <line x1="150" y1="150" x2="450" y2="150" stroke="#ddd" stroke-width="1"/>
+  <line x1="150" y1="200" x2="450" y2="200" stroke="#ddd" stroke-width="1"/>
+  <line x1="150" y1="250" x2="450" y2="250" stroke="#ddd" stroke-width="1"/>
+  <line x1="150" y1="300" x2="450" y2="300" stroke="#ddd" stroke-width="1"/>
+
+  <line x1="200" y1="50" x2="200" y2="350" stroke="#ddd" stroke-width="1"/>
+  <line x1="250" y1="50" x2="250" y2="350" stroke="#ddd" stroke-width="1"/>
+  <line x1="300" y1="50" x2="300" y2="350" stroke="#ddd" stroke-width="1"/>
+  <line x1="350" y1="50" x2="350" y2="350" stroke="#ddd" stroke-width="1"/>
+  <line x1="400" y1="50" x2="400" y2="350" stroke="#ddd" stroke-width="1"/>
+
+  <!-- Elites in cells (varying green intensity by fitness) -->
+  <!-- High fitness (dark green) -->
+  <rect x="202" y="52" width="46" height="46" rx="3" fill="#2e7d32" filter="url(#shadow)"/>
+  <text x="225" y="80" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">95</text>
+
+  <rect x="302" y="102" width="46" height="46" rx="3" fill="#388e3c" filter="url(#shadow)"/>
+  <text x="325" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">88</text>
+
+  <!-- Medium fitness (medium green) -->
+  <rect x="152" y="152" width="46" height="46" rx="3" fill="#4caf50" filter="url(#shadow)"/>
+  <text x="175" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">72</text>
+
+  <rect x="352" y="202" width="46" height="46" rx="3" fill="#66bb6a" filter="url(#shadow)"/>
+  <text x="375" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">65</text>
+
+  <rect x="252" y="252" width="46" height="46" rx="3" fill="#81c784" filter="url(#shadow)"/>
+  <text x="275" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">58</text>
+
+  <!-- Lower fitness (light green) -->
+  <rect x="402" y="302" width="46" height="46" rx="3" fill="#a5d6a7" filter="url(#shadow)"/>
+  <text x="425" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">45</text>
+
+  <rect x="152" y="302" width="46" height="46" rx="3" fill="#c8e6c9" filter="url(#shadow)"/>
+  <text x="175" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">32</text>
+
+  <!-- Empty cells (just border) -->
+  <rect x="302" y="52" width="46" height="46" rx="3" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="252" y="102" width="46" height="46" rx="3" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>
+  <rect x="402" y="152" width="46" height="46" rx="3" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- New individual trying to enter -->
+  <rect x="352" y="52" width="46" height="46" rx="3" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
+  <text x="375" y="75" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#e65100">NEW</text>
+  <text x="375" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">78</text>
+
+  <!-- Explanation boxes -->
+  <rect x="500" y="60" width="270" height="100" rx="10" fill="#f5f5f5" stroke="#666" stroke-width="1" filter="url(#shadow)"/>
+  <text x="635" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">How MAP-Elites Works</text>
+  <text x="515" y="105" font-family="Arial, sans-serif" font-size="10" fill="#333">1. Evaluate individual behavior</text>
+  <text x="515" y="120" font-family="Arial, sans-serif" font-size="10" fill="#333">2. Map to grid cell by behavior</text>
+  <text x="515" y="135" font-family="Arial, sans-serif" font-size="10" fill="#333">3. If cell empty OR new is better:</text>
+  <text x="530" y="150" font-family="Arial, sans-serif" font-size="10" fill="#333">place as new elite</text>
+
+  <!-- Metrics box -->
+  <rect x="500" y="180" width="270" height="90" rx="10" fill="#e8f5e9" stroke="#4caf50" stroke-width="1" filter="url(#shadow)"/>
+  <text x="635" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2e7d32">Key Metrics</text>
+  <text x="515" y="230" font-family="Arial, sans-serif" font-size="11" fill="#333">Coverage: 7/36 = 19.4%</text>
+  <text x="515" y="250" font-family="Arial, sans-serif" font-size="11" fill="#333">QD-Score: 455 (sum of fitness)</text>
+
+  <!-- Legend -->
+  <rect x="500" y="290" width="270" height="70" rx="5" fill="#fafafa" stroke="#ccc"/>
+  <text x="515" y="310" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#333">Legend:</text>
+  <rect x="515" y="320" width="20" height="15" fill="#2e7d32"/>
+  <text x="545" y="332" font-family="Arial, sans-serif" font-size="10" fill="#333">High fitness elite</text>
+  <rect x="515" y="340" width="20" height="15" fill="#c8e6c9"/>
+  <text x="545" y="352" font-family="Arial, sans-serif" font-size="10" fill="#333">Lower fitness elite</text>
+  <rect x="650" y="320" width="20" height="15" fill="none" stroke="#ccc" stroke-dasharray="3,2"/>
+  <text x="680" y="332" font-family="Arial, sans-serif" font-size="10" fill="#333">Empty cell</text>
+</svg>

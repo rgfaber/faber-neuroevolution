@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <linearGradient id="survGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8f5e9"/>
+      <stop offset="100%" style="stop-color:#c8e6c9"/>
+    </linearGradient>
+    <linearGradient id="elimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffebee"/>
+      <stop offset="100%" style="stop-color:#ffcdd2"/>
+    </linearGradient>
+    <linearGradient id="offGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e3f2fd"/>
+      <stop offset="100%" style="stop-color:#bbdefb"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">
+    Selection and Breeding Process
+  </text>
+
+  <!-- Stage 1: Initial Population -->
+  <text x="100" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#666">1. Population</text>
+
+  <!-- Population individuals sorted by fitness -->
+  <rect x="50" y="90" width="100" height="35" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" filter="url(#shadow)"/>
+  <text x="100" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 95.2</text>
+
+  <rect x="50" y="130" width="100" height="35" rx="5" fill="#e8f5e9" stroke="#4caf50" stroke-width="2" filter="url(#shadow)"/>
+  <text x="100" y="152" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 87.5</text>
+
+  <rect x="50" y="170" width="100" height="35" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="1" filter="url(#shadow)"/>
+  <text x="100" y="192" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 72.1</text>
+
+  <rect x="50" y="210" width="100" height="35" rx="5" fill="#fff3e0" stroke="#ff9800" stroke-width="1" filter="url(#shadow)"/>
+  <text x="100" y="232" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 65.3</text>
+
+  <rect x="50" y="250" width="100" height="35" rx="5" fill="#ffebee" stroke="#f44336" stroke-width="1" filter="url(#shadow)"/>
+  <text x="100" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 45.0</text>
+
+  <text x="100" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#999">sorted by fitness</text>
+
+  <!-- Arrow -->
+  <line x1="160" y1="190" x2="210" y2="190" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Stage 2: Selection -->
+  <text x="300" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#666">2. Selection (20%)</text>
+
+  <!-- Survivors -->
+  <rect x="230" y="90" width="140" height="75" rx="5" fill="url(#survGrad)" stroke="#4caf50" stroke-width="2"/>
+  <text x="300" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#2e7d32">Survivors</text>
+  <text x="300" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 95.2</text>
+  <text x="300" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#333">F: 87.5</text>
+
+  <!-- Eliminated -->
+  <rect x="230" y="180" width="140" height="115" rx="5" fill="url(#elimGrad)" stroke="#f44336" stroke-width="1"/>
+  <text x="300" y="205" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#c62828">Eliminated</text>
+  <text x="300" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666" text-decoration="line-through">F: 72.1</text>
+  <text x="300" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666" text-decoration="line-through">F: 65.3</text>
+  <text x="300" y="265" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666" text-decoration="line-through">F: 45.0</text>
+
+  <!-- Arrow -->
+  <line x1="380" y1="130" x2="430" y2="130" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Stage 3: Breeding -->
+  <text x="530" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#666">3. Breeding</text>
+
+  <!-- Parent 1 -->
+  <rect x="450" y="90" width="70" height="50" rx="5" fill="url(#survGrad)" stroke="#4caf50" stroke-width="2" filter="url(#shadow)"/>
+  <text x="485" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#2e7d32">Parent 1</text>
+  <text x="485" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">F: 95.2</text>
+
+  <!-- Parent 2 -->
+  <rect x="540" y="90" width="70" height="50" rx="5" fill="url(#survGrad)" stroke="#4caf50" stroke-width="2" filter="url(#shadow)"/>
+  <text x="575" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#2e7d32">Parent 2</text>
+  <text x="575" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">F: 87.5</text>
+
+  <!-- Crossover symbol -->
+  <text x="530" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#1976d2">X</text>
+  <text x="530" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">crossover</text>
+
+  <!-- Offspring -->
+  <rect x="450" y="210" width="160" height="50" rx="5" fill="url(#offGrad)" stroke="#1976d2" stroke-width="2" filter="url(#shadow)"/>
+  <text x="530" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1565c0">Offspring</text>
+  <text x="530" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">weights = mix(P1, P2)</text>
+
+  <!-- Arrow to mutation -->
+  <line x1="620" y1="235" x2="670" y2="235" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Stage 4: Mutation -->
+  <text x="780" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#666">4. Mutation</text>
+
+  <!-- Mutated offspring -->
+  <rect x="690" y="210" width="160" height="50" rx="5" fill="#fce4ec" stroke="#e91e63" stroke-width="2" filter="url(#shadow)"/>
+  <text x="770" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#c2185b">Mutated</text>
+  <text x="770" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#333">weights += noise</text>
+
+  <!-- Repeat indicator -->
+  <path d="M 530 270 Q 530 320 700 320 Q 850 320 850 200" fill="none" stroke="#666" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowhead)"/>
+  <text x="680" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#666">repeat until population_size</text>
+
+  <!-- Legend -->
+  <rect x="50" y="360" width="800" height="30" fill="#f5f5f5" rx="5"/>
+  <rect x="70" y="370" width="15" height="15" fill="url(#survGrad)" stroke="#4caf50"/>
+  <text x="95" y="382" font-family="Arial, sans-serif" font-size="10" fill="#333">Survivor (top N%)</text>
+  <rect x="220" y="370" width="15" height="15" fill="url(#elimGrad)" stroke="#f44336"/>
+  <text x="245" y="382" font-family="Arial, sans-serif" font-size="10" fill="#333">Eliminated</text>
+  <rect x="340" y="370" width="15" height="15" fill="url(#offGrad)" stroke="#1976d2"/>
+  <text x="365" y="382" font-family="Arial, sans-serif" font-size="10" fill="#333">Offspring</text>
+  <rect x="460" y="370" width="15" height="15" fill="#fce4ec" stroke="#e91e63"/>
+  <text x="485" y="382" font-family="Arial, sans-serif" font-size="10" fill="#333">Mutated</text>
+</svg>

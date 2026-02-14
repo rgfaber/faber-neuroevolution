@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 380">
+  <defs>
+    <marker id="arrSA" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Swarm Robotics: Evolved Neural Controllers</text>
+
+  <!-- Top layer: Evolution -->
+  <rect x="150" y="50" width="400" height="70" rx="8" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="350" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#6b46c1" text-anchor="middle">faber_neuroevolution</text>
+  <text x="350" y="95" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#805ad5" text-anchor="middle">Population evolution, fitness aggregation, selection</text>
+  <text x="350" y="110" font-family="monospace" font-size="9" fill="#9f7aea" text-anchor="middle">Evolve swarm behaviors across all robots</text>
+
+  <!-- Middle layer: Neural Networks + Mesh -->
+  <rect x="50" y="150" width="280" height="80" rx="8" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="190" y="175" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#276749" text-anchor="middle">faber_tweann</text>
+  <text x="190" y="195" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#38a169" text-anchor="middle">LTC neural controllers</text>
+  <text x="190" y="215" font-family="monospace" font-size="9" fill="#48bb78" text-anchor="middle">Temporal memory for dynamic environments</text>
+
+  <rect x="370" y="150" width="280" height="80" rx="8" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="510" y="175" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#2b6cb0" text-anchor="middle">macula (Mesh)</text>
+  <text x="510" y="195" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#3182ce" text-anchor="middle">DHT + PubSub + RPC</text>
+  <text x="510" y="215" font-family="monospace" font-size="9" fill="#4299e1" text-anchor="middle">Decentralized swarm communication</text>
+
+  <!-- Bottom layer: Physical robots -->
+  <rect x="100" y="270" width="500" height="100" rx="8" fill="#fed7d7" stroke="#fc8181" stroke-width="2"/>
+  <text x="350" y="295" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#c53030" text-anchor="middle">Nerves + Physical Robots</text>
+
+  <!-- Robot icons -->
+  <g transform="translate(140, 310)">
+    <rect x="0" y="0" width="60" height="45" rx="4" fill="#fc8181"/>
+    <text x="30" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot 1</text>
+    <text x="30" y="35" font-family="monospace" font-size="8" fill="#fff5f5" text-anchor="middle">TWEANN</text>
+  </g>
+
+  <g transform="translate(230, 310)">
+    <rect x="0" y="0" width="60" height="45" rx="4" fill="#fc8181"/>
+    <text x="30" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot 2</text>
+    <text x="30" y="35" font-family="monospace" font-size="8" fill="#fff5f5" text-anchor="middle">TWEANN</text>
+  </g>
+
+  <g transform="translate(320, 310)">
+    <rect x="0" y="0" width="60" height="45" rx="4" fill="#fc8181"/>
+    <text x="30" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot 3</text>
+    <text x="30" y="35" font-family="monospace" font-size="8" fill="#fff5f5" text-anchor="middle">TWEANN</text>
+  </g>
+
+  <g transform="translate(410, 310)">
+    <rect x="0" y="0" width="60" height="45" rx="4" fill="#fc8181"/>
+    <text x="30" y="18" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">Robot N</text>
+    <text x="30" y="35" font-family="monospace" font-size="8" fill="#fff5f5" text-anchor="middle">TWEANN</text>
+  </g>
+
+  <g transform="translate(500, 310)">
+    <rect x="0" y="0" width="60" height="45" rx="4" fill="#e53e3e"/>
+    <text x="30" y="28" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">...</text>
+  </g>
+
+  <!-- Arrows -->
+  <path d="M 350 120 L 350 145" stroke="#4a5568" stroke-width="2" marker-end="url(#arrSA)"/>
+  <path d="M 190 230 L 190 265" stroke="#4a5568" stroke-width="2" marker-end="url(#arrSA)"/>
+  <path d="M 510 230 L 510 265" stroke="#4a5568" stroke-width="2" marker-end="url(#arrSA)"/>
+
+  <text x="200" y="250" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">controllers</text>
+  <text x="500" y="250" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#718096">coordination</text>
+</svg>

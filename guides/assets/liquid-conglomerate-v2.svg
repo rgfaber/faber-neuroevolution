@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" width="1000" height="700">
+  <defs>
+    <!-- Gradients for silos -->
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3730A3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="distGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#D97706;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B45309;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- Level colors -->
+    <linearGradient id="l0Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#DC2626;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#B91C1C;stop-opacity:0.9" />
+    </linearGradient>
+    <linearGradient id="l1Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:0.9" />
+    </linearGradient>
+    <linearGradient id="l2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:0.9" />
+    </linearGradient>
+
+    <!-- Drop shadow -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#0F172A"/>
+
+  <!-- Title -->
+  <text x="500" y="45" text-anchor="middle" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="28" font-weight="bold">
+    Liquid Conglomerate v2
+  </text>
+  <text x="500" y="72" text-anchor="middle" fill="#94A3B8" font-family="Arial, sans-serif" font-size="14">
+    Hierarchical 3-Silo Architecture
+  </text>
+
+  <!-- Main container -->
+  <rect x="30" y="90" width="940" height="580" rx="12" fill="#1E293B" stroke="#334155" stroke-width="2" filter="url(#shadow)"/>
+
+  <!-- ============ TASK SILO ============ -->
+  <g transform="translate(50, 110)">
+    <!-- Silo container -->
+    <rect width="280" height="540" rx="8" fill="url(#taskGrad)" opacity="0.15" stroke="#4F46E5" stroke-width="2"/>
+
+    <!-- Silo header -->
+    <rect width="280" height="50" rx="8" fill="url(#taskGrad)"/>
+    <text x="140" y="28" text-anchor="middle" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
+      TASK SILO
+    </text>
+    <text x="140" y="44" text-anchor="middle" fill="#C7D2FE" font-family="Arial, sans-serif" font-size="11">
+      Evolution Optimization | τ = 50
+    </text>
+
+    <!-- L2: Strategic -->
+    <rect x="15" y="70" width="250" height="130" rx="6" fill="url(#l2Grad)"/>
+    <text x="30" y="92" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L2: Strategic</text>
+    <text x="230" y="92" text-anchor="end" fill="#D1FAE5" font-family="Arial, sans-serif" font-size="10">Multi-generation</text>
+    <text x="30" y="115" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Learn long-term patterns</text>
+    <text x="30" y="132" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Adapt to problem structure</text>
+    <text x="30" y="149" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• LTC network optimization</text>
+    <rect x="30" y="165" width="220" height="25" rx="4" fill="#064E3B" opacity="0.6"/>
+    <text x="140" y="182" text-anchor="middle" fill="#6EE7B7" font-family="monospace" font-size="10">task_l2_strategic.erl</text>
+
+    <!-- L1: Tactical -->
+    <rect x="15" y="215" width="250" height="130" rx="6" fill="url(#l1Grad)"/>
+    <text x="30" y="237" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L1: Tactical</text>
+    <text x="230" y="237" text-anchor="end" fill="#FEF3C7" font-family="Arial, sans-serif" font-size="10">Per-generation</text>
+    <text x="30" y="260" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Adjust mutation/selection</text>
+    <text x="30" y="277" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• React to recent fitness</text>
+    <text x="30" y="294" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Stagnation detection</text>
+    <rect x="30" y="310" width="220" height="25" rx="4" fill="#78350F" opacity="0.6"/>
+    <text x="140" y="327" text-anchor="middle" fill="#FCD34D" font-family="monospace" font-size="10">task_l1_tactical.erl</text>
+
+    <!-- L0: Defaults -->
+    <rect x="15" y="360" width="250" height="130" rx="6" fill="url(#l0Grad)"/>
+    <text x="30" y="382" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L0: Defaults</text>
+    <text x="230" y="382" text-anchor="end" fill="#FECACA" font-family="Arial, sans-serif" font-size="10">Immediate</text>
+    <text x="30" y="405" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Safe starting parameters</text>
+    <text x="30" y="422" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Never disabled</text>
+    <text x="30" y="439" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Fallback baseline</text>
+    <rect x="30" y="455" width="220" height="25" rx="4" fill="#7F1D1D" opacity="0.6"/>
+    <text x="140" y="472" text-anchor="middle" fill="#FCA5A5" font-family="monospace" font-size="10">task_l0_defaults.erl</text>
+
+    <!-- Outputs -->
+    <text x="140" y="510" text-anchor="middle" fill="#A5B4FC" font-family="Arial, sans-serif" font-size="10" font-weight="bold">OUTPUTS</text>
+    <text x="140" y="528" text-anchor="middle" fill="#818CF8" font-family="monospace" font-size="9">mutation_rate, selection_ratio</text>
+  </g>
+
+  <!-- ============ RESOURCE SILO ============ -->
+  <g transform="translate(360, 110)">
+    <!-- Silo container -->
+    <rect width="280" height="540" rx="8" fill="url(#resourceGrad)" opacity="0.15" stroke="#059669" stroke-width="2"/>
+
+    <!-- Silo header -->
+    <rect width="280" height="50" rx="8" fill="url(#resourceGrad)"/>
+    <text x="140" y="28" text-anchor="middle" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
+      RESOURCE SILO
+    </text>
+    <text x="140" y="44" text-anchor="middle" fill="#A7F3D0" font-family="Arial, sans-serif" font-size="11">
+      System Stability | τ = 5
+    </text>
+
+    <!-- L2: Predictive -->
+    <rect x="15" y="70" width="250" height="130" rx="6" fill="url(#l2Grad)"/>
+    <text x="30" y="92" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L2: Predictive</text>
+    <text x="230" y="92" text-anchor="end" fill="#D1FAE5" font-family="Arial, sans-serif" font-size="10">Per-generation</text>
+    <text x="30" y="115" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Learn resource patterns</text>
+    <text x="30" y="132" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Anticipate memory needs</text>
+    <text x="30" y="149" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Proactive scaling</text>
+    <rect x="30" y="165" width="220" height="25" rx="4" fill="#064E3B" opacity="0.6"/>
+    <text x="140" y="182" text-anchor="middle" fill="#6EE7B7" font-family="monospace" font-size="10">resource_l2_predictive.erl</text>
+
+    <!-- L1: Reactive -->
+    <rect x="15" y="215" width="250" height="130" rx="6" fill="url(#l1Grad)"/>
+    <text x="30" y="237" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L1: Reactive</text>
+    <text x="230" y="237" text-anchor="end" fill="#FEF3C7" font-family="Arial, sans-serif" font-size="10">Per-evaluation</text>
+    <text x="30" y="260" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Adjust concurrency</text>
+    <text x="30" y="277" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Dynamic throttling</text>
+    <text x="30" y="294" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Load-based batching</text>
+    <rect x="30" y="310" width="220" height="25" rx="4" fill="#78350F" opacity="0.6"/>
+    <text x="140" y="327" text-anchor="middle" fill="#FCD34D" font-family="monospace" font-size="10">resource_l1_reactive.erl</text>
+
+    <!-- L0: Emergency (IMPLEMENTED) -->
+    <rect x="15" y="360" width="250" height="130" rx="6" fill="url(#l0Grad)"/>
+    <rect x="180" y="363" width="80" height="18" rx="3" fill="#22C55E"/>
+    <text x="220" y="375" text-anchor="middle" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="9" font-weight="bold">ACTIVE</text>
+    <text x="30" y="382" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L0: Emergency</text>
+    <text x="30" y="405" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Hard memory limits</text>
+    <text x="30" y="422" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Force GC at 70%</text>
+    <text x="30" y="439" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Pause at 90% critical</text>
+    <rect x="30" y="455" width="220" height="25" rx="4" fill="#7F1D1D" opacity="0.6"/>
+    <text x="140" y="472" text-anchor="middle" fill="#FCA5A5" font-family="monospace" font-size="10">resource_l0_emergency.erl</text>
+
+    <!-- Outputs -->
+    <text x="140" y="510" text-anchor="middle" fill="#6EE7B7" font-family="Arial, sans-serif" font-size="10" font-weight="bold">OUTPUTS</text>
+    <text x="140" y="528" text-anchor="middle" fill="#34D399" font-family="monospace" font-size="9">max_concurrent, population_size</text>
+  </g>
+
+  <!-- ============ DISTRIBUTION SILO ============ -->
+  <g transform="translate(670, 110)">
+    <!-- Silo container -->
+    <rect width="280" height="540" rx="8" fill="url(#distGrad)" opacity="0.15" stroke="#D97706" stroke-width="2"/>
+
+    <!-- Silo header -->
+    <rect width="280" height="50" rx="8" fill="url(#distGrad)"/>
+    <text x="140" y="28" text-anchor="middle" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="16" font-weight="bold">
+      DISTRIBUTION SILO
+    </text>
+    <text x="140" y="44" text-anchor="middle" fill="#FDE68A" font-family="Arial, sans-serif" font-size="11">
+      Mesh Optimization | τ = 1
+    </text>
+
+    <!-- L2: Topology-aware -->
+    <rect x="15" y="70" width="250" height="130" rx="6" fill="url(#l2Grad)"/>
+    <text x="30" y="92" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L2: Topology-aware</text>
+    <text x="230" y="92" text-anchor="end" fill="#D1FAE5" font-family="Arial, sans-serif" font-size="10">Per-session</text>
+    <text x="30" y="115" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Network topology learning</text>
+    <text x="30" y="132" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Locality optimization</text>
+    <text x="30" y="149" fill="#ECFDF5" font-family="Arial, sans-serif" font-size="11">• Strategic placement</text>
+    <rect x="30" y="165" width="220" height="25" rx="4" fill="#064E3B" opacity="0.6"/>
+    <text x="140" y="182" text-anchor="middle" fill="#6EE7B7" font-family="monospace" font-size="10">dist_l2_topology.erl</text>
+
+    <!-- L1: Load-aware -->
+    <rect x="15" y="215" width="250" height="130" rx="6" fill="url(#l1Grad)"/>
+    <text x="30" y="237" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L1: Load-aware</text>
+    <text x="230" y="237" text-anchor="end" fill="#FEF3C7" font-family="Arial, sans-serif" font-size="10">Per-batch</text>
+    <text x="30" y="260" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Route to least loaded</text>
+    <text x="30" y="277" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Balance across nodes</text>
+    <text x="30" y="294" fill="#FFFBEB" font-family="Arial, sans-serif" font-size="11">• Dynamic routing</text>
+    <rect x="30" y="310" width="220" height="25" rx="4" fill="#78350F" opacity="0.6"/>
+    <text x="140" y="327" text-anchor="middle" fill="#FCD34D" font-family="monospace" font-size="10">dist_l1_load.erl</text>
+
+    <!-- L0: Local-first -->
+    <rect x="15" y="360" width="250" height="130" rx="6" fill="url(#l0Grad)"/>
+    <text x="30" y="382" fill="#F8FAFC" font-family="Arial, sans-serif" font-size="13" font-weight="bold">L0: Local-first</text>
+    <text x="230" y="382" text-anchor="end" fill="#FECACA" font-family="Arial, sans-serif" font-size="10">Immediate</text>
+    <text x="30" y="405" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Prefer local evaluation</text>
+    <text x="30" y="422" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Fallback to remote</text>
+    <text x="30" y="439" fill="#FEF2F2" font-family="Arial, sans-serif" font-size="11">• Zero network overhead</text>
+    <rect x="30" y="455" width="220" height="25" rx="4" fill="#7F1D1D" opacity="0.6"/>
+    <text x="140" y="472" text-anchor="middle" fill="#FCA5A5" font-family="monospace" font-size="10">dist_l0_local.erl</text>
+
+    <!-- Outputs -->
+    <text x="140" y="510" text-anchor="middle" fill="#FBBF24" font-family="Arial, sans-serif" font-size="10" font-weight="bold">OUTPUTS</text>
+    <text x="140" y="528" text-anchor="middle" fill="#F59E0B" font-family="monospace" font-size="9">eval_placement, batch_routing</text>
+  </g>
+
+  <!-- Connection arrows between silos -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <!-- Task -> Resource arrow -->
+  <path d="M 335 380 L 355 380" stroke="#64748B" stroke-width="2" marker-end="url(#arrowhead)" stroke-dasharray="4,2"/>
+  <text x="345" y="370" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="8">fitness</text>
+
+  <!-- Resource -> Distribution arrow -->
+  <path d="M 645 380 L 665 380" stroke="#64748B" stroke-width="2" marker-end="url(#arrowhead)" stroke-dasharray="4,2"/>
+  <text x="655" y="370" text-anchor="middle" fill="#64748B" font-family="Arial, sans-serif" font-size="8">load</text>
+
+  <!-- Legend -->
+  <g transform="translate(50, 665)">
+    <rect x="0" y="0" width="12" height="12" rx="2" fill="url(#l2Grad)"/>
+    <text x="18" y="10" fill="#94A3B8" font-family="Arial, sans-serif" font-size="10">L2: Learning (slow adaptation)</text>
+
+    <rect x="170" y="0" width="12" height="12" rx="2" fill="url(#l1Grad)"/>
+    <text x="188" y="10" fill="#94A3B8" font-family="Arial, sans-serif" font-size="10">L1: Reactive (fast response)</text>
+
+    <rect x="350" y="0" width="12" height="12" rx="2" fill="url(#l0Grad)"/>
+    <text x="368" y="10" fill="#94A3B8" font-family="Arial, sans-serif" font-size="10">L0: Emergency (immediate)</text>
+
+    <text x="550" y="10" fill="#64748B" font-family="Arial, sans-serif" font-size="10">τ = time constant (generations)</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="970" y="690" text-anchor="end" fill="#475569" font-family="Arial, sans-serif" font-size="9">
+    faber-neuroevolution v0.9.0 | Liquid Conglomerate v2
+  </text>
+</svg>

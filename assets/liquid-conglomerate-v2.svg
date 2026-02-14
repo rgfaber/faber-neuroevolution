@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 420">
+  <defs>
+    <marker id="arrLCv2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="375" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Liquid Conglomerate v2: Three Specialized Silos</text>
+
+  <!-- Task Silo -->
+  <rect x="30" y="55" width="220" height="340" rx="10" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="140" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="600" fill="#276749" text-anchor="middle">Task Silo</text>
+  <text x="140" y="98" font-family="monospace" font-size="9" fill="#48bb78" text-anchor="middle">τ = 50 (slow)</text>
+  <text x="140" y="115" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#38a169" text-anchor="middle">Evolution Optimization</text>
+
+  <!-- Task L2 -->
+  <rect x="50" y="130" width="180" height="55" rx="6" fill="#276749"/>
+  <text x="140" y="150" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L2: Strategic</text>
+  <text x="140" y="170" font-family="monospace" font-size="8" fill="#9ae6b4" text-anchor="middle">LTC network, multi-gen</text>
+
+  <!-- Task L1 -->
+  <rect x="50" y="195" width="180" height="55" rx="6" fill="#38a169"/>
+  <text x="140" y="215" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L1: Tactical</text>
+  <text x="140" y="235" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">per-generation tuning</text>
+
+  <!-- Task L0 -->
+  <rect x="50" y="260" width="180" height="55" rx="6" fill="#48bb78"/>
+  <text x="140" y="280" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L0: Defaults</text>
+  <text x="140" y="300" font-family="monospace" font-size="8" fill="#c6f6d5" text-anchor="middle">safe params, always on</text>
+
+  <!-- Task Output -->
+  <rect x="50" y="325" width="180" height="55" rx="4" fill="white" stroke="#48bb78"/>
+  <text x="140" y="345" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#276749" text-anchor="middle">Output</text>
+  <text x="140" y="362" font-family="monospace" font-size="8" fill="#38a169" text-anchor="middle">mutation_rate, selection</text>
+
+  <!-- Resource Silo -->
+  <rect x="265" y="55" width="220" height="340" rx="10" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="375" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="600" fill="#2b6cb0" text-anchor="middle">Resource Silo</text>
+  <text x="375" y="98" font-family="monospace" font-size="9" fill="#4299e1" text-anchor="middle">τ = 5 (fast)</text>
+  <text x="375" y="115" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#3182ce" text-anchor="middle">System Stability</text>
+
+  <!-- Resource L2 -->
+  <rect x="285" y="130" width="180" height="55" rx="6" fill="#1a365d"/>
+  <text x="375" y="150" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L2: Predictive</text>
+  <text x="375" y="170" font-family="monospace" font-size="8" fill="#90cdf4" text-anchor="middle">pattern learning</text>
+
+  <!-- Resource L1 -->
+  <rect x="285" y="195" width="180" height="55" rx="6" fill="#2b6cb0"/>
+  <text x="375" y="215" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L1: Reactive</text>
+  <text x="375" y="235" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">per-eval adjustment</text>
+
+  <!-- Resource L0 -->
+  <rect x="285" y="260" width="180" height="55" rx="6" fill="#4299e1"/>
+  <text x="375" y="280" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L0: Emergency</text>
+  <text x="375" y="300" font-family="monospace" font-size="8" fill="#bee3f8" text-anchor="middle">GC, pause, hard limits</text>
+
+  <!-- Resource Output -->
+  <rect x="285" y="325" width="180" height="55" rx="4" fill="white" stroke="#4299e1"/>
+  <text x="375" y="345" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#2b6cb0" text-anchor="middle">Output</text>
+  <text x="375" y="362" font-family="monospace" font-size="8" fill="#3182ce" text-anchor="middle">concurrency, eval_count</text>
+
+  <!-- Distribution Silo -->
+  <rect x="500" y="55" width="220" height="340" rx="10" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="610" y="80" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="600" fill="#6b46c1" text-anchor="middle">Distribution Silo</text>
+  <text x="610" y="98" font-family="monospace" font-size="9" fill="#9f7aea" text-anchor="middle">τ = 1 (instant)</text>
+  <text x="610" y="115" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#805ad5" text-anchor="middle">Mesh Optimization</text>
+
+  <!-- Dist L2 -->
+  <rect x="520" y="130" width="180" height="55" rx="6" fill="#44337a"/>
+  <text x="610" y="150" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L2: Topology-aware</text>
+  <text x="610" y="170" font-family="monospace" font-size="8" fill="#d6bcfa" text-anchor="middle">network locality</text>
+
+  <!-- Dist L1 -->
+  <rect x="520" y="195" width="180" height="55" rx="6" fill="#6b46c1"/>
+  <text x="610" y="215" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L1: Load-aware</text>
+  <text x="610" y="235" font-family="monospace" font-size="8" fill="#e9d8fd" text-anchor="middle">per-batch routing</text>
+
+  <!-- Dist L0 -->
+  <rect x="520" y="260" width="180" height="55" rx="6" fill="#9f7aea"/>
+  <text x="610" y="280" font-family="Inter, system-ui, sans-serif" font-size="10" fill="white" text-anchor="middle">L0: Local-first</text>
+  <text x="610" y="300" font-family="monospace" font-size="8" fill="#e9d8fd" text-anchor="middle">prefer local eval</text>
+
+  <!-- Dist Output -->
+  <rect x="520" y="325" width="180" height="55" rx="4" fill="white" stroke="#9f7aea"/>
+  <text x="610" y="345" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#6b46c1" text-anchor="middle">Output</text>
+  <text x="610" y="362" font-family="monospace" font-size="8" fill="#805ad5" text-anchor="middle">placement, routing</text>
+
+  <!-- Cross-silo arrows -->
+  <path d="M 250 220 L 265 220" stroke="#a0aec0" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrLCv2)"/>
+  <path d="M 485 220 L 500 220" stroke="#a0aec0" stroke-width="1.5" stroke-dasharray="3,2" marker-end="url(#arrLCv2)"/>
+</svg>

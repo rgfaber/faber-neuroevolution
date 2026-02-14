@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 360">
+  <defs>
+    <marker id="arrRR" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Training Strategies: Reservoir vs Full Evolution</text>
+
+  <!-- Reservoir Computing (Left) -->
+  <rect x="20" y="50" width="310" height="280" rx="8" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="175" y="75" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#6b46c1" text-anchor="middle">Reservoir Computing</text>
+
+  <!-- Input -->
+  <rect x="40" y="100" width="60" height="40" rx="4" fill="#e2e8f0" stroke="#718096"/>
+  <text x="70" y="125" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#4a5568" text-anchor="middle">Input</text>
+
+  <!-- Arrow to Reservoir -->
+  <path d="M 100 120 L 125 120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrRR)"/>
+
+  <!-- Reservoir (Fixed) -->
+  <rect x="130" y="90" width="100" height="60" rx="4" fill="#c4b5fd" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="180" y="115" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#5b21b6" text-anchor="middle">Reservoir</text>
+  <text x="180" y="130" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#7c3aed" text-anchor="middle">(FIXED)</text>
+
+  <!-- Lock icon -->
+  <circle cx="215" cy="100" r="8" fill="#7c3aed"/>
+  <text x="215" y="104" font-family="system-ui" font-size="10" fill="white" text-anchor="middle">🔒</text>
+
+  <!-- Arrow to Readout -->
+  <path d="M 230 120 L 255 120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrRR)"/>
+
+  <!-- Readout (Trainable) -->
+  <rect x="260" y="90" width="60" height="60" rx="4" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+  <text x="290" y="115" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#15803d" text-anchor="middle">Readout</text>
+  <text x="290" y="130" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#22c55e" text-anchor="middle">(TRAINED)</text>
+
+  <!-- Reservoir Description -->
+  <text x="175" y="175" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#6b46c1" text-anchor="middle">Random weights, never trained</text>
+  <text x="175" y="190" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#6b46c1" text-anchor="middle">Only readout layer evolves</text>
+
+  <!-- Pros/Cons Reservoir -->
+  <rect x="40" y="210" width="270" height="100" rx="4" fill="#f5f3ff"/>
+  <text x="55" y="230" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#22c55e">+ Very fast training</text>
+  <text x="55" y="245" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#22c55e">+ Low overfitting risk</text>
+  <text x="55" y="260" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#22c55e">+ Proven theory</text>
+  <text x="55" y="280" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#ef4444">- Limited expressiveness</text>
+  <text x="55" y="295" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#ef4444">- Fixed temporal dynamics</text>
+
+  <!-- Full Evolution (Right) -->
+  <rect x="370" y="50" width="310" height="280" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="525" y="75" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#059669" text-anchor="middle">Full Evolution</text>
+
+  <!-- Input -->
+  <rect x="390" y="100" width="60" height="40" rx="4" fill="#e2e8f0" stroke="#718096"/>
+  <text x="420" y="125" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#4a5568" text-anchor="middle">Input</text>
+
+  <!-- Arrow to Hidden -->
+  <path d="M 450 120 L 475 120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrRR)"/>
+
+  <!-- Hidden (Evolved) -->
+  <rect x="480" y="90" width="100" height="60" rx="4" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+  <text x="530" y="115" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#15803d" text-anchor="middle">Hidden</text>
+  <text x="530" y="130" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#22c55e" text-anchor="middle">(EVOLVED)</text>
+
+  <!-- Arrow to Output -->
+  <path d="M 580 120 L 605 120" stroke="#4a5568" stroke-width="2" marker-end="url(#arrRR)"/>
+
+  <!-- Output (Evolved) -->
+  <rect x="610" y="90" width="60" height="60" rx="4" fill="#86efac" stroke="#22c55e" stroke-width="2"/>
+  <text x="640" y="115" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#15803d" text-anchor="middle">Output</text>
+  <text x="640" y="130" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#22c55e" text-anchor="middle">(EVOLVED)</text>
+
+  <!-- Full Evolution Description -->
+  <text x="525" y="175" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#059669" text-anchor="middle">All weights mutated uniformly</text>
+  <text x="525" y="190" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#059669" text-anchor="middle">Structure and weights co-evolve</text>
+
+  <!-- Pros/Cons Full -->
+  <rect x="390" y="210" width="270" height="100" rx="4" fill="#ecfdf5"/>
+  <text x="405" y="230" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#22c55e">+ Maximum expressiveness</text>
+  <text x="405" y="245" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#22c55e">+ Evolvable dynamics</text>
+  <text x="405" y="260" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#22c55e">+ Optimal topology discovery</text>
+  <text x="405" y="280" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#ef4444">- Slower training</text>
+  <text x="405" y="295" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="600" fill="#ef4444">- Higher overfitting risk</text>
+
+  <!-- Bottom note -->
+  <rect x="150" y="338" width="400" height="18" rx="4" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="350" y="351" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#c05621" text-anchor="middle">faber-neuroevolution uses Full Evolution by default (like Hasani/Lechner CfC)</text>
+</svg>

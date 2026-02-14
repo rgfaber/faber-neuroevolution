@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200" width="500" height="200">
+  <!-- Background -->
+  <rect width="500" height="200" fill="#f7fafc" rx="8"/>
+
+  <!-- Population label -->
+  <text x="30" y="30" fill="#2d3748" font-family="sans-serif" font-size="14" font-weight="bold">Population</text>
+
+  <!-- Species A -->
+  <rect x="50" y="50" width="400" height="40" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="70" y="75" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Species A (10 individuals, topology pattern 1)</text>
+  <text x="380" y="75" fill="#c6f6d5" font-family="sans-serif" font-size="9">Local breeding</text>
+
+  <!-- Species B -->
+  <rect x="50" y="100" width="400" height="40" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="70" y="125" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Species B (15 individuals, topology pattern 2)</text>
+  <text x="380" y="125" fill="#bee3f8" font-family="sans-serif" font-size="9">Local breeding</text>
+
+  <!-- Species C -->
+  <rect x="50" y="150" width="400" height="40" rx="6" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="70" y="175" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Species C (25 individuals, topology pattern 3)</text>
+  <text x="380" y="175" fill="#e9d8fd" font-family="sans-serif" font-size="9">Local breeding</text>
+</svg>

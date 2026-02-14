@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 300">
+  <defs>
+    <marker id="arrNS" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="325" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Novelty Search: Behavior Space</text>
+
+  <!-- Behavior space -->
+  <rect x="30" y="50" width="300" height="220" rx="6" fill="#f7fafc" stroke="#a0aec0" stroke-width="1"/>
+  <text x="180" y="75" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#4a5568" text-anchor="middle">Behavior Space (2D example)</text>
+
+  <!-- Axes -->
+  <line x1="50" y1="250" x2="310" y2="250" stroke="#a0aec0" stroke-width="1"/>
+  <line x1="50" y1="250" x2="50" y2="90" stroke="#a0aec0" stroke-width="1"/>
+  <text x="180" y="268" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" text-anchor="middle">Behavior dimension 1</text>
+  <text x="35" y="170" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" transform="rotate(-90, 35, 170)">Behavior dimension 2</text>
+
+  <!-- Archive points (gray) -->
+  <circle cx="80" cy="200" r="6" fill="#a0aec0"/>
+  <circle cx="120" cy="180" r="6" fill="#a0aec0"/>
+  <circle cx="150" cy="220" r="6" fill="#a0aec0"/>
+  <circle cx="200" cy="150" r="6" fill="#a0aec0"/>
+  <circle cx="250" cy="200" r="6" fill="#a0aec0"/>
+  <circle cx="100" cy="130" r="6" fill="#a0aec0"/>
+  <circle cx="280" cy="120" r="6" fill="#a0aec0"/>
+
+  <!-- Current population (blue) -->
+  <circle cx="140" cy="160" r="8" fill="#4299e1"/>
+  <circle cx="170" cy="180" r="8" fill="#4299e1"/>
+  <circle cx="190" cy="195" r="8" fill="#4299e1"/>
+
+  <!-- Novel individual (gold) -->
+  <circle cx="260" cy="110" r="10" fill="#ecc94b" stroke="#d69e2e" stroke-width="2"/>
+
+  <!-- k-nearest lines -->
+  <line x1="260" y1="110" x2="280" y2="120" stroke="#ed8936" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="260" y1="110" x2="200" y2="150" stroke="#ed8936" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="260" y1="110" x2="250" y2="200" stroke="#ed8936" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Explanation panel -->
+  <rect x="350" y="50" width="280" height="220" rx="6" fill="#fffaf0" stroke="#ed8936" stroke-width="1.5"/>
+  <text x="490" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#c05621" text-anchor="middle">Novelty = Distance to Neighbors</text>
+
+  <text x="370" y="105" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">1. Each individual has a behavior vector</text>
+  <text x="370" y="125" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">2. Novelty = avg distance to k-nearest</text>
+  <text x="370" y="145" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">3. High novelty = selected for reproduction</text>
+  <text x="370" y="165" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">4. Novel behaviors added to archive</text>
+
+  <!-- Legend -->
+  <g transform="translate(370, 190)">
+    <circle cx="10" cy="10" r="6" fill="#a0aec0"/>
+    <text x="25" y="14" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">Archive (past behaviors)</text>
+    <circle cx="10" cy="35" r="6" fill="#4299e1"/>
+    <text x="25" y="39" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">Current population</text>
+    <circle cx="10" cy="60" r="8" fill="#ecc94b" stroke="#d69e2e" stroke-width="1"/>
+    <text x="25" y="64" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568">Novel individual (high score)</text>
+  </g>
+</svg>

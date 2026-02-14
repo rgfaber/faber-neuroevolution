@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 350">
+  <defs>
+    <marker id="arrSP" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Species as Sub-Populations</text>
+
+  <!-- Global population container -->
+  <rect x="30" y="45" width="640" height="290" rx="10" fill="#f7fafc" stroke="#a0aec0" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="350" y="70" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#4a5568" text-anchor="middle">Global Population</text>
+
+  <!-- Species 1 (green - simple topologies) -->
+  <rect x="50" y="90" width="180" height="130" rx="8" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+  <text x="140" y="115" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#276749" text-anchor="middle">Species A</text>
+  <text x="140" y="130" font-family="monospace" font-size="8" fill="#48bb78" text-anchor="middle">(minimal topology)</text>
+
+  <!-- Individuals in Species 1 -->
+  <circle cx="80" cy="165" r="15" fill="#48bb78"/>
+  <text x="80" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">3n</text>
+  <circle cx="120" cy="165" r="15" fill="#48bb78"/>
+  <text x="120" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">4n</text>
+  <circle cx="160" cy="165" r="15" fill="#38a169"/>
+  <text x="160" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">3n</text>
+  <circle cx="200" cy="165" r="15" fill="#38a169"/>
+  <text x="200" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">5n</text>
+
+  <text x="140" y="205" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#276749" text-anchor="middle">avg fitness: 0.72</text>
+
+  <!-- Species 2 (blue - medium topologies) -->
+  <rect x="260" y="90" width="180" height="130" rx="8" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="350" y="115" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#2b6cb0" text-anchor="middle">Species B</text>
+  <text x="350" y="130" font-family="monospace" font-size="8" fill="#4299e1" text-anchor="middle">(medium topology)</text>
+
+  <!-- Individuals in Species 2 -->
+  <circle cx="290" cy="165" r="15" fill="#4299e1"/>
+  <text x="290" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">8n</text>
+  <circle cx="330" cy="165" r="15" fill="#3182ce"/>
+  <text x="330" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">10n</text>
+  <circle cx="370" cy="165" r="15" fill="#3182ce"/>
+  <text x="370" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">9n</text>
+  <circle cx="410" cy="165" r="15" fill="#2b6cb0"/>
+  <text x="410" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">11n</text>
+
+  <text x="350" y="205" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#2b6cb0" text-anchor="middle">avg fitness: 0.85</text>
+
+  <!-- Species 3 (purple - complex topologies) -->
+  <rect x="470" y="90" width="180" height="130" rx="8" fill="#faf5ff" stroke="#9f7aea" stroke-width="2"/>
+  <text x="560" y="115" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#6b46c1" text-anchor="middle">Species C</text>
+  <text x="560" y="130" font-family="monospace" font-size="8" fill="#9f7aea" text-anchor="middle">(complex topology)</text>
+
+  <!-- Individuals in Species 3 -->
+  <circle cx="500" cy="165" r="15" fill="#9f7aea"/>
+  <text x="500" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">15n</text>
+  <circle cx="540" cy="165" r="15" fill="#805ad5"/>
+  <text x="540" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">18n</text>
+  <circle cx="580" cy="165" r="15" fill="#805ad5"/>
+  <text x="580" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">20n</text>
+  <circle cx="620" cy="165" r="15" fill="#6b46c1"/>
+  <text x="620" y="169" font-family="monospace" font-size="8" fill="white" text-anchor="middle">17n</text>
+
+  <text x="560" y="205" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#6b46c1" text-anchor="middle">avg fitness: 0.68</text>
+
+  <!-- Speciation note -->
+  <rect x="100" y="240" width="500" height="80" rx="6" fill="white" stroke="#e2e8f0"/>
+  <text x="350" y="265" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#4a5568" text-anchor="middle">NEAT Speciation Dynamics</text>
+  <text x="350" y="285" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" text-anchor="middle">Individuals compete primarily within their species</text>
+  <text x="350" y="300" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#718096" text-anchor="middle">New topologies protected while weights optimize</text>
+  <text x="350" y="315" font-family="monospace" font-size="8" fill="#a0aec0" text-anchor="middle">compatibility_distance &lt; threshold = same species</text>
+</svg>

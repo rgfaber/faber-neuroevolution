@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="700" height="500">
+  <defs>
+    <linearGradient id="levelNGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f6ad55;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ed8936;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="level2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fc8181;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f56565;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="level1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9f7aea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#805ad5;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="level0Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="700" height="500" fill="#f7fafc" rx="8"/>
+
+  <!-- Title -->
+  <text x="350" y="25" text-anchor="middle" fill="#2d3748" font-family="sans-serif" font-size="16" font-weight="bold">The Liquid Conglomerate Hierarchy</text>
+
+  <!-- Level N box -->
+  <rect x="80" y="50" width="400" height="70" rx="8" fill="url(#levelNGrad)" stroke="#c05621" stroke-width="2"/>
+  <text x="280" y="72" text-anchor="middle" fill="white" font-family="monospace" font-size="12" font-weight="bold">Level N: Meta^N Controller</text>
+  <text x="280" y="90" text-anchor="middle" fill="#fffaf0" font-family="monospace" font-size="10">(very slow tau ~ 10000, long-term strategy)</text>
+  <text x="100" y="110" fill="#fffaf0" font-family="monospace" font-size="9">Controls: Level N-1 hyperparameters</text>
+
+  <!-- tau badge Level N -->
+  <rect x="500" y="70" width="80" height="25" rx="4" fill="#fffaf0"/>
+  <text x="540" y="87" text-anchor="middle" fill="#c05621" font-family="monospace" font-size="10" font-weight="bold">tau ~ 10000</text>
+
+  <!-- Connector N to 2 -->
+  <line x1="280" y1="120" x2="280" y2="145" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="295" y="137" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">slow adaptation</text>
+
+  <!-- Level 2 box -->
+  <rect x="80" y="150" width="400" height="70" rx="8" fill="url(#level2Grad)" stroke="#c53030" stroke-width="2"/>
+  <text x="280" y="172" text-anchor="middle" fill="white" font-family="monospace" font-size="12" font-weight="bold">Level 2: Meta-Meta Controller</text>
+  <text x="280" y="190" text-anchor="middle" fill="#fff5f5" font-family="monospace" font-size="10">(slow tau ~ 1000, strategic decisions)</text>
+  <text x="100" y="210" fill="#fff5f5" font-family="monospace" font-size="9">Controls: Architecture, tau ranges, reward weights</text>
+
+  <!-- tau badge Level 2 -->
+  <rect x="500" y="170" width="80" height="25" rx="4" fill="#fff5f5"/>
+  <text x="540" y="187" text-anchor="middle" fill="#c53030" font-family="monospace" font-size="10" font-weight="bold">tau ~ 1000</text>
+
+  <!-- Connector 2 to 1 -->
+  <line x1="280" y1="220" x2="280" y2="245" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="295" y="237" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">medium adaptation</text>
+
+  <!-- Level 1 box (highlighted - current implementation) -->
+  <rect x="80" y="250" width="400" height="70" rx="8" fill="url(#level1Grad)" stroke="#6b46c1" stroke-width="3"/>
+  <text x="280" y="272" text-anchor="middle" fill="white" font-family="monospace" font-size="12" font-weight="bold">Level 1: Meta Controller</text>
+  <text x="280" y="290" text-anchor="middle" fill="#faf5ff" font-family="monospace" font-size="10">(medium tau ~ 100, tactical hyperparameters)</text>
+  <text x="100" y="310" fill="#faf5ff" font-family="monospace" font-size="9">Controls: mutation_rate, mutation_strength, selection_ratio</text>
+
+  <!-- Current implementation badge -->
+  <rect x="490" y="260" width="100" height="25" rx="4" fill="#48bb78"/>
+  <text x="540" y="277" text-anchor="middle" fill="white" font-family="monospace" font-size="9" font-weight="bold">IMPLEMENTED</text>
+
+  <!-- tau badge Level 1 -->
+  <rect x="500" y="295" width="80" height="25" rx="4" fill="#faf5ff"/>
+  <text x="540" y="312" text-anchor="middle" fill="#6b46c1" font-family="monospace" font-size="10" font-weight="bold">tau ~ 100</text>
+
+  <!-- Connector 1 to 0 -->
+  <line x1="280" y1="320" x2="280" y2="345" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="295" y="337" fill="#718096" font-family="sans-serif" font-size="8" font-style="italic">fast adaptation</text>
+
+  <!-- Level 0 box -->
+  <rect x="80" y="350" width="400" height="70" rx="8" fill="url(#level0Grad)" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="280" y="372" text-anchor="middle" fill="white" font-family="monospace" font-size="12" font-weight="bold">Level 0: Task Networks</text>
+  <text x="280" y="390" text-anchor="middle" fill="#ebf8ff" font-family="monospace" font-size="10">(fast tau ~ 1, reactive agent behavior)</text>
+  <text x="100" y="410" fill="#ebf8ff" font-family="monospace" font-size="9">Controls: Agent actions in domain (game moves, robot commands)</text>
+
+  <!-- tau badge Level 0 -->
+  <rect x="500" y="370" width="80" height="25" rx="4" fill="#ebf8ff"/>
+  <text x="540" y="387" text-anchor="middle" fill="#2b6cb0" font-family="monospace" font-size="10" font-weight="bold">tau ~ 1</text>
+
+  <!-- Feedback arrows on right side -->
+  <path d="M 600 400 L 650 400 L 650 100 L 600 100" stroke="#718096" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+  <polygon points="605 97, 600 100, 605 103" fill="#718096"/>
+  <text x="660" y="250" fill="#718096" font-family="sans-serif" font-size="9" transform="rotate(90 660,250)">Metrics flow up</text>
+
+  <!-- Legend -->
+  <rect x="80" y="440" width="500" height="45" rx="6" fill="#edf2f7" stroke="#cbd5e0"/>
+  <text x="100" y="460" fill="#2d3748" font-family="sans-serif" font-size="10" font-weight="bold">Key Insight:</text>
+  <text x="100" y="475" fill="#4a5568" font-family="sans-serif" font-size="9">Each level provides stability to the level below while being regulated by the level above.</text>
+</svg>

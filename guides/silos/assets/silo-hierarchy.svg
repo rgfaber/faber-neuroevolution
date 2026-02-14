@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <linearGradient id="l2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="l1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+    <linearGradient id="l0Grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrowDown" markerWidth="10" markerHeight="7" refX="5" refY="3.5" orient="90">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="550" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Silo Hierarchy: L0 / L1 / L2 Control Levels</text>
+  <text x="450" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">Cascaded control with different time constants for adaptive neuroevolution</text>
+
+  <!-- Time axis on left -->
+  <line x1="50" y1="90" x2="50" y2="480" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="30" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#64748b" transform="rotate(-90 30 280)">Time Scale</text>
+  <text x="70" y="150" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Slow</text>
+  <text x="70" y="300" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Medium</text>
+  <text x="70" y="450" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Fast</text>
+
+  <!-- ========== L2 STRATEGIC LEVEL ========== -->
+  <rect x="120" y="80" width="740" height="110" rx="12" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="120" y="80" width="740" height="35" rx="12" fill="url(#l2Grad)"/>
+  <rect x="120" y="105" width="740" height="10" fill="url(#l2Grad)"/>
+  <text x="490" y="103" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">L2: STRATEGIC LAYER (tau = 100)</text>
+
+  <!-- L2 content -->
+  <rect x="140" y="130" width="200" height="45" rx="6" fill="white" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="240" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#5b21b6">meta_controller</text>
+  <text x="240" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#7c3aed">LTC/CFC network</text>
+
+  <rect x="360" y="130" width="200" height="45" rx="6" fill="white" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="460" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#5b21b6">Outputs</text>
+  <text x="460" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#7c3aed">l2_guidance record</text>
+
+  <rect x="580" y="130" width="260" height="45" rx="6" fill="white" stroke="#8b5cf6" stroke-width="1"/>
+  <text x="710" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#5b21b6">aggression_factor, exploration_step</text>
+  <text x="710" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#5b21b6">stagnation_sensitivity, topology_aggression</text>
+  <text x="710" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#5b21b6">exploitation_weight, adaptation_momentum</text>
+
+  <!-- Arrow L2 -> L1 -->
+  <line x1="490" y1="195" x2="490" y2="215" stroke="#64748b" stroke-width="2" marker-end="url(#arrowDown)"/>
+  <text x="510" y="210" font-family="Arial, sans-serif" font-size="9" fill="#64748b">guidance</text>
+
+  <!-- ========== L1 TACTICAL LEVEL ========== -->
+  <rect x="120" y="225" width="740" height="110" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="120" y="225" width="740" height="35" rx="12" fill="url(#l1Grad)"/>
+  <rect x="120" y="250" width="740" height="10" fill="url(#l1Grad)"/>
+  <text x="490" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">L1: TACTICAL LAYER (tau = 50)</text>
+
+  <!-- L1 content -->
+  <rect x="140" y="275" width="200" height="45" rx="6" fill="white" stroke="#3b82f6" stroke-width="1"/>
+  <text x="240" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e40af">lc_l1_controller</text>
+  <text x="240" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#2563eb">Rule-based or TWEANN</text>
+
+  <rect x="360" y="275" width="200" height="45" rx="6" fill="white" stroke="#3b82f6" stroke-width="1"/>
+  <text x="460" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#1e40af">Outputs</text>
+  <text x="460" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#2563eb">l1_output record</text>
+
+  <rect x="580" y="275" width="260" height="45" rx="6" fill="white" stroke="#3b82f6" stroke-width="1"/>
+  <text x="710" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1e40af">exploration_boost, exploitation_boost</text>
+  <text x="710" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1e40af">topology_mutations_boost, concurrency_scale</text>
+  <text x="710" y="320" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#1e40af">intervention_level (warning/critical)</text>
+
+  <!-- Arrow L1 -> L0 -->
+  <line x1="490" y1="340" x2="490" y2="360" stroke="#64748b" stroke-width="2" marker-end="url(#arrowDown)"/>
+  <text x="510" y="355" font-family="Arial, sans-serif" font-size="9" fill="#64748b">modulation</text>
+
+  <!-- ========== L0 REACTIVE LEVEL ========== -->
+  <rect x="120" y="370" width="740" height="130" rx="12" fill="#ecfdf5" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="120" y="370" width="740" height="35" rx="12" fill="url(#l0Grad)"/>
+  <rect x="120" y="395" width="740" height="10" fill="url(#l0Grad)"/>
+  <text x="490" y="393" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">L0: REACTIVE LAYER (tau = 10)</text>
+
+  <!-- L0 content - Sensors -->
+  <rect x="140" y="420" width="150" height="65" rx="6" fill="white" stroke="#10b981" stroke-width="1"/>
+  <text x="215" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#065f46">Sensors</text>
+  <text x="215" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#047857">Fitness, stagnation</text>
+  <text x="215" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#047857">Memory, CPU, diversity</text>
+  <text x="215" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#047857">Cross-silo signals</text>
+
+  <!-- L0 content - TWEANN -->
+  <rect x="310" y="420" width="150" height="65" rx="6" fill="url(#l0Grad)" filter="url(#shadow)"/>
+  <text x="385" y="448" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">lc_controller</text>
+  <text x="385" y="468" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#d1fae5">L0 TWEANN</text>
+
+  <!-- L0 content - Actuators -->
+  <rect x="480" y="420" width="150" height="65" rx="6" fill="white" stroke="#10b981" stroke-width="1"/>
+  <text x="555" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#065f46">Actuators</text>
+  <text x="555" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#047857">mutation_rate</text>
+  <text x="555" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#047857">selection_ratio</text>
+  <text x="555" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#047857">add_node_rate, ...</text>
+
+  <!-- L0 content - Engine -->
+  <rect x="650" y="420" width="190" height="65" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="745" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#92400e">Evolution Engine</text>
+  <text x="745" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">Apply hyperparameters</text>
+  <text x="745" y="470" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">Run selection/mutation</text>
+  <text x="745" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#b45309">Report metrics back</text>
+
+  <!-- Flow arrows within L0 -->
+  <line x1="290" y1="453" x2="305" y2="453" stroke="#059669" stroke-width="2" marker-end="url(#arrowDown)" transform="rotate(0 297 453)"/>
+  <line x1="460" y1="453" x2="475" y2="453" stroke="#059669" stroke-width="2"/>
+  <line x1="630" y1="453" x2="645" y2="453" stroke="#059669" stroke-width="2"/>
+
+  <!-- Time constant legend -->
+  <rect x="120" y="510" width="740" height="30" rx="6" fill="white" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="180" y="530" font-family="Arial, sans-serif" font-size="11" fill="#475569">Time Constants:</text>
+  <rect x="280" y="517" width="12" height="12" fill="url(#l2Grad)"/>
+  <text x="300" y="528" font-family="monospace" font-size="10" fill="#475569">L2: tau=100 (strategic, across runs)</text>
+  <rect x="500" y="517" width="12" height="12" fill="url(#l1Grad)"/>
+  <text x="520" y="528" font-family="monospace" font-size="10" fill="#475569">L1: tau=50 (tactical, per generation)</text>
+  <rect x="730" y="517" width="12" height="12" fill="url(#l0Grad)"/>
+  <text x="750" y="528" font-family="monospace" font-size="10" fill="#475569">L0: tau=10 (reactive)</text>
+</svg>

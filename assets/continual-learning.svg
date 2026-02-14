@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 400">
+  <defs>
+    <marker id="arrCL" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4a5568"/>
+    </marker>
+    <marker id="arrCLBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4299e1"/>
+    </marker>
+  </defs>
+
+  <text x="375" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Continual Learning: LC at Inference Time</text>
+
+  <!-- Main container -->
+  <rect x="20" y="45" width="710" height="320" rx="8" fill="#f7fafc" stroke="#e2e8f0" stroke-width="2"/>
+  <text x="375" y="70" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#718096" text-anchor="middle">INFERENCE + LEARNING</text>
+
+  <!-- Input -->
+  <rect x="40" y="120" width="70" height="45" rx="4" fill="#e2e8f0" stroke="#718096"/>
+  <text x="75" y="147" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#4a5568" text-anchor="middle">Input</text>
+
+  <!-- Arrow to Network -->
+  <path d="M 110 142 L 145 142" stroke="#4a5568" stroke-width="2" marker-end="url(#arrCL)"/>
+
+  <!-- Evolved Network -->
+  <rect x="150" y="110" width="130" height="65" rx="6" fill="#c6f6d5" stroke="#48bb78" stroke-width="2"/>
+  <text x="215" y="135" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#276749" text-anchor="middle">Evolved Network</text>
+  <text x="215" y="155" font-family="monospace" font-size="9" fill="#48bb78" text-anchor="middle">(deployed)</text>
+
+  <!-- Arrow to Output -->
+  <path d="M 280 142 L 315 142" stroke="#4a5568" stroke-width="2" marker-end="url(#arrCL)"/>
+
+  <!-- Output -->
+  <rect x="320" y="120" width="70" height="45" rx="4" fill="#fed7d7" stroke="#fc8181"/>
+  <text x="355" y="147" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#c53030" text-anchor="middle">Output</text>
+
+  <!-- Arrow to Action -->
+  <path d="M 390 142 L 425 142" stroke="#4a5568" stroke-width="2" marker-end="url(#arrCL)"/>
+
+  <!-- Action -->
+  <rect x="430" y="120" width="70" height="45" rx="4" fill="#feebc8" stroke="#ed8936"/>
+  <text x="465" y="147" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#c05621" text-anchor="middle">Action</text>
+
+  <!-- Feedback arrow down -->
+  <path d="M 465 165 L 465 200" stroke="#4299e1" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="480" y="185" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4299e1">feedback</text>
+
+  <!-- Reservoir State arrow down -->
+  <path d="M 215 175 L 215 200" stroke="#4299e1" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="215" y="195" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4299e1" text-anchor="middle">state</text>
+
+  <!-- LC Meta-Controller -->
+  <rect x="150" y="210" width="400" height="90" rx="8" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="350" y="235" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="600" fill="#2b6cb0" text-anchor="middle">LC Meta-Controller (Continual Mode)</text>
+
+  <!-- Controller internals -->
+  <rect x="165" y="250" width="110" height="40" rx="4" fill="#bee3f8"/>
+  <text x="220" y="270" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#2b6cb0" text-anchor="middle">Performance Drift</text>
+  <text x="220" y="282" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1" text-anchor="middle">(Resource Silo)</text>
+
+  <rect x="285" y="250" width="100" height="40" rx="4" fill="#bee3f8"/>
+  <text x="335" y="270" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#2b6cb0" text-anchor="middle">Reward Signal</text>
+  <text x="335" y="282" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1" text-anchor="middle">(Task Silo)</text>
+
+  <rect x="395" y="250" width="100" height="40" rx="4" fill="#bee3f8"/>
+  <text x="445" y="270" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#2b6cb0" text-anchor="middle">Concept Shift</text>
+  <text x="445" y="282" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1" text-anchor="middle">(Ecological Silo)</text>
+
+  <!-- Arrows down from LC -->
+  <path d="M 220 300 L 220 320" stroke="#4a5568" stroke-width="2"/>
+  <path d="M 350 300 L 350 320" stroke="#4a5568" stroke-width="2"/>
+  <path d="M 480 300 L 480 320" stroke="#4a5568" stroke-width="2"/>
+
+  <!-- Action boxes -->
+  <rect x="175" y="325" width="90" height="30" rx="4" fill="#c4b5fd" stroke="#7c3aed"/>
+  <text x="220" y="344" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#5b21b6" text-anchor="middle">Micro-Mutation</text>
+
+  <rect x="305" y="325" width="90" height="30" rx="4" fill="#fbd38d" stroke="#ed8936"/>
+  <text x="350" y="344" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621" text-anchor="middle">Network Switch</text>
+
+  <rect x="435" y="325" width="90" height="30" rx="4" fill="#fc8181" stroke="#e53e3e"/>
+  <text x="480" y="344" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#9b2c2c" text-anchor="middle">Trigger Retrain</text>
+
+  <!-- Feedback loop back to network -->
+  <path d="M 220 355 L 220 375 L 60 375 L 60 142 L 110 142" stroke="#9f7aea" stroke-width="2" stroke-dasharray="4,2" fill="none"/>
+  <text x="140" y="380" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#9f7aea">adaptation feedback</text>
+
+  <!-- Right side: Modes -->
+  <rect x="550" y="95" width="170" height="200" rx="6" fill="#fffaf0" stroke="#ed8936"/>
+  <text x="635" y="115" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#c05621" text-anchor="middle">Inference Modes</text>
+
+  <text x="565" y="140" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621">1. Monitoring only</text>
+  <text x="575" y="155" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#ed8936">   alerts, no action</text>
+
+  <text x="565" y="180" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621">2. Portfolio switching</text>
+  <text x="575" y="195" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#ed8936">   pick best network</text>
+
+  <text x="565" y="220" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621">3. Micro-evolution</text>
+  <text x="575" y="235" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#ed8936">   gradual adaptation</text>
+
+  <text x="565" y="260" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#c05621">4. Full continual</text>
+  <text x="575" y="275" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#ed8936">   comprehensive</text>
+
+  <!-- Legend -->
+  <rect x="550" y="310" width="170" height="45" rx="4" fill="#f7fafc"/>
+  <line x1="565" y1="325" x2="595" y2="325" stroke="#4a5568" stroke-width="2"/>
+  <text x="605" y="328" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4a5568">data flow</text>
+  <line x1="565" y1="340" x2="595" y2="340" stroke="#4299e1" stroke-width="2" stroke-dasharray="4,2"/>
+  <text x="605" y="343" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1">monitoring</text>
+</svg>

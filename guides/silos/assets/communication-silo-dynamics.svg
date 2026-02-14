@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700">
+  <defs>
+    <linearGradient id="commGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5eead4"/>
+      <stop offset="100%" style="stop-color:#14b8a6"/>
+    </linearGradient>
+    <linearGradient id="signalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24"/>
+      <stop offset="100%" style="stop-color:#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="honestGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80"/>
+      <stop offset="100%" style="stop-color:#22c55e"/>
+    </linearGradient>
+    <linearGradient id="deceptGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f87171"/>
+      <stop offset="100%" style="stop-color:#ef4444"/>
+    </linearGradient>
+    <marker id="arrowComm2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <filter id="shadowComm2" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="700" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Communication Silo Dynamics</text>
+
+  <!-- Signal Evolution Section -->
+  <rect x="40" y="50" width="400" height="200" rx="10" fill="white" stroke="#14b8a6" stroke-width="2" filter="url(#shadowComm2)"/>
+  <rect x="40" y="50" width="400" height="30" rx="10" fill="url(#commGrad2)"/>
+  <rect x="40" y="70" width="400" height="10" fill="url(#commGrad2)"/>
+  <text x="240" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Language Evolution</text>
+
+  <!-- Vocabulary growth -->
+  <text x="60" y="105" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">Vocabulary growth over generations:</text>
+
+  <!-- Signal nodes -->
+  <circle cx="80" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="80" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S1</text>
+  <text x="80" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#475569">gen 1</text>
+
+  <circle cx="130" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="130" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S2</text>
+
+  <circle cx="180" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="180" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S3</text>
+
+  <!-- Arrow showing time -->
+  <path d="M200 140 L220 140" stroke="#64748b" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <circle cx="250" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="250" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S4</text>
+  <circle cx="290" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="290" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S5</text>
+  <circle cx="330" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="330" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S6</text>
+  <circle cx="370" cy="140" r="15" fill="url(#signalGrad)"/>
+  <text x="370" y="144" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S7</text>
+  <text x="360" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#475569">gen 50</text>
+
+  <!-- Adoption spread -->
+  <text x="60" y="190" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">Signal adoption:</text>
+  <rect x="60" y="200" width="40" height="15" rx="3" fill="url(#signalGrad)"/>
+  <text x="80" y="211" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">S1</text>
+  <path d="M100 208 L120 195" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrowComm2)"/>
+  <path d="M100 208 L120 220" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arrowComm2)"/>
+  <circle cx="135" cy="190" r="10" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="135" y="193" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#0369a1">A1</text>
+  <circle cx="135" cy="225" r="10" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="135" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#0369a1">A2</text>
+  <path d="M145 225 L165 235" stroke="#f59e0b" stroke-width="1" marker-end="url(#arrowComm2)"/>
+  <circle cx="180" cy="238" r="10" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="180" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#0369a1">A3</text>
+
+  <text x="220" y="210" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Adopters: 3/50 = 6%</text>
+  <text x="220" y="225" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Stability: 0.85</text>
+  <text x="220" y="240" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Growth rate: 0.02/gen</text>
+
+  <!-- Coordination Section -->
+  <rect x="460" y="50" width="400" height="200" rx="10" fill="white" stroke="#22c55e" stroke-width="2" filter="url(#shadowComm2)"/>
+  <rect x="460" y="50" width="400" height="30" rx="10" fill="url(#honestGrad)"/>
+  <rect x="460" y="70" width="400" height="10" fill="url(#honestGrad)"/>
+  <text x="660" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Coordination Dynamics</text>
+
+  <!-- Coordination success diagram -->
+  <text x="480" y="105" font-family="Arial, sans-serif" font-size="10" fill="#166534">Coordination attempt:</text>
+
+  <!-- Agents coordinating -->
+  <circle cx="510" cy="145" r="18" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="510" y="149" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">A</text>
+  <circle cx="570" cy="120" r="18" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="570" y="124" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">B</text>
+  <circle cx="570" cy="170" r="18" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+  <text x="570" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">C</text>
+
+  <!-- Messages between agents -->
+  <path d="M528 140 L552 125" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <path d="M528 150 L552 165" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <path d="M570 138 L570 152" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3,2"/>
+
+  <!-- Result -->
+  <rect x="610" y="130" width="80" height="40" rx="6" fill="#22c55e"/>
+  <text x="650" y="148" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="white">SUCCESS</text>
+  <text x="650" y="163" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">+0.2 fitness</text>
+
+  <!-- Coordination stats -->
+  <text x="720" y="115" font-family="Arial, sans-serif" font-size="9" fill="#166534">Success rate:</text>
+  <rect x="720" y="120" width="100" height="12" rx="2" fill="#e2e8f0"/>
+  <rect x="720" y="120" width="75" height="12" rx="2" fill="#22c55e"/>
+  <text x="770" y="130" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">75%</text>
+
+  <text x="720" y="150" font-family="Arial, sans-serif" font-size="9" fill="#166534">Msgs exchanged:</text>
+  <text x="720" y="165" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#166534">12 per attempt</text>
+
+  <!-- Coordination reward -->
+  <text x="480" y="205" font-family="Arial, sans-serif" font-size="10" fill="#166534">Reward = coordination_reward * success_rate * participants</text>
+  <text x="480" y="220" font-family="Arial, sans-serif" font-size="10" fill="#166534">= 0.2 * 0.75 * 3 = 0.45 fitness bonus</text>
+  <text x="480" y="240" font-family="Arial, sans-serif" font-size="9" font-style="italic" fill="#64748b">Cost: communication_cost * messages = 0.05 * 12 = 0.6</text>
+
+  <!-- Honesty/Deception Section -->
+  <rect x="40" y="270" width="400" height="180" rx="10" fill="white" stroke="#ef4444" stroke-width="2" filter="url(#shadowComm2)"/>
+  <rect x="40" y="270" width="400" height="30" rx="10" fill="url(#deceptGrad)"/>
+  <rect x="40" y="290" width="400" height="10" fill="url(#deceptGrad)"/>
+  <text x="240" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Honesty &amp; Deception</text>
+
+  <!-- Honest vs deceptive signals -->
+  <text x="60" y="325" font-family="Arial, sans-serif" font-size="10" fill="#b91c1c">Signal honesty distribution:</text>
+
+  <!-- Honest signals -->
+  <rect x="60" y="340" width="150" height="25" rx="4" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="135" y="357" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">Honest: 85%</text>
+
+  <!-- Deceptive signals -->
+  <rect x="60" y="370" width="150" height="25" rx="4" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="135" y="387" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#b91c1c">Deceptive: 15%</text>
+
+  <!-- Deception detection -->
+  <text x="230" y="340" font-family="Arial, sans-serif" font-size="10" fill="#b91c1c">Detection:</text>
+
+  <rect x="230" y="350" width="60" height="20" rx="3" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="260" y="364" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#b91c1c">Lie</text>
+  <path d="M295 360 L325 360" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowComm2)"/>
+  <rect x="330" y="345" width="70" height="30" rx="4" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="365" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#166534">Detected!</text>
+  <text x="365" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#166534">+0.1 bonus</text>
+
+  <rect x="230" y="385" width="60" height="20" rx="3" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="260" y="399" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#b91c1c">Lie</text>
+  <path d="M295 395 L325 395" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowComm2)"/>
+  <rect x="330" y="380" width="70" height="30" rx="4" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="365" y="393" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#b91c1c">Missed</text>
+  <text x="365" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#b91c1c">liar wins</text>
+
+  <text x="60" y="430" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Detection rate: 60% | Lying penalty: -0.2 fitness when caught</text>
+
+  <!-- Dialect Section -->
+  <rect x="460" y="270" width="400" height="180" rx="10" fill="white" stroke="#8b5cf6" stroke-width="2" filter="url(#shadowComm2)"/>
+  <rect x="460" y="270" width="400" height="30" rx="10" fill="#a78bfa"/>
+  <rect x="460" y="290" width="400" height="10" fill="#a78bfa"/>
+  <text x="660" y="292" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Dialect Formation</text>
+
+  <!-- Dialect groups -->
+  <text x="480" y="325" font-family="Arial, sans-serif" font-size="10" fill="#6b21a8">Population subgroups develop distinct vocabularies:</text>
+
+  <!-- Dialect 1 -->
+  <ellipse cx="540" cy="380" rx="55" ry="45" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="540" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#6b21a8">Dialect A</text>
+  <circle cx="520" cy="375" r="8" fill="#ddd6fe"/>
+  <circle cx="540" cy="390" r="8" fill="#ddd6fe"/>
+  <circle cx="560" cy="375" r="8" fill="#ddd6fe"/>
+  <circle cx="540" cy="405" r="8" fill="#ddd6fe"/>
+  <text x="540" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#6b21a8">vocab: 25</text>
+
+  <!-- Dialect 2 -->
+  <ellipse cx="680" cy="380" rx="55" ry="45" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+  <text x="680" y="355" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#9d174d">Dialect B</text>
+  <circle cx="660" cy="375" r="8" fill="#fbcfe8"/>
+  <circle cx="680" cy="390" r="8" fill="#fbcfe8"/>
+  <circle cx="700" cy="375" r="8" fill="#fbcfe8"/>
+  <text x="680" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#9d174d">vocab: 18</text>
+
+  <!-- Dialect 3 -->
+  <ellipse cx="800" cy="380" rx="45" ry="35" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+  <text x="800" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#b45309">Dialect C</text>
+  <circle cx="790" cy="385" r="8" fill="#fde68a"/>
+  <circle cx="810" cy="385" r="8" fill="#fde68a"/>
+  <text x="800" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#b45309">vocab: 12</text>
+
+  <!-- Shared vocabulary indicator -->
+  <path d="M595 380 L625 380" stroke="#64748b" stroke-width="1" stroke-dasharray="4,2"/>
+  <text x="610" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#64748b">shared: 8</text>
+
+  <text x="480" y="445" font-family="Arial, sans-serif" font-size="9" fill="#64748b">Isolation: 0.3 | Dialect count: 3 | Shared vocabulary: 8 signals</text>
+
+  <!-- Message Compression Section -->
+  <rect x="40" y="470" width="400" height="210" rx="10" fill="white" stroke="#0ea5e9" stroke-width="2" filter="url(#shadowComm2)"/>
+  <rect x="40" y="470" width="400" height="30" rx="10" fill="#0ea5e9"/>
+  <rect x="40" y="490" width="400" height="10" fill="#0ea5e9"/>
+  <text x="240" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Message Structure &amp; Compression</text>
+
+  <!-- Message types -->
+  <text x="60" y="525" font-family="Arial, sans-serif" font-size="10" fill="#0369a1">Message complexity levels:</text>
+
+  <!-- Simple message -->
+  <rect x="60" y="540" width="100" height="30" rx="4" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="110" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#0369a1">Simple</text>
+  <text x="170" y="555" font-family="Arial, sans-serif" font-size="8" fill="#475569">1 signal, 10 bits</text>
+  <text x="170" y="568" font-family="Arial, sans-serif" font-size="8" fill="#475569">compression: 1.0</text>
+
+  <!-- Nested message -->
+  <rect x="60" y="580" width="100" height="30" rx="4" fill="#bae6fd" stroke="#0ea5e9"/>
+  <rect x="70" y="588" width="30" height="14" rx="2" fill="#7dd3fc"/>
+  <rect x="105" y="588" width="30" height="14" rx="2" fill="#7dd3fc"/>
+  <text x="110" y="600" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#0369a1">Nested</text>
+  <text x="170" y="595" font-family="Arial, sans-serif" font-size="8" fill="#475569">3 signals, 25 bits</text>
+  <text x="170" y="608" font-family="Arial, sans-serif" font-size="8" fill="#475569">compression: 0.83</text>
+
+  <!-- Complex message -->
+  <rect x="60" y="620" width="100" height="40" rx="4" fill="#38bdf8" stroke="#0ea5e9"/>
+  <rect x="70" y="628" width="20" height="10" rx="2" fill="#0ea5e9"/>
+  <rect x="95" y="628" width="20" height="10" rx="2" fill="#0ea5e9"/>
+  <rect x="120" y="628" width="20" height="10" rx="2" fill="#0ea5e9"/>
+  <rect x="80" y="642" width="30" height="10" rx="2" fill="#0ea5e9"/>
+  <text x="110" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">Recursive</text>
+  <text x="170" y="635" font-family="Arial, sans-serif" font-size="8" fill="#475569">7 signals, 50 bits</text>
+  <text x="170" y="648" font-family="Arial, sans-serif" font-size="8" fill="#475569">compression: 0.71</text>
+
+  <!-- Compression pressure bar -->
+  <text x="280" y="555" font-family="Arial, sans-serif" font-size="10" fill="#0369a1">Compression pressure:</text>
+  <rect x="280" y="565" width="150" height="15" rx="3" fill="#e2e8f0"/>
+  <rect x="280" y="565" width="45" height="15" rx="3" fill="#0ea5e9"/>
+  <text x="305" y="576" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white">0.3</text>
+
+  <text x="280" y="605" font-family="Arial, sans-serif" font-size="9" fill="#475569">Low pressure: verbose but clear</text>
+  <text x="280" y="620" font-family="Arial, sans-serif" font-size="9" fill="#475569">High pressure: terse but efficient</text>
+  <text x="280" y="650" font-family="Arial, sans-serif" font-size="9" font-style="italic" fill="#64748b">Info per signal = compression_ratio * 10 bits</text>
+
+  <!-- Communication Over Time Section -->
+  <rect x="460" y="470" width="400" height="210" rx="10" fill="white" stroke="#14b8a6" stroke-width="2" filter="url(#shadowComm2)"/>
+  <rect x="460" y="470" width="400" height="30" rx="10" fill="url(#commGrad2)"/>
+  <rect x="460" y="490" width="400" height="10" fill="url(#commGrad2)"/>
+  <text x="660" y="492" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Communication Metrics Over Time</text>
+
+  <!-- Chart -->
+  <text x="480" y="525" font-family="Arial, sans-serif" font-size="10" fill="#0f766e">Evolution of communication patterns:</text>
+
+  <!-- Y axis -->
+  <line x1="500" y1="545" x2="500" y2="640" stroke="#94a3b8" stroke-width="1"/>
+  <text x="490" y="550" text-anchor="end" font-family="Arial, sans-serif" font-size="8" fill="#64748b">1.0</text>
+  <text x="490" y="595" text-anchor="end" font-family="Arial, sans-serif" font-size="8" fill="#64748b">0.5</text>
+  <text x="490" y="645" text-anchor="end" font-family="Arial, sans-serif" font-size="8" fill="#64748b">0.0</text>
+
+  <!-- X axis -->
+  <line x1="500" y1="640" x2="830" y2="640" stroke="#94a3b8" stroke-width="1"/>
+  <text x="500" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#64748b">0</text>
+  <text x="610" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#64748b">50</text>
+  <text x="720" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#64748b">100</text>
+  <text x="830" y="655" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#64748b">gen</text>
+
+  <!-- Vocabulary size line -->
+  <path d="M500 620 L530 605 L560 590 L590 575 L620 565 L650 558 L680 555 L710 552 L740 550 L770 548 L800 548 L825 548" stroke="#f59e0b" stroke-width="2" fill="none"/>
+
+  <!-- Honesty rate line -->
+  <path d="M500 590 L530 585 L560 580 L590 575 L620 572 L650 568 L680 565 L710 560 L740 558 L770 555 L800 555 L825 555" stroke="#22c55e" stroke-width="2" fill="none"/>
+
+  <!-- Coordination success line -->
+  <path d="M500 620 L530 610 L560 598 L590 590 L620 580 L650 575 L680 570 L710 568 L740 565 L770 565 L800 565 L825 565" stroke="#14b8a6" stroke-width="2" fill="none"/>
+
+  <!-- Legend -->
+  <line x1="490" y1="670" x2="510" y2="670" stroke="#f59e0b" stroke-width="2"/>
+  <text x="515" y="673" font-family="Arial, sans-serif" font-size="9" fill="#475569">Vocabulary</text>
+  <line x1="590" y1="670" x2="610" y2="670" stroke="#22c55e" stroke-width="2"/>
+  <text x="615" y="673" font-family="Arial, sans-serif" font-size="9" fill="#475569">Honesty</text>
+  <line x1="690" y1="670" x2="710" y2="670" stroke="#14b8a6" stroke-width="2"/>
+  <text x="715" y="673" font-family="Arial, sans-serif" font-size="9" fill="#475569">Coordination</text>
+</svg>

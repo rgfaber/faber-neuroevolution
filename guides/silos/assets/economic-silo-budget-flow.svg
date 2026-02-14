@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 480">
+  <defs>
+    <linearGradient id="budgetGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+    <linearGradient id="taxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <linearGradient id="tradeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+    <linearGradient id="redistGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#db2777"/>
+    </linearGradient>
+    <marker id="flowArrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="greenFlow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="orangeFlow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#d97706"/>
+    </marker>
+    <marker id="pinkFlow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#db2777"/>
+    </marker>
+    <filter id="shadowBudget" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="850" height="480" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="425" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Budget Flow &amp; Economic Cycle</text>
+
+  <!-- Total Budget Pool -->
+  <ellipse cx="425" cy="100" rx="120" ry="45" fill="url(#budgetGrad)" stroke="#15803d" stroke-width="2" filter="url(#shadowBudget)"/>
+  <text x="425" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">TOTAL BUDGET</text>
+  <text x="425" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">1000 compute units</text>
+
+  <!-- Arrow to allocation -->
+  <path d="M425 145 L425 175" stroke="#16a34a" stroke-width="2" marker-end="url(#greenFlow)"/>
+  <text x="440" y="165" font-family="Arial, sans-serif" font-size="9" fill="#16a34a">allocate</text>
+
+  <!-- Individual Accounts -->
+  <rect x="100" y="200" width="650" height="110" rx="10" fill="white" stroke="#22c55e" stroke-width="2" filter="url(#shadowBudget)"/>
+  <text x="425" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#166534">INDIVIDUAL ACCOUNTS</text>
+
+  <!-- Individual boxes -->
+  <rect x="120" y="240" width="100" height="55" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="170" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">Agent A</text>
+  <text x="170" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">energy: 100</text>
+  <text x="170" y="290" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">budget: 1.0</text>
+
+  <rect x="240" y="240" width="100" height="55" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="290" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">Agent B</text>
+  <text x="290" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">energy: 150</text>
+  <text x="290" y="290" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">budget: 1.5</text>
+
+  <rect x="360" y="240" width="100" height="55" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="410" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">Agent C</text>
+  <text x="410" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">energy: 50</text>
+  <text x="410" y="290" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">budget: 0.5</text>
+
+  <rect x="480" y="240" width="100" height="55" rx="6" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="530" y="260" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#166534">Agent D</text>
+  <text x="530" y="280" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">energy: 200</text>
+  <text x="530" y="290" text-anchor="middle" font-family="monospace" font-size="8" fill="#166534">budget: 2.0</text>
+
+  <text x="620" y="265" font-family="Arial, sans-serif" font-size="10" fill="#166534">...</text>
+
+  <!-- Tax collection arrow (to the left) -->
+  <path d="M100 330 L100 380 L200 380" stroke="#d97706" stroke-width="2" marker-end="url(#orangeFlow)"/>
+
+  <!-- Tax Pool -->
+  <rect x="200" y="350" width="130" height="60" rx="8" fill="url(#taxGrad)" stroke="#b45309" stroke-width="2" filter="url(#shadowBudget)"/>
+  <text x="265" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TAX POOL</text>
+  <text x="265" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">rate: 10%</text>
+
+  <!-- Trade pool (center) -->
+  <rect x="360" y="350" width="130" height="60" rx="8" fill="url(#tradeGrad)" stroke="#1d4ed8" stroke-width="2" filter="url(#shadowBudget)"/>
+  <text x="425" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TRADE</text>
+  <text x="425" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">incentive: 20%</text>
+
+  <!-- Trade arrows between agents -->
+  <path d="M240 295 Q320 340 360 370" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <path d="M480 295 Q400 340 490 370" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <text x="340" y="330" font-family="Arial, sans-serif" font-size="8" fill="#2563eb">trade</text>
+
+  <!-- Redistribution pool (right) -->
+  <rect x="520" y="350" width="130" height="60" rx="8" fill="url(#redistGrad)" stroke="#be185d" stroke-width="2" filter="url(#shadowBudget)"/>
+  <text x="585" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">REDISTRIBUTE</text>
+  <text x="585" y="395" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">rate: 10%</text>
+
+  <!-- Redistribution arrow back to poor agents -->
+  <path d="M650 380 L750 380 L750 270 L600 270" stroke="#db2777" stroke-width="2" marker-end="url(#pinkFlow)"/>
+  <text x="700" y="320" font-family="Arial, sans-serif" font-size="8" fill="#db2777" transform="rotate(-90 700 320)">to poor</text>
+
+  <!-- Bottom: Events -->
+  <rect x="100" y="430" width="650" height="40" rx="6" fill="white" stroke="#cbd5e1"/>
+  <text x="425" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#475569">
+    <tspan font-weight="bold">Events:</tspan> budget_allocated | energy_taxed | trade_completed | wealth_redistributed | bankruptcy_declared
+  </text>
+
+  <!-- Efficiency equation -->
+  <rect x="680" y="200" width="150" height="110" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="755" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#b45309">EFFICIENCY</text>
+  <text x="755" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">fitness_per_cost =</text>
+  <text x="755" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">fitness_gained /</text>
+  <text x="755" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#92400e">cost_incurred</text>
+</svg>

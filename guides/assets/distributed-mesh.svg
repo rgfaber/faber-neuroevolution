@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 350" width="650" height="350">
+  <defs>
+    <linearGradient id="meshGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:0.2" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="650" height="350" fill="#f7fafc" rx="8"/>
+
+  <!-- Mesh container -->
+  <rect x="20" y="20" width="610" height="310" rx="8" fill="url(#meshGrad)" stroke="#4299e1" stroke-width="2"/>
+  <text x="325" y="45" text-anchor="middle" fill="#2b6cb0" font-family="sans-serif" font-size="14" font-weight="bold">MACULA MESH</text>
+
+  <!-- Level 2 node -->
+  <rect x="250" y="60" width="150" height="60" rx="6" fill="#fc8181" stroke="#c53030" stroke-width="2"/>
+  <text x="325" y="82" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Level 2</text>
+  <text x="325" y="97" text-anchor="middle" fill="#fff5f5" font-family="sans-serif" font-size="9">(slow tau)</text>
+  <text x="325" y="112" text-anchor="middle" fill="#fff5f5" font-family="sans-serif" font-size="9">Strategy</text>
+
+  <!-- Level 1 nodes -->
+  <rect x="80" y="150" width="130" height="60" rx="6" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="145" y="172" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Level 1</text>
+  <text x="145" y="187" text-anchor="middle" fill="#faf5ff" font-family="sans-serif" font-size="9">(med tau)</text>
+  <text x="145" y="202" text-anchor="middle" fill="#faf5ff" font-family="sans-serif" font-size="9">Domain A</text>
+
+  <rect x="260" y="150" width="130" height="60" rx="6" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="325" y="172" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Level 1</text>
+  <text x="325" y="187" text-anchor="middle" fill="#faf5ff" font-family="sans-serif" font-size="9">(med tau)</text>
+  <text x="325" y="202" text-anchor="middle" fill="#faf5ff" font-family="sans-serif" font-size="9">Domain B</text>
+
+  <rect x="440" y="150" width="130" height="60" rx="6" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="505" y="172" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Level 1</text>
+  <text x="505" y="187" text-anchor="middle" fill="#faf5ff" font-family="sans-serif" font-size="9">(med tau)</text>
+  <text x="505" y="202" text-anchor="middle" fill="#faf5ff" font-family="sans-serif" font-size="9">Domain C</text>
+
+  <!-- Connection lines from L2 to L1s -->
+  <line x1="280" y1="120" x2="145" y2="150" stroke="#718096" stroke-width="1.5"/>
+  <line x1="325" y1="120" x2="325" y2="150" stroke="#718096" stroke-width="1.5"/>
+  <line x1="370" y1="120" x2="505" y2="150" stroke="#718096" stroke-width="1.5"/>
+
+  <!-- Level 0 container -->
+  <rect x="50" y="250" width="550" height="60" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="325" y="275" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Level 0 networks (fast tau) on edge devices</text>
+
+  <!-- Edge device icons -->
+  <rect x="80" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="140" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="200" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="280" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="340" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="400" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="460" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+  <rect x="520" y="285" width="40" height="20" rx="3" fill="#ebf8ff" stroke="#2b6cb0"/>
+
+  <!-- Connection lines from L1 to L0 -->
+  <line x1="145" y1="210" x2="145" y2="250" stroke="#718096" stroke-width="1.5"/>
+  <line x1="325" y1="210" x2="325" y2="250" stroke="#718096" stroke-width="1.5"/>
+  <line x1="505" y1="210" x2="505" y2="250" stroke="#718096" stroke-width="1.5"/>
+</svg>

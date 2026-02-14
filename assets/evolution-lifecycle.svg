@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300">
+  <defs>
+    <marker id="arrowLC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="30" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="600" fill="#2d3748" text-anchor="middle">Evolution Lifecycle</text>
+
+  <!-- Initialize -->
+  <rect x="30" y="60" width="120" height="60" rx="8" fill="#667eea" stroke="#5a67d8" stroke-width="2"/>
+  <text x="90" y="85" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="white" text-anchor="middle">Initialize</text>
+  <text x="90" y="102" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#c3dafe" text-anchor="middle">Population</text>
+
+  <!-- Evaluate -->
+  <rect x="180" y="60" width="120" height="60" rx="8" fill="#48bb78" stroke="#38a169" stroke-width="2"/>
+  <text x="240" y="85" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="white" text-anchor="middle">Evaluate</text>
+  <text x="240" y="102" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#c6f6d5" text-anchor="middle">Fitness</text>
+
+  <!-- Select -->
+  <rect x="330" y="60" width="120" height="60" rx="8" fill="#ed8936" stroke="#dd6b20" stroke-width="2"/>
+  <text x="390" y="85" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="white" text-anchor="middle">Select</text>
+  <text x="390" y="102" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#feebc8" text-anchor="middle">Parents</text>
+
+  <!-- Breed -->
+  <rect x="480" y="60" width="120" height="60" rx="8" fill="#9f7aea" stroke="#805ad5" stroke-width="2"/>
+  <text x="540" y="85" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="white" text-anchor="middle">Breed</text>
+  <text x="540" y="102" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#e9d8fd" text-anchor="middle">Offspring</text>
+
+  <!-- Arrows -->
+  <line x1="150" y1="90" x2="175" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowLC)"/>
+  <line x1="300" y1="90" x2="325" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowLC)"/>
+  <line x1="450" y1="90" x2="475" y2="90" stroke="#4a5568" stroke-width="2" marker-end="url(#arrowLC)"/>
+
+  <!-- Loop back -->
+  <path d="M 600 90 L 650 90 L 650 180 L 90 180 L 90 125" stroke="#4a5568" stroke-width="2" fill="none" marker-end="url(#arrowLC)"/>
+  <text x="370" y="195" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#718096" text-anchor="middle">Next Generation</text>
+
+  <!-- Events emitted -->
+  <rect x="30" y="220" width="640" height="60" rx="6" fill="#f7fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="50" y="245" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="500" fill="#4a5568">Lifecycle Events:</text>
+  <text x="170" y="245" font-family="monospace" font-size="10" fill="#667eea">individual_born</text>
+  <text x="290" y="245" font-family="monospace" font-size="10" fill="#48bb78">individual_evaluated</text>
+  <text x="440" y="245" font-family="monospace" font-size="10" fill="#ed8936">individual_died</text>
+  <text x="560" y="245" font-family="monospace" font-size="10" fill="#9f7aea">cohort_evaluated</text>
+  <text x="50" y="265" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#718096">All strategies emit these events for monitoring and lineage tracking</text>
+</svg>

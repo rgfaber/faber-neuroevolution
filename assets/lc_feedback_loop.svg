@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" />
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6" />
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b" />
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6" />
+    </marker>
+    <marker id="arrowRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" font-size="26" font-weight="bold" fill="#0f172a">LC v2: Feedback-Driven Training Optimization</text>
+  <text x="600" y="65" text-anchor="middle" font-size="14" fill="#64748b">Balance between resource stability and optimal Task TWEANN training speed</text>
+
+  <!-- ================ THE GOAL (Center, Prominent) ================ -->
+  <g transform="translate(400, 100)">
+    <rect x="0" y="0" width="400" height="80" rx="16" fill="url(#goalGrad)" filter="url(#glow)"/>
+    <text x="200" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#1e293b">GOAL: Train Task TWEANN Optimally</text>
+    <text x="200" y="58" text-anchor="middle" font-size="12" fill="#1e293b">Maximize fitness improvement while maintaining system stability</text>
+  </g>
+
+  <!-- ================ TASK SILO (Right - The Star) ================ -->
+  <g transform="translate(700, 220)">
+    <rect x="0" y="0" width="420" height="450" rx="16" fill="white" stroke="#3b82f6" stroke-width="4" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="420" height="55" rx="16" fill="url(#taskGrad)"/>
+    <rect x="0" y="39" width="420" height="16" fill="url(#taskGrad)"/>
+    <text x="210" y="38" text-anchor="middle" font-size="18" font-weight="bold" fill="white">Task Silo</text>
+    <text x="210" y="75" text-anchor="middle" font-size="11" fill="#1e40af" font-weight="600">THE TRAINING ENGINE</text>
+
+    <!-- L2 Strategic -->
+    <g transform="translate(20, 90)">
+      <rect x="0" y="0" width="380" height="70" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+      <text x="190" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">L2 Strategic (tau = 100 gen)</text>
+      <text x="190" y="40" text-anchor="middle" font-size="10" fill="#1e40af">Tunes L1 hyperparameters: aggression_factor, exploration_step</text>
+      <text x="190" y="55" text-anchor="middle" font-size="9" fill="#64748b" font-style="italic">Learns: "How should L1 adapt over the long term?"</text>
+    </g>
+
+    <!-- L1 Tactical -->
+    <g transform="translate(20, 170)">
+      <rect x="0" y="0" width="380" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+      <text x="190" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">L1 Tactical (tau = 50 gen)</text>
+      <text x="190" y="40" text-anchor="middle" font-size="10" fill="#1e40af">Tunes L0 hyperparameters: mutation_rate_bounds, topology_boost</text>
+      <text x="190" y="55" text-anchor="middle" font-size="9" fill="#64748b" font-style="italic">Learns: "What hyperparameters work for current conditions?"</text>
+    </g>
+
+    <!-- L0 Reactive (The actual TWEANN controller) -->
+    <g transform="translate(20, 250)">
+      <rect x="0" y="0" width="380" height="100" rx="8" fill="#bfdbfe" stroke="#3b82f6" stroke-width="3"/>
+      <text x="190" y="22" text-anchor="middle" font-size="12" font-weight="bold" fill="#1e40af">L0 Reactive TWEANN (tau = 10 gen)</text>
+      <text x="190" y="42" text-anchor="middle" font-size="10" fill="#1e40af">Maps 16 sensors → 12 actuators</text>
+      <text x="20" y="62" font-size="9" fill="#1e40af">Outputs: mutation_rate, crossover_rate, add_node_rate, selection_ratio...</text>
+      <text x="190" y="82" text-anchor="middle" font-size="9" fill="#64748b" font-style="italic">This TWEANN controls evolution parameters of the population below</text>
+    </g>
+
+    <!-- The Evolved Population (the actual target) -->
+    <g transform="translate(20, 365)">
+      <rect x="0" y="0" width="380" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="3"/>
+      <text x="190" y="22" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">EVOLVED POPULATION</text>
+      <text x="190" y="42" text-anchor="middle" font-size="11" fill="#92400e">The TWEANNs being trained for your task</text>
+      <text x="190" y="58" text-anchor="middle" font-size="10" fill="#92400e">(e.g., game AI, robot controller, trading strategy)</text>
+    </g>
+  </g>
+
+  <!-- ================ RESOURCE SILO (Left - The Governor) ================ -->
+  <g transform="translate(80, 220)">
+    <rect x="0" y="0" width="350" height="380" rx="16" fill="white" stroke="#22c55e" stroke-width="4" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="350" height="55" rx="16" fill="url(#resourceGrad)"/>
+    <rect x="0" y="39" width="350" height="16" fill="url(#resourceGrad)"/>
+    <text x="175" y="38" text-anchor="middle" font-size="18" font-weight="bold" fill="white">Resource Silo</text>
+    <text x="175" y="75" text-anchor="middle" font-size="11" fill="#166534" font-weight="600">THE GOVERNOR</text>
+
+    <!-- L2 Strategic -->
+    <g transform="translate(15, 90)">
+      <rect x="0" y="0" width="320" height="55" rx="8" fill="#f0fdf4" stroke="#22c55e" stroke-width="2"/>
+      <text x="160" y="20" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">L2 Strategic (tau = 5 min)</text>
+      <text x="160" y="38" text-anchor="middle" font-size="9" fill="#166534">Tunes threshold_adaptation_rate, pressure_sensitivity</text>
+    </g>
+
+    <!-- L1 Tactical -->
+    <g transform="translate(15, 155)">
+      <rect x="0" y="0" width="320" height="55" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+      <text x="160" y="20" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">L1 Tactical (tau = 30 sec)</text>
+      <text x="160" y="38" text-anchor="middle" font-size="9" fill="#166534">Tunes memory_threshold, cpu_threshold, concurrency</text>
+    </g>
+
+    <!-- L0 Reactive -->
+    <g transform="translate(15, 220)">
+      <rect x="0" y="0" width="320" height="70" rx="8" fill="#bbf7d0" stroke="#22c55e" stroke-width="3"/>
+      <text x="160" y="20" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">L0 Reactive TWEANN (tau = 5 sec)</text>
+      <text x="160" y="40" text-anchor="middle" font-size="9" fill="#166534">Maps 13 sensors → 8 actuators</text>
+      <text x="160" y="55" text-anchor="middle" font-size="9" fill="#166534">Outputs: max_concurrent, batch_size, gc_trigger, throttle</text>
+    </g>
+
+    <!-- System Resources -->
+    <g transform="translate(15, 305)">
+      <rect x="0" y="0" width="320" height="60" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+      <text x="160" y="20" text-anchor="middle" font-size="11" font-weight="bold" fill="#991b1b">SYSTEM RESOURCES</text>
+      <text x="160" y="38" text-anchor="middle" font-size="9" fill="#991b1b">Memory, CPU, GC, Run Queues, Process Count</text>
+      <text x="160" y="52" text-anchor="middle" font-size="9" fill="#991b1b" font-style="italic">Constrained - must not exceed limits!</text>
+    </g>
+  </g>
+
+  <!-- ================ FEEDBACK ARROWS ================ -->
+
+  <!-- MAIN FEEDBACK LOOP: Resource → Task (pressure signal) -->
+  <g>
+    <path d="M 430 380 Q 550 340 700 380" stroke="#22c55e" stroke-width="4" fill="none" marker-end="url(#arrowBlue)"/>
+    <rect x="500" y="315" width="180" height="50" rx="6" fill="white" stroke="#22c55e" stroke-width="2"/>
+    <text x="590" y="335" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">PRESSURE SIGNAL</text>
+    <text x="590" y="350" text-anchor="middle" font-size="9" fill="#166534">"Slow down!" or "You have headroom"</text>
+  </g>
+
+  <!-- Task → Resource (demand signal) -->
+  <g>
+    <path d="M 700 450 Q 550 500 430 450" stroke="#3b82f6" stroke-width="3" fill="none" marker-end="url(#arrowGreen)"/>
+    <rect x="500" y="470" width="180" height="45" rx="6" fill="white" stroke="#3b82f6" stroke-width="2"/>
+    <text x="590" y="488" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">DEMAND SIGNAL</text>
+    <text x="590" y="502" text-anchor="middle" font-size="9" fill="#1e40af">exploration_boost, evals_desired</text>
+  </g>
+
+  <!-- Internal feedback: L0 → L1 (within Task) -->
+  <path d="M 1105 540 L 1130 540 L 1130 420 L 1105 420" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowPurple)" stroke-dasharray="5,3"/>
+  <text x="1145" y="485" font-size="9" fill="#8b5cf6" transform="rotate(90, 1145, 485)">L0 perf → L1</text>
+
+  <!-- Internal feedback: L1 → L2 (within Task) -->
+  <path d="M 1105 340 L 1150 340 L 1150 265 L 1105 265" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowPurple)" stroke-dasharray="5,3"/>
+  <text x="1165" y="305" font-size="9" fill="#8b5cf6" transform="rotate(90, 1165, 305)">L1 perf → L2</text>
+
+  <!-- Internal feedback: L0 → L1 (within Resource) -->
+  <path d="M 95 380 L 70 380 L 70 320 L 95 320" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowPurple)" stroke-dasharray="5,3"/>
+
+  <!-- ================ BOTTOM: The Balance Equation ================ -->
+  <g transform="translate(100, 660)">
+    <rect x="0" y="0" width="1000" height="140" rx="12" fill="white" stroke="#64748b" stroke-width="2" filter="url(#shadow)"/>
+    <text x="500" y="28" text-anchor="middle" font-size="16" font-weight="bold" fill="#0f172a">The Feedback Loop: Finding the Optimal Balance</text>
+
+    <!-- The equation/flow -->
+    <g transform="translate(50, 50)">
+      <!-- Resource pressure high -->
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#fef2f2" stroke="#ef4444"/>
+      <text x="100" y="22" text-anchor="middle" font-size="11" font-weight="bold" fill="#991b1b">High Resource Pressure</text>
+      <text x="100" y="40" text-anchor="middle" font-size="9" fill="#991b1b">Memory > 80%, CPU > 90%</text>
+      <text x="100" y="55" text-anchor="middle" font-size="9" fill="#991b1b">→ pressure_signal = 0.8</text>
+    </g>
+
+    <path d="M 260 85 L 310 85" stroke="#64748b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+    <g transform="translate(320, 50)">
+      <!-- Task response -->
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+      <text x="100" y="22" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">Task Silo Responds</text>
+      <text x="100" y="40" text-anchor="middle" font-size="9" fill="#1e40af">Reduces mutation rates</text>
+      <text x="100" y="55" text-anchor="middle" font-size="9" fill="#1e40af">Smaller batch sizes, simpler networks</text>
+    </g>
+
+    <path d="M 530 85 L 580 85" stroke="#64748b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+    <g transform="translate(590, 50)">
+      <!-- Resource recovers -->
+      <rect x="0" y="0" width="200" height="70" rx="8" fill="#f0fdf4" stroke="#22c55e"/>
+      <text x="100" y="22" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Resources Stabilize</text>
+      <text x="100" y="40" text-anchor="middle" font-size="9" fill="#166534">Memory drops, CPU recovers</text>
+      <text x="100" y="55" text-anchor="middle" font-size="9" fill="#166534">→ pressure_signal = 0.2</text>
+    </g>
+
+    <path d="M 800 85 L 850 85" stroke="#64748b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+    <g transform="translate(860, 50)">
+      <!-- Task accelerates -->
+      <rect x="0" y="0" width="140" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+      <text x="70" y="22" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">Training</text>
+      <text x="70" y="40" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">Accelerates</text>
+      <text x="70" y="58" text-anchor="middle" font-size="10" fill="#92400e">More exploration!</text>
+    </g>
+  </g>
+
+  <!-- ================ KEY INSIGHT BOX ================ -->
+  <g transform="translate(80, 615)">
+    <rect x="0" y="0" width="350" height="35" rx="6" fill="#fef3c7" stroke="#fbbf24" stroke-width="2"/>
+    <text x="175" y="22" text-anchor="middle" font-size="11" font-weight="bold" fill="#92400e">Resource Silo = FEEDBACK to Task Silo</text>
+  </g>
+
+  <g transform="translate(770, 615)">
+    <rect x="0" y="0" width="350" height="35" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/>
+    <text x="175" y="22" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">Task Silo = The TRAINEE being optimized</text>
+  </g>
+
+  <!-- Legend for feedback arrows -->
+  <g transform="translate(450, 810)">
+    <rect x="0" y="0" width="300" height="70" rx="8" fill="white" stroke="#e2e8f0"/>
+    <text x="150" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#0f172a">Feedback Flow Legend</text>
+
+    <g transform="translate(20, 30)">
+      <line x1="0" y1="8" x2="40" y2="8" stroke="#22c55e" stroke-width="3" marker-end="url(#arrowBlue)"/>
+      <text x="50" y="12" font-size="9" fill="#0f172a">Resource→Task (governs)</text>
+    </g>
+    <g transform="translate(20, 50)">
+      <line x1="0" y1="8" x2="40" y2="8" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+      <text x="50" y="12" font-size="9" fill="#0f172a">Internal L0→L1→L2 feedback</text>
+    </g>
+  </g>
+</svg>

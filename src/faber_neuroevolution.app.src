@@ -1,0 +1,20 @@
+{application, faber_neuroevolution, [
+    {description, "Population-based evolutionary training with NEAT topology evolution"},
+    {vsn, "0.1.0"},
+    {registered, []},
+    {mod, {faber_neuroevolution_app, []}},
+    {applications, [
+        kernel,
+        stdlib,
+        faber_tweann
+    ]},
+    {env, []},
+    {modules, []},
+    {licenses, ["Apache-2.0"]},
+    {links, [
+        {"GitHub", "https://github.com/rgfaber/faber-neuroevolution"},
+        {"HexDocs", "https://hexdocs.pm/faber_neuroevolution"}
+    ]},
+    {maintainers, ["R.G. Lefever"]},
+    {build_tools, ["rebar3"]}
+]}.

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 600">
+  <defs>
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="tempGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <linearGradient id="compGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444"/>
+      <stop offset="100%" style="stop-color:#dc2626"/>
+    </linearGradient>
+    <linearGradient id="socialGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#db2777"/>
+    </linearGradient>
+    <linearGradient id="culturalGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="routerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1"/>
+      <stop offset="100%" style="stop-color:#4f46e5"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#64748b"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#10b981"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#f59e0b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="950" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="475" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Cross-Silo Signal Interactions</text>
+  <text x="475" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">60+ signals coordinate behavior across silos via lc_cross_silo router</text>
+
+  <!-- Central Router -->
+  <rect x="375" y="250" width="200" height="80" rx="12" fill="url(#routerGrad)" filter="url(#shadow)"/>
+  <text x="475" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">lc_cross_silo</text>
+  <text x="475" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#e0e7ff">Signal Router | Decay Management</text>
+
+  <!-- ========== SILOS ARRANGED IN CIRCLE ========== -->
+
+  <!-- Task Silo (top) -->
+  <rect x="400" y="80" width="150" height="60" rx="10" fill="url(#taskGrad)" filter="url(#shadow)"/>
+  <text x="475" y="107" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Task Silo</text>
+  <text x="475" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#dbeafe">Fitness, stagnation</text>
+
+  <!-- Resource Silo (top-left) -->
+  <rect x="130" y="120" width="150" height="60" rx="10" fill="url(#resourceGrad)" filter="url(#shadow)"/>
+  <text x="205" y="147" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Resource Silo</text>
+  <text x="205" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#d1fae5">Memory, CPU</text>
+
+  <!-- Temporal Silo (top-right) -->
+  <rect x="670" y="120" width="150" height="60" rx="10" fill="url(#tempGrad)" filter="url(#shadow)"/>
+  <text x="745" y="147" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Temporal Silo</text>
+  <text x="745" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#fef3c7">Time, termination</text>
+
+  <!-- Competitive Silo (left) -->
+  <rect x="50" y="260" width="150" height="60" rx="10" fill="url(#compGrad)" filter="url(#shadow)"/>
+  <text x="125" y="287" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Competitive Silo</text>
+  <text x="125" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#fee2e2">Elo, opponents</text>
+
+  <!-- Social Silo (right) -->
+  <rect x="750" y="260" width="150" height="60" rx="10" fill="url(#socialGrad)" filter="url(#shadow)"/>
+  <text x="825" y="287" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Social Silo</text>
+  <text x="825" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#fce7f3">Reputation</text>
+
+  <!-- Cultural Silo (bottom) -->
+  <rect x="400" y="420" width="150" height="60" rx="10" fill="url(#culturalGrad)" filter="url(#shadow)"/>
+  <text x="475" y="447" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Cultural Silo</text>
+  <text x="475" y="465" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#e9d5ff">Innovations</text>
+
+  <!-- ========== SIGNAL ARROWS ========== -->
+
+  <!-- Task -> Router -->
+  <path d="M475 145 L475 245" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+
+  <!-- Resource -> Router -->
+  <path d="M280 165 Q330 220 370 270" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+
+  <!-- Temporal -> Router -->
+  <path d="M670 165 Q620 220 580 270" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrowOrange)"/>
+
+  <!-- Competitive -> Router -->
+  <path d="M200 290 L370 290" stroke="#ef4444" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Social -> Router -->
+  <path d="M750 290 L580 290" stroke="#ec4899" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Cultural -> Router -->
+  <path d="M475 420 L475 335" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Router -> Task -->
+  <path d="M485 250 Q520 200 500 145" stroke="#64748b" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+  <!-- Router -> Resource -->
+  <path d="M375 265 Q320 200 265 180" stroke="#64748b" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+
+  <!-- ========== SIGNAL LABELS ========== -->
+
+  <!-- Signal boxes on left side -->
+  <rect x="30" y="400" width="200" height="180" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="130" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">Task -> Others</text>
+  <text x="45" y="445" font-family="monospace" font-size="9" fill="#475569">stagnation_severity</text>
+  <text x="45" y="460" font-family="monospace" font-size="9" fill="#475569">exploration_need</text>
+  <text x="45" y="475" font-family="monospace" font-size="9" fill="#475569">complexity_target</text>
+  <text x="45" y="490" font-family="monospace" font-size="9" fill="#475569">adaptation_pressure</text>
+  <text x="45" y="505" font-family="monospace" font-size="9" fill="#475569">fitness_pressure</text>
+  <text x="45" y="520" font-family="monospace" font-size="9" fill="#475569">selection_pressure</text>
+  <text x="45" y="540" font-family="Arial, sans-serif" font-size="9" fill="#64748b" font-style="italic">...and 6 more signals</text>
+
+  <!-- Signal boxes on right side -->
+  <rect x="720" y="400" width="200" height="180" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1" filter="url(#shadow)"/>
+  <text x="820" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e293b">Resource -> Others</text>
+  <text x="735" y="445" font-family="monospace" font-size="9" fill="#475569">pressure_signal</text>
+  <text x="735" y="460" font-family="monospace" font-size="9" fill="#475569">max_evals_per_individual</text>
+  <text x="735" y="475" font-family="monospace" font-size="9" fill="#475569">should_simplify</text>
+  <text x="735" y="490" font-family="monospace" font-size="9" fill="#475569">offload_preference</text>
+  <text x="735" y="505" font-family="monospace" font-size="9" fill="#475569">local_capacity</text>
+  <text x="735" y="520" font-family="monospace" font-size="9" fill="#475569">budget_signal</text>
+  <text x="735" y="540" font-family="Arial, sans-serif" font-size="9" fill="#64748b" font-style="italic">...and 4 more signals</text>
+
+  <!-- Signal example in center bottom -->
+  <rect x="300" y="510" width="350" height="75" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" filter="url(#shadow)"/>
+  <text x="475" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#1e40af">Signal Negotiation Example</text>
+  <text x="320" y="555" font-family="monospace" font-size="10" fill="#2563eb">Resource: max_evals_per_individual = 15</text>
+  <text x="320" y="570" font-family="monospace" font-size="10" fill="#2563eb">Task: desired_evals = 20</text>
+  <text x="320" y="585" font-family="monospace" font-size="10" fill="#059669">Effective: min(15, 20) = 15</text>
+
+  <!-- Dependency chain indicator -->
+  <rect x="250" y="350" width="450" height="45" rx="6" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="475" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#92400e">Dependency Chain Example</text>
+  <text x="475" y="388" text-anchor="middle" font-family="monospace" font-size="10" fill="#b45309">Ecological.stress -> Social.cooperation -> Communication.trust -> Task.selection</text>
+
+  <!-- Legend -->
+  <rect x="30" y="80" width="90" height="25" rx="4" fill="white" stroke="#e2e8f0"/>
+  <line x1="40" y1="92" x2="70" y2="92" stroke="#3b82f6" stroke-width="2"/>
+  <text x="80" y="97" font-family="Arial, sans-serif" font-size="9" fill="#475569">Outgoing</text>
+
+  <rect x="30" y="110" width="90" height="25" rx="4" fill="white" stroke="#e2e8f0"/>
+  <line x1="40" y1="122" x2="70" y2="122" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="80" y="127" font-family="Arial, sans-serif" font-size="9" fill="#475569">Incoming</text>
+</svg>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="dashGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a202c;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#2d3748;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dashboard background -->
+  <rect x="0" y="0" width="800" height="450" fill="url(#dashGrad)"/>
+  <text x="400" y="30" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#e2e8f0" text-anchor="middle">Liquid Conglomerate Training Dashboard</text>
+
+  <!-- Fitness Panel -->
+  <rect x="20" y="50" width="370" height="180" rx="6" fill="#2d3748" stroke="#4a5568"/>
+  <text x="40" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#a0aec0">Fitness Over Generations</text>
+
+  <!-- Fitness chart area -->
+  <rect x="40" y="90" width="330" height="120" fill="#1a202c" rx="3"/>
+  <!-- Best fitness line -->
+  <polyline points="50,180 80,170 110,155 140,140 170,130 200,115 230,105 260,95 290,88 320,82 350,78"
+            stroke="#48bb78" stroke-width="2" fill="none"/>
+  <!-- Avg fitness line -->
+  <polyline points="50,190 80,185 110,175 140,165 170,160 200,150 230,145 260,140 290,138 320,135 350,132"
+            stroke="#4299e1" stroke-width="2" fill="none"/>
+  <!-- Worst fitness line -->
+  <polyline points="50,200 80,198 110,195 140,190 170,188 200,185 230,182 260,180 290,178 320,176 350,175"
+            stroke="#fc8181" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+
+  <text x="360" y="100" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#48bb78">Best</text>
+  <text x="360" y="115" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#4299e1">Avg</text>
+  <text x="360" y="130" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#fc8181">Worst</text>
+
+  <!-- Hyperparameters Panel -->
+  <rect x="410" y="50" width="370" height="180" rx="6" fill="#2d3748" stroke="#4a5568"/>
+  <text x="430" y="75" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#a0aec0">Hyperparameter Trajectories</text>
+
+  <rect x="430" y="90" width="330" height="120" fill="#1a202c" rx="3"/>
+  <!-- Mutation rate -->
+  <polyline points="440,120 470,125 500,140 530,150 560,145 590,130 620,115 650,120 680,135 710,150 740,160"
+            stroke="#9f7aea" stroke-width="2" fill="none"/>
+  <!-- Selection ratio -->
+  <polyline points="440,180 470,175 500,165 530,155 560,160 590,170 620,180 650,175 680,165 710,155 740,145"
+            stroke="#ed8936" stroke-width="2" fill="none"/>
+
+  <text x="750" y="130" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#9f7aea">μ rate</text>
+  <text x="750" y="160" font-family="Inter, system-ui, sans-serif" font-size="8" fill="#ed8936">sel %</text>
+
+  <!-- Diversity Panel -->
+  <rect x="20" y="250" width="250" height="180" rx="6" fill="#2d3748" stroke="#4a5568"/>
+  <text x="40" y="275" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#a0aec0">Population Diversity</text>
+
+  <rect x="40" y="290" width="210" height="120" fill="#1a202c" rx="3"/>
+  <!-- Diversity line -->
+  <polyline points="50,380 70,370 90,350 110,340 130,355 150,365 170,350 190,330 210,320 230,310"
+            stroke="#38b2ac" stroke-width="2" fill="none"/>
+  <!-- Entropy line -->
+  <polyline points="50,390 70,385 90,375 110,365 130,370 150,375 170,365 190,355 210,350 230,345"
+            stroke="#f6e05e" stroke-width="1.5" fill="none" stroke-dasharray="3,2"/>
+
+  <!-- Meta-Controller State -->
+  <rect x="290" y="250" width="250" height="180" rx="6" fill="#2d3748" stroke="#4a5568"/>
+  <text x="310" y="275" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#a0aec0">Meta-Controller State</text>
+
+  <!-- LTC neuron states -->
+  <g transform="translate(310, 295)">
+    <text x="0" y="15" font-family="monospace" font-size="9" fill="#718096">LTC neurons (internal state):</text>
+    <rect x="0" y="25" width="180" height="15" fill="#1a202c" rx="2"/>
+    <rect x="2" y="27" width="120" height="11" fill="#667eea" rx="1"/>
+    <text x="190" y="37" font-family="monospace" font-size="8" fill="#a0aec0">0.67</text>
+
+    <rect x="0" y="45" width="180" height="15" fill="#1a202c" rx="2"/>
+    <rect x="2" y="47" width="80" height="11" fill="#667eea" rx="1"/>
+    <text x="190" y="57" font-family="monospace" font-size="8" fill="#a0aec0">0.44</text>
+
+    <rect x="0" y="65" width="180" height="15" fill="#1a202c" rx="2"/>
+    <rect x="2" y="67" width="150" height="11" fill="#667eea" rx="1"/>
+    <text x="190" y="77" font-family="monospace" font-size="8" fill="#a0aec0">0.83</text>
+
+    <rect x="0" y="85" width="180" height="15" fill="#1a202c" rx="2"/>
+    <rect x="2" y="87" width="50" height="11" fill="#667eea" rx="1"/>
+    <text x="190" y="97" font-family="monospace" font-size="8" fill="#a0aec0">0.28</text>
+  </g>
+
+  <!-- Reward Components -->
+  <rect x="560" y="250" width="220" height="180" rx="6" fill="#2d3748" stroke="#4a5568"/>
+  <text x="580" y="275" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#a0aec0">Reward Components</text>
+
+  <g transform="translate(580, 290)">
+    <text x="0" y="15" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#48bb78">Convergence: 0.35</text>
+    <rect x="100" y="5" width="80" height="12" fill="#1a202c" rx="2"/>
+    <rect x="102" y="7" width="28" height="8" fill="#48bb78" rx="1"/>
+
+    <text x="0" y="35" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#4299e1">Fitness: 0.25</text>
+    <rect x="100" y="25" width="80" height="12" fill="#1a202c" rx="2"/>
+    <rect x="102" y="27" width="20" height="8" fill="#4299e1" rx="1"/>
+
+    <text x="0" y="55" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#ed8936">Efficiency: 0.20</text>
+    <rect x="100" y="45" width="80" height="12" fill="#1a202c" rx="2"/>
+    <rect x="102" y="47" width="16" height="8" fill="#ed8936" rx="1"/>
+
+    <text x="0" y="75" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#9f7aea">Diversity: 0.15</text>
+    <rect x="100" y="65" width="80" height="12" fill="#1a202c" rx="2"/>
+    <rect x="102" y="67" width="12" height="8" fill="#9f7aea" rx="1"/>
+
+    <text x="0" y="95" font-family="Inter, system-ui, sans-serif" font-size="9" fill="#f6e05e">Structure: 0.15</text>
+    <rect x="100" y="85" width="80" height="12" fill="#1a202c" rx="2"/>
+    <rect x="102" y="87" width="12" height="8" fill="#f6e05e" rx="1"/>
+
+    <rect x="0" y="110" width="180" height="20" rx="3" fill="#1a202c"/>
+    <text x="90" y="124" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#48bb78" text-anchor="middle">Total Reward: 0.82</text>
+  </g>
+</svg>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="cultOrange" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fb923c"/>
+      <stop offset="100%" style="stop-color:#f97316"/>
+    </linearGradient>
+    <linearGradient id="cultHeaderGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ea580c"/>
+      <stop offset="100%" style="stop-color:#c2410c"/>
+    </linearGradient>
+    <filter id="shadowCult" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+    <marker id="arrowCult" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Cultural Silo Architecture</text>
+
+  <!-- Main container -->
+  <rect x="50" y="60" width="700" height="520" rx="10" fill="white" stroke="#f97316" stroke-width="2" filter="url(#shadowCult)"/>
+  <rect x="50" y="60" width="700" height="40" rx="10" fill="url(#cultHeaderGrad)"/>
+  <rect x="50" y="90" width="700" height="10" fill="url(#cultHeaderGrad)"/>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">CULTURAL SILO</text>
+
+  <!-- L2 Strategic Layer -->
+  <rect x="80" y="120" width="640" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="100" y="145" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#b45309">L2 Strategic (cultural policy learning)</text>
+  <text x="100" y="163" font-family="Arial, sans-serif" font-size="10" fill="#92400e">Learn optimal innovation/tradition balance for task domains | Time constant: many runs</text>
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="10" fill="#92400e">Controls: innovation_emphasis, tradition_stability, learning_investment, conformity_level</text>
+
+  <!-- Arrow L2 to L1 -->
+  <path d="M400 190 L400 210" stroke="#64748b" stroke-width="2" marker-end="url(#arrowCult)"/>
+
+  <!-- L1 Tactical Layer -->
+  <rect x="80" y="215" width="640" height="90" rx="8" fill="#ffedd5" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="100" y="240" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#ea580c">L1 Tactical (cultural dynamics)</text>
+  <text x="100" y="260" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Adapt innovation thresholds and tradition decay based on performance | Time constant: per generation</text>
+  <text x="100" y="280" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Track trait prevalence, imitation success, cumulative innovation depth</text>
+
+  <!-- L1 Components -->
+  <rect x="460" y="225" width="110" height="30" rx="4" fill="#fed7aa" opacity="0.3" stroke="#fb923c"/>
+  <text x="515" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ea580c">traits[]</text>
+  <rect x="580" y="225" width="120" height="30" rx="4" fill="#fed7aa" opacity="0.3" stroke="#fb923c"/>
+  <text x="640" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ea580c">traditions[]</text>
+  <rect x="460" y="265" width="240" height="30" rx="4" fill="#fed7aa" opacity="0.3" stroke="#fb923c"/>
+  <text x="580" y="285" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ea580c">innovation_chains, behavioral_archive</text>
+
+  <!-- Arrow L1 to L0 -->
+  <path d="M400 305 L400 325" stroke="#64748b" stroke-width="2" marker-end="url(#arrowCult)"/>
+
+  <!-- L0 Reactive Layer -->
+  <rect x="80" y="330" width="640" height="230" rx="8" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="100" y="355" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#ea580c">L0 Reactive (cultural events)</text>
+  <text x="100" y="375" font-family="Arial, sans-serif" font-size="10" fill="#c2410c">Detect innovations, process imitations, manage traditions | Time constant: per evaluation</text>
+
+  <!-- Sensors Box -->
+  <rect x="100" y="390" width="250" height="150" rx="6" fill="white" stroke="#fdba74" stroke-width="1"/>
+  <text x="225" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ea580c">SENSORS (10 inputs)</text>
+  <text x="110" y="430" font-family="monospace" font-size="8" fill="#ea580c">innovation_rate</text>
+  <text x="110" y="445" font-family="monospace" font-size="8" fill="#ea580c">innovation_spread_rate</text>
+  <text x="110" y="460" font-family="monospace" font-size="8" fill="#ea580c">tradition_count, tradition_strength</text>
+  <text x="110" y="475" font-family="monospace" font-size="8" fill="#ea580c">imitation_rate, teaching_success_rate</text>
+  <text x="110" y="490" font-family="monospace" font-size="8" fill="#ea580c">cultural_diversity, behavior_clusters</text>
+  <text x="110" y="505" font-family="monospace" font-size="8" fill="#ea580c">innovation_chain_depth, fad_velocity</text>
+
+  <!-- TWEANN Box -->
+  <rect x="370" y="430" width="100" height="60" rx="6" fill="url(#cultOrange)" stroke="#ea580c" stroke-width="1"/>
+  <text x="420" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="420" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">LTC Network</text>
+
+  <!-- Arrows to/from TWEANN -->
+  <path d="M350 460 L370 460" stroke="#fdba74" stroke-width="2" marker-end="url(#arrowCult)"/>
+  <path d="M470 460 L490 460" stroke="#fdba74" stroke-width="2" marker-end="url(#arrowCult)"/>
+
+  <!-- Actuators Box -->
+  <rect x="490" y="390" width="210" height="150" rx="6" fill="white" stroke="#fdba74" stroke-width="1"/>
+  <text x="595" y="410" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#ea580c">ACTUATORS (8 outputs)</text>
+  <text x="500" y="430" font-family="monospace" font-size="8" fill="#ea580c">innovation_threshold</text>
+  <text x="500" y="445" font-family="monospace" font-size="8" fill="#ea580c">innovation_fitness_bonus</text>
+  <text x="500" y="460" font-family="monospace" font-size="8" fill="#ea580c">tradition_decay_rate</text>
+  <text x="500" y="475" font-family="monospace" font-size="8" fill="#ea580c">tradition_establishment_boost</text>
+  <text x="500" y="490" font-family="monospace" font-size="8" fill="#ea580c">imitation_fidelity, learning_rate_mult</text>
+  <text x="500" y="505" font-family="monospace" font-size="8" fill="#ea580c">conformity_pressure, deviance_tolerance</text>
+
+  <!-- Legend -->
+  <rect x="60" y="565" width="15" height="15" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="80" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L2 Strategic</text>
+  <rect x="170" y="565" width="15" height="15" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="190" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L1 Tactical</text>
+  <rect x="280" y="565" width="15" height="15" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="300" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L0 Reactive</text>
+  <text x="420" y="577" font-family="Arial, sans-serif" font-size="10" font-style="italic" fill="#64748b">Time constant: per evaluation (knowledge transfer)</text>
+</svg>

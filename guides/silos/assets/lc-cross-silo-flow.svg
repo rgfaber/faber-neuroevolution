@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650">
+  <defs>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+    <linearGradient id="distGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="coordGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <filter id="shadowCS" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+    </filter>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8b5cf6"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="650" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Cross-Silo Signal Flow</text>
+  <text x="450" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">lc_cross_silo - 18 Named Signals with Decay</text>
+
+  <!-- Central Coordinator -->
+  <rect x="325" y="240" width="250" height="80" rx="12" fill="url(#coordGrad)" filter="url(#shadowCS)"/>
+  <text x="450" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">lc_cross_silo</text>
+  <text x="450" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#fef3c7">Signal Registry + Decay + Subscribers</text>
+  <text x="450" y="305" text-anchor="middle" font-family="monospace" font-size="9" fill="#fef3c7">decay_ms=30000 | neutral_values</text>
+
+  <!-- Resource Silo (Left) -->
+  <rect x="50" y="210" width="180" height="140" rx="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2" filter="url(#shadowCS)"/>
+  <rect x="50" y="210" width="180" height="30" rx="10" fill="url(#resourceGrad)"/>
+  <rect x="50" y="230" width="180" height="10" fill="url(#resourceGrad)"/>
+  <text x="140" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">RESOURCE SILO</text>
+  <text x="140" y="258" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#065f46">System stability (tau=5)</text>
+  <text x="60" y="280" font-family="monospace" font-size="8" fill="#047857">Emits:</text>
+  <text x="70" y="295" font-family="monospace" font-size="8" fill="#047857">- pressure_signal [0-1]</text>
+  <text x="70" y="308" font-family="monospace" font-size="8" fill="#047857">- max_evals [1-20]</text>
+  <text x="70" y="321" font-family="monospace" font-size="8" fill="#047857">- should_simplify [0-1]</text>
+  <text x="70" y="334" font-family="monospace" font-size="8" fill="#047857">- offload_preference [0-1]</text>
+
+  <!-- Task Silo (Right) -->
+  <rect x="670" y="210" width="180" height="140" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" filter="url(#shadowCS)"/>
+  <rect x="670" y="210" width="180" height="30" rx="10" fill="url(#taskGrad)"/>
+  <rect x="670" y="230" width="180" height="10" fill="url(#taskGrad)"/>
+  <text x="760" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">TASK SILO</text>
+  <text x="760" y="258" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#1e40af">Evolution optimization (tau=50)</text>
+  <text x="680" y="280" font-family="monospace" font-size="8" fill="#1d4ed8">Emits:</text>
+  <text x="690" y="295" font-family="monospace" font-size="8" fill="#1d4ed8">- exploration_boost [0-1]</text>
+  <text x="690" y="308" font-family="monospace" font-size="8" fill="#1d4ed8">- desired_evals [1-50]</text>
+  <text x="690" y="321" font-family="monospace" font-size="8" fill="#1d4ed8">- complexity_growth [0-1]</text>
+  <text x="690" y="334" font-family="monospace" font-size="8" fill="#1d4ed8">- diversity_need [0-1]</text>
+
+  <!-- Distribution Silo (Bottom) -->
+  <rect x="360" y="400" width="180" height="140" rx="10" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="2" filter="url(#shadowCS)"/>
+  <rect x="360" y="400" width="180" height="30" rx="10" fill="url(#distGrad)"/>
+  <rect x="360" y="420" width="180" height="10" fill="url(#distGrad)"/>
+  <text x="450" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">DISTRIBUTION SILO</text>
+  <text x="450" y="448" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#5b21b6">Mesh optimization (tau=1)</text>
+  <text x="370" y="470" font-family="monospace" font-size="8" fill="#6d28d9">Emits:</text>
+  <text x="380" y="485" font-family="monospace" font-size="8" fill="#6d28d9">- network_load [0-1]</text>
+  <text x="380" y="498" font-family="monospace" font-size="8" fill="#6d28d9">- remote_capacity [0-1]</text>
+  <text x="380" y="511" font-family="monospace" font-size="8" fill="#6d28d9">- island_diversity [0-1]</text>
+  <text x="380" y="524" font-family="monospace" font-size="8" fill="#6d28d9">- migration_activity [0-1]</text>
+
+  <!-- Arrow: Resource -> Coordinator (to Task) -->
+  <path d="M230 260 Q280 260 325 270" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+  <text x="265" y="250" font-family="Arial, sans-serif" font-size="9" fill="#10b981">to Task</text>
+
+  <!-- Arrow: Resource -> Coordinator (to Distribution) -->
+  <path d="M230 300 Q290 340 340 360" stroke="#10b981" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+  <text x="270" y="340" font-family="Arial, sans-serif" font-size="9" fill="#10b981">to Dist</text>
+
+  <!-- Arrow: Task -> Coordinator (to Resource) -->
+  <path d="M670 260 Q620 260 575 270" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  <text x="605" y="250" font-family="Arial, sans-serif" font-size="9" fill="#3b82f6">to Resource</text>
+
+  <!-- Arrow: Task -> Coordinator (to Distribution) -->
+  <path d="M670 300 Q610 340 560 360" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+  <text x="595" y="340" font-family="Arial, sans-serif" font-size="9" fill="#3b82f6">to Dist</text>
+
+  <!-- Arrow: Distribution -> Coordinator (to Resource) -->
+  <path d="M400 400 Q340 350 340 320" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowPurple)"/>
+  <text x="345" y="365" font-family="Arial, sans-serif" font-size="9" fill="#8b5cf6">to Resource</text>
+
+  <!-- Arrow: Distribution -> Coordinator (to Task) -->
+  <path d="M500 400 Q560 350 560 320" stroke="#8b5cf6" stroke-width="2" fill="none" marker-end="url(#arrowPurple)"/>
+  <text x="530" y="365" font-family="Arial, sans-serif" font-size="9" fill="#8b5cf6">to Task</text>
+
+  <!-- Signal Registry Diagram -->
+  <rect x="50" y="70" width="280" height="120" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1" filter="url(#shadowCS)"/>
+  <text x="190" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#475569">Signal Registry Structure</text>
+  <text x="60" y="115" font-family="monospace" font-size="9" fill="#64748b">signals = #{</text>
+  <text x="70" y="130" font-family="monospace" font-size="9" fill="#10b981">  resource => #{exploration_boost, ...},</text>
+  <text x="70" y="145" font-family="monospace" font-size="9" fill="#3b82f6">  task => #{pressure_signal, ...},</text>
+  <text x="70" y="160" font-family="monospace" font-size="9" fill="#8b5cf6">  distribution => #{diversity_need, ...}</text>
+  <text x="60" y="175" font-family="monospace" font-size="9" fill="#64748b">}</text>
+
+  <!-- Signal Negotiation -->
+  <rect x="570" y="70" width="280" height="120" rx="8" fill="white" stroke="#e2e8f0" stroke-width="1" filter="url(#shadowCS)"/>
+  <text x="710" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#475569">Signal Negotiation Example</text>
+  <text x="580" y="115" font-family="monospace" font-size="9" fill="#64748b">%% Evaluations per individual:</text>
+  <text x="580" y="130" font-family="monospace" font-size="9" fill="#10b981">Resource: max_evals = 15 (budget)</text>
+  <text x="580" y="145" font-family="monospace" font-size="9" fill="#3b82f6">Task: desired_evals = 20 (want)</text>
+  <text x="580" y="160" font-family="monospace" font-size="9" fill="#f59e0b">Effective = min(15, 20) = 15</text>
+  <text x="580" y="175" font-family="monospace" font-size="9" fill="#64748b">get_effective_evals_per_individual()</text>
+
+  <!-- Signal Decay Info -->
+  <rect x="50" y="555" width="400" height="85" rx="8" fill="#fff7ed" stroke="#f59e0b" stroke-width="1"/>
+  <text x="250" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#92400e">Signal Decay Mechanism</text>
+  <text x="60" y="595" font-family="Arial, sans-serif" font-size="9" fill="#9a3412">Signals not updated within decay_ms (30s) decay toward neutral:</text>
+  <text x="70" y="610" font-family="monospace" font-size="8" fill="#c2410c">decayed = current + (neutral - current) * 0.1</text>
+  <text x="60" y="630" font-family="Arial, sans-serif" font-size="9" fill="#9a3412">Neutral values: pressure/simplify=0.0, ratios=0.5, evals=10/5</text>
+
+  <!-- API Functions -->
+  <rect x="470" y="555" width="380" height="85" rx="8" fill="#f0fdf4" stroke="#10b981" stroke-width="1"/>
+  <text x="660" y="575" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#065f46">Cross-Silo API</text>
+  <text x="480" y="595" font-family="monospace" font-size="9" fill="#047857">lc_cross_silo:emit(resource, task, pressure_signal, 0.7)</text>
+  <text x="480" y="610" font-family="monospace" font-size="9" fill="#047857">lc_cross_silo:emit_batch(task, resource, #{...})</text>
+  <text x="480" y="625" font-family="monospace" font-size="9" fill="#047857">lc_cross_silo:get_signals_for(task)</text>
+  <text x="480" y="640" font-family="monospace" font-size="9" fill="#047857">lc_cross_silo:subscribe(task, fun(S) -> handle(S) end)</text>
+</svg>

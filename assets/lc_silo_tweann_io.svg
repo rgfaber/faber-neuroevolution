@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="resourceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="taskGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#60a5fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="distGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f472b6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="neuralGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#475569;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrowRight" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto">
+      <polygon points="0 0, 6 2.5, 0 5" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#f1f5f9"/>
+
+  <!-- Title -->
+  <text x="700" y="35" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">LC v2 Silo TWEANN Sensors and Actuators</text>
+  <text x="700" y="58" text-anchor="middle" font-size="13" fill="#64748b">Each silo has an L0 TWEANN that maps environment sensors to control actuators</text>
+
+  <!-- ================ RESOURCE SILO ================ -->
+  <g transform="translate(20, 85)">
+    <!-- Silo container -->
+    <rect x="0" y="0" width="430" height="380" rx="12" fill="white" stroke="#22c55e" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="430" height="35" rx="12" fill="url(#resourceGrad)"/>
+    <rect x="0" y="23" width="430" height="12" fill="url(#resourceGrad)"/>
+    <text x="215" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="white">Resource Silo (tau = 5s)</text>
+
+    <!-- Sensors column -->
+    <g transform="translate(10, 50)">
+      <text x="70" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">L0 Sensors (13)</text>
+      <rect x="0" y="18" width="140" height="300" rx="6" fill="#dcfce7" stroke="#86efac"/>
+
+      <text x="8" y="35" font-size="8" fill="#166534">memory_pressure</text>
+      <text x="8" y="48" font-size="8" fill="#166534">memory_velocity</text>
+      <text x="8" y="61" font-size="8" fill="#166534">cpu_pressure</text>
+      <text x="8" y="74" font-size="8" fill="#166534">cpu_velocity</text>
+      <text x="8" y="87" font-size="8" fill="#166534">run_queue_pressure</text>
+      <text x="8" y="100" font-size="8" fill="#166534">process_pressure</text>
+      <text x="8" y="113" font-size="8" fill="#166534">message_queue_pressure</text>
+      <text x="8" y="126" font-size="8" fill="#166534">binary_memory_ratio</text>
+      <text x="8" y="139" font-size="8" fill="#166534">gc_frequency</text>
+      <text x="8" y="152" font-size="8" fill="#166534">current_concurrency_ratio</text>
+      <text x="8" y="165" font-size="8" fill="#166534">time_since_last_gc</text>
+      <text x="8" y="178" font-size="8" fill="#166534">evaluation_throughput</text>
+      <text x="8" y="195" font-size="8" fill="#3b82f6" font-style="italic">task_silo_exploration</text>
+
+      <text x="70" y="220" text-anchor="middle" font-size="7" fill="#166534" opacity="0.7">System metrics</text>
+      <text x="70" y="230" text-anchor="middle" font-size="7" fill="#166534" opacity="0.7">from erlang:memory(),</text>
+      <text x="70" y="240" text-anchor="middle" font-size="7" fill="#166534" opacity="0.7">scheduler_wall_time</text>
+    </g>
+
+    <!-- TWEANN box -->
+    <g transform="translate(160, 100)">
+      <rect x="0" y="0" width="100" height="180" rx="8" fill="url(#neuralGrad)"/>
+      <text x="50" y="25" text-anchor="middle" font-size="10" font-weight="bold" fill="white">L0 TWEANN</text>
+      <text x="50" y="40" text-anchor="middle" font-size="8" fill="#94a3b8">LTC Network</text>
+
+      <!-- Neural network representation -->
+      <g transform="translate(15, 55)">
+        <circle cx="10" cy="0" r="4" fill="#4ade80"/>
+        <circle cx="10" cy="15" r="4" fill="#4ade80"/>
+        <circle cx="10" cy="30" r="4" fill="#4ade80"/>
+        <circle cx="10" cy="45" r="4" fill="#4ade80"/>
+        <text x="10" y="60" text-anchor="middle" font-size="6" fill="#94a3b8">...</text>
+
+        <circle cx="35" cy="8" r="5" fill="#fbbf24"/>
+        <circle cx="35" cy="28" r="5" fill="#fbbf24"/>
+        <circle cx="35" cy="48" r="5" fill="#fbbf24"/>
+
+        <circle cx="60" cy="8" r="5" fill="#f472b6"/>
+        <circle cx="60" cy="28" r="5" fill="#f472b6"/>
+        <circle cx="60" cy="48" r="5" fill="#f472b6"/>
+
+        <!-- Connections -->
+        <line x1="14" y1="0" x2="30" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="15" x2="30" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="15" x2="30" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="30" x2="30" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="45" x2="30" y2="48" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="8" x2="55" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="28" x2="55" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="48" x2="55" y2="48" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+      </g>
+
+      <text x="50" y="145" text-anchor="middle" font-size="7" fill="#94a3b8">Evolving topology</text>
+      <text x="50" y="155" text-anchor="middle" font-size="7" fill="#94a3b8">+ weights</text>
+      <text x="50" y="170" text-anchor="middle" font-size="8" fill="#22c55e">13 in / 8 out</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="150" y1="190" x2="158" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+    <line x1="260" y1="190" x2="268" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+    <!-- Actuators column -->
+    <g transform="translate(280, 50)">
+      <text x="70" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">L0 Actuators (8)</text>
+      <rect x="0" y="18" width="140" height="215" rx="6" fill="#bbf7d0" stroke="#86efac"/>
+
+      <text x="8" y="38" font-size="8" fill="#166534">max_concurrent_evals</text>
+      <text x="8" y="53" font-size="8" fill="#166534">evaluation_batch_size</text>
+      <text x="8" y="68" font-size="8" fill="#166534">gc_trigger_threshold</text>
+      <text x="8" y="83" font-size="8" fill="#166534">pause_threshold</text>
+      <text x="8" y="98" font-size="8" fill="#166534">throttle_intensity</text>
+      <text x="8" y="113" font-size="8" fill="#166534">evals_per_individual</text>
+      <text x="8" y="128" font-size="8" fill="#166534">gc_aggressiveness</text>
+      <text x="8" y="148" font-size="8" fill="#3b82f6" font-style="italic">task_silo_pressure</text>
+
+      <text x="70" y="175" text-anchor="middle" font-size="7" fill="#166534" opacity="0.7">Controls worker pool,</text>
+      <text x="70" y="185" text-anchor="middle" font-size="7" fill="#166534" opacity="0.7">GC, and cross-silo</text>
+      <text x="70" y="195" text-anchor="middle" font-size="7" fill="#166534" opacity="0.7">pressure signals</text>
+    </g>
+  </g>
+
+  <!-- ================ TASK SILO ================ -->
+  <g transform="translate(480, 85)">
+    <!-- Silo container -->
+    <rect x="0" y="0" width="430" height="380" rx="12" fill="white" stroke="#3b82f6" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="430" height="35" rx="12" fill="url(#taskGrad)"/>
+    <rect x="0" y="23" width="430" height="12" fill="url(#taskGrad)"/>
+    <text x="215" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="white">Task Silo (tau = 10 gen)</text>
+
+    <!-- Sensors column -->
+    <g transform="translate(10, 50)">
+      <text x="70" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">L0 Sensors (16)</text>
+      <rect x="0" y="18" width="140" height="300" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+
+      <text x="8" y="35" font-size="8" fill="#1e40af">best_fitness</text>
+      <text x="8" y="48" font-size="8" fill="#1e40af">avg_fitness</text>
+      <text x="8" y="61" font-size="8" fill="#1e40af">fitness_variance</text>
+      <text x="8" y="74" font-size="8" fill="#1e40af">improvement_velocity</text>
+      <text x="8" y="87" font-size="8" fill="#1e40af">stagnation_severity</text>
+      <text x="8" y="100" font-size="8" fill="#1e40af">diversity_index</text>
+      <text x="8" y="113" font-size="8" fill="#1e40af">species_count_ratio</text>
+      <text x="8" y="126" font-size="8" fill="#1e40af">avg_network_complexity</text>
+      <text x="8" y="139" font-size="8" fill="#1e40af">complexity_velocity</text>
+      <text x="8" y="152" font-size="8" fill="#1e40af">elite_dominance</text>
+      <text x="8" y="165" font-size="8" fill="#1e40af">crossover_success_rate</text>
+      <text x="8" y="178" font-size="8" fill="#1e40af">mutation_impact</text>
+      <text x="8" y="191" font-size="8" fill="#1e40af">generation_progress</text>
+      <text x="8" y="204" font-size="8" fill="#1e40af">entropy</text>
+      <text x="8" y="217" font-size="8" fill="#1e40af">convergence_trend</text>
+      <text x="8" y="234" font-size="8" fill="#22c55e" font-style="italic">resource_pressure</text>
+
+      <text x="70" y="260" text-anchor="middle" font-size="7" fill="#1e40af" opacity="0.7">Population stats from</text>
+      <text x="70" y="270" text-anchor="middle" font-size="7" fill="#1e40af" opacity="0.7">neuroevolution_stats</text>
+    </g>
+
+    <!-- TWEANN box -->
+    <g transform="translate(160, 100)">
+      <rect x="0" y="0" width="100" height="180" rx="8" fill="url(#neuralGrad)"/>
+      <text x="50" y="25" text-anchor="middle" font-size="10" font-weight="bold" fill="white">L0 TWEANN</text>
+      <text x="50" y="40" text-anchor="middle" font-size="8" fill="#94a3b8">LTC Network</text>
+
+      <!-- Neural network representation -->
+      <g transform="translate(15, 55)">
+        <circle cx="10" cy="0" r="4" fill="#60a5fa"/>
+        <circle cx="10" cy="15" r="4" fill="#60a5fa"/>
+        <circle cx="10" cy="30" r="4" fill="#60a5fa"/>
+        <circle cx="10" cy="45" r="4" fill="#60a5fa"/>
+        <text x="10" y="60" text-anchor="middle" font-size="6" fill="#94a3b8">...</text>
+
+        <circle cx="35" cy="8" r="5" fill="#fbbf24"/>
+        <circle cx="35" cy="28" r="5" fill="#fbbf24"/>
+        <circle cx="35" cy="48" r="5" fill="#fbbf24"/>
+
+        <circle cx="60" cy="8" r="5" fill="#f472b6"/>
+        <circle cx="60" cy="28" r="5" fill="#f472b6"/>
+        <circle cx="60" cy="48" r="5" fill="#f472b6"/>
+
+        <!-- Connections -->
+        <line x1="14" y1="0" x2="30" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="15" x2="30" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="15" x2="30" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="30" x2="30" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="45" x2="30" y2="48" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="8" x2="55" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="28" x2="55" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="48" x2="55" y2="48" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+      </g>
+
+      <text x="50" y="145" text-anchor="middle" font-size="7" fill="#94a3b8">Evolving topology</text>
+      <text x="50" y="155" text-anchor="middle" font-size="7" fill="#94a3b8">+ weights</text>
+      <text x="50" y="170" text-anchor="middle" font-size="8" fill="#3b82f6">16 in / 12 out</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="150" y1="190" x2="158" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+    <line x1="260" y1="190" x2="268" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+    <!-- Actuators column -->
+    <g transform="translate(280, 50)">
+      <text x="70" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">L0 Actuators (12)</text>
+      <rect x="0" y="18" width="140" height="280" rx="6" fill="#bfdbfe" stroke="#93c5fd"/>
+
+      <text x="8" y="38" font-size="8" fill="#1e40af">mutation_rate</text>
+      <text x="8" y="53" font-size="8" fill="#1e40af">mutation_strength</text>
+      <text x="8" y="68" font-size="8" fill="#1e40af">selection_ratio</text>
+      <text x="8" y="83" font-size="8" fill="#1e40af">add_node_rate</text>
+      <text x="8" y="98" font-size="8" fill="#1e40af">add_connection_rate</text>
+      <text x="8" y="113" font-size="8" fill="#1e40af">delete_connection_rate</text>
+      <text x="8" y="128" font-size="8" fill="#1e40af">weight_perturb_ratio</text>
+      <text x="8" y="143" font-size="8" fill="#1e40af">crossover_rate</text>
+      <text x="8" y="158" font-size="8" fill="#1e40af">interspecies_crossover</text>
+      <text x="8" y="173" font-size="8" fill="#1e40af">elitism_count</text>
+      <text x="8" y="188" font-size="8" fill="#1e40af">population_size_delta</text>
+      <text x="8" y="203" font-size="8" fill="#1e40af">compat_threshold_delta</text>
+
+      <text x="70" y="235" text-anchor="middle" font-size="7" fill="#1e40af" opacity="0.7">Controls evolution</text>
+      <text x="70" y="245" text-anchor="middle" font-size="7" fill="#1e40af" opacity="0.7">parameters for NEAT</text>
+    </g>
+  </g>
+
+  <!-- ================ DISTRIBUTION SILO ================ -->
+  <g transform="translate(940, 85)">
+    <!-- Silo container -->
+    <rect x="0" y="0" width="430" height="380" rx="12" fill="white" stroke="#ec4899" stroke-width="3" filter="url(#shadow)"/>
+    <rect x="0" y="0" width="430" height="35" rx="12" fill="url(#distGrad)"/>
+    <rect x="0" y="23" width="430" height="12" fill="url(#distGrad)"/>
+    <text x="215" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="white">Distribution Silo (tau = 1s)</text>
+
+    <!-- Sensors column -->
+    <g transform="translate(10, 50)">
+      <text x="70" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#9d174d">L0 Sensors (14)</text>
+      <rect x="0" y="18" width="140" height="300" rx="6" fill="#fce7f3" stroke="#f9a8d4"/>
+
+      <text x="8" y="35" font-size="8" fill="#9d174d">local_load</text>
+      <text x="8" y="48" font-size="8" fill="#9d174d">local_queue_depth</text>
+      <text x="8" y="61" font-size="8" fill="#9d174d">peer_count</text>
+      <text x="8" y="74" font-size="8" fill="#9d174d">avg_peer_load</text>
+      <text x="8" y="87" font-size="8" fill="#9d174d">min_peer_load</text>
+      <text x="8" y="100" font-size="8" fill="#9d174d">network_latency_avg</text>
+      <text x="8" y="113" font-size="8" fill="#9d174d">network_bandwidth_ratio</text>
+      <text x="8" y="126" font-size="8" fill="#9d174d">island_count</text>
+      <text x="8" y="139" font-size="8" fill="#9d174d">migration_success_rate</text>
+      <text x="8" y="152" font-size="8" fill="#9d174d">species_dist_entropy</text>
+      <text x="8" y="165" font-size="8" fill="#9d174d">eval_batch_pending</text>
+      <text x="8" y="178" font-size="8" fill="#9d174d">time_since_migration</text>
+      <text x="8" y="195" font-size="8" fill="#22c55e" font-style="italic">resource_silo_pressure</text>
+      <text x="8" y="208" font-size="8" fill="#3b82f6" font-style="italic">task_silo_exploration</text>
+
+      <text x="70" y="235" text-anchor="middle" font-size="7" fill="#9d174d" opacity="0.7">Network metrics from</text>
+      <text x="70" y="245" text-anchor="middle" font-size="7" fill="#9d174d" opacity="0.7">mesh/DHT layer</text>
+    </g>
+
+    <!-- TWEANN box -->
+    <g transform="translate(160, 100)">
+      <rect x="0" y="0" width="100" height="180" rx="8" fill="url(#neuralGrad)"/>
+      <text x="50" y="25" text-anchor="middle" font-size="10" font-weight="bold" fill="white">L0 TWEANN</text>
+      <text x="50" y="40" text-anchor="middle" font-size="8" fill="#94a3b8">LTC Network</text>
+
+      <!-- Neural network representation -->
+      <g transform="translate(15, 55)">
+        <circle cx="10" cy="0" r="4" fill="#f472b6"/>
+        <circle cx="10" cy="15" r="4" fill="#f472b6"/>
+        <circle cx="10" cy="30" r="4" fill="#f472b6"/>
+        <circle cx="10" cy="45" r="4" fill="#f472b6"/>
+        <text x="10" y="60" text-anchor="middle" font-size="6" fill="#94a3b8">...</text>
+
+        <circle cx="35" cy="8" r="5" fill="#fbbf24"/>
+        <circle cx="35" cy="28" r="5" fill="#fbbf24"/>
+        <circle cx="35" cy="48" r="5" fill="#fbbf24"/>
+
+        <circle cx="60" cy="8" r="5" fill="#4ade80"/>
+        <circle cx="60" cy="28" r="5" fill="#4ade80"/>
+        <circle cx="60" cy="48" r="5" fill="#4ade80"/>
+
+        <!-- Connections -->
+        <line x1="14" y1="0" x2="30" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="15" x2="30" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="15" x2="30" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="30" x2="30" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="14" y1="45" x2="30" y2="48" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="8" x2="55" y2="8" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="28" x2="55" y2="28" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+        <line x1="40" y1="48" x2="55" y2="48" stroke="#475569" stroke-width="0.5" opacity="0.5"/>
+      </g>
+
+      <text x="50" y="145" text-anchor="middle" font-size="7" fill="#94a3b8">Evolving topology</text>
+      <text x="50" y="155" text-anchor="middle" font-size="7" fill="#94a3b8">+ weights</text>
+      <text x="50" y="170" text-anchor="middle" font-size="8" fill="#ec4899">14 in / 10 out</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="150" y1="190" x2="158" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+    <line x1="260" y1="190" x2="268" y2="190" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrowRight)"/>
+
+    <!-- Actuators column -->
+    <g transform="translate(280, 50)">
+      <text x="70" y="12" text-anchor="middle" font-size="11" font-weight="bold" fill="#9d174d">L0 Actuators (10)</text>
+      <rect x="0" y="18" width="140" height="250" rx="6" fill="#fbcfe8" stroke="#f9a8d4"/>
+
+      <text x="8" y="38" font-size="8" fill="#9d174d">local_vs_remote_ratio</text>
+      <text x="8" y="53" font-size="8" fill="#9d174d">migration_rate</text>
+      <text x="8" y="68" font-size="8" fill="#9d174d">migration_selection</text>
+      <text x="8" y="83" font-size="8" fill="#9d174d">target_island_selection</text>
+      <text x="8" y="98" font-size="8" fill="#9d174d">island_split_threshold</text>
+      <text x="8" y="113" font-size="8" fill="#9d174d">island_merge_threshold</text>
+      <text x="8" y="128" font-size="8" fill="#9d174d">load_balance_aggression</text>
+      <text x="8" y="143" font-size="8" fill="#9d174d">peer_selection_strategy</text>
+      <text x="8" y="158" font-size="8" fill="#9d174d">batch_size_for_remote</text>
+      <text x="8" y="173" font-size="8" fill="#9d174d">topology_change_rate</text>
+
+      <text x="70" y="205" text-anchor="middle" font-size="7" fill="#9d174d" opacity="0.7">Controls migration,</text>
+      <text x="70" y="215" text-anchor="middle" font-size="7" fill="#9d174d" opacity="0.7">load balancing,</text>
+      <text x="70" y="225" text-anchor="middle" font-size="7" fill="#9d174d" opacity="0.7">island topology</text>
+    </g>
+  </g>
+
+  <!-- ================ Cross-Silo Communication Legend ================ -->
+  <g transform="translate(20, 500)">
+    <rect x="0" y="0" width="1360" height="145" rx="10" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="680" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f172a">Cross-Silo Communication via lc_cross_silo</text>
+
+    <!-- Cross-silo inputs indicator -->
+    <g transform="translate(30, 45)">
+      <rect x="0" y="0" width="250" height="85" rx="6" fill="#fef3c7" stroke="#fbbf24"/>
+      <text x="125" y="18" text-anchor="middle" font-size="10" font-weight="bold" fill="#92400e">Cross-Silo Sensors (italic)</text>
+      <text x="10" y="38" font-size="9" fill="#92400e">Sensors marked in color receive signals</text>
+      <text x="10" y="52" font-size="9" fill="#92400e">from other silos via lc_cross_silo:</text>
+      <text x="20" y="68" font-size="8" fill="#3b82f6">Blue italic = from Task Silo</text>
+      <text x="20" y="80" font-size="8" fill="#22c55e">Green italic = from Resource Silo</text>
+    </g>
+
+    <!-- Signal categories -->
+    <g transform="translate(310, 45)">
+      <rect x="0" y="0" width="350" height="85" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+      <text x="175" y="18" text-anchor="middle" font-size="10" font-weight="bold" fill="#0f172a">Signal Categories</text>
+
+      <g transform="translate(15, 32)">
+        <circle cx="6" cy="6" r="5" fill="#22c55e"/>
+        <text x="18" y="10" font-size="9" fill="#0f172a">Resource: pressure, capacity, throttling hints</text>
+      </g>
+      <g transform="translate(15, 50)">
+        <circle cx="6" cy="6" r="5" fill="#3b82f6"/>
+        <text x="18" y="10" font-size="9" fill="#0f172a">Task: exploration boost, complexity growth, diversity needs</text>
+      </g>
+      <g transform="translate(15, 68)">
+        <circle cx="6" cy="6" r="5" fill="#ec4899"/>
+        <text x="18" y="10" font-size="9" fill="#0f172a">Distribution: network load, remote capacity, island diversity</text>
+      </g>
+    </g>
+
+    <!-- Time scales -->
+    <g transform="translate(690, 45)">
+      <rect x="0" y="0" width="290" height="85" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+      <text x="145" y="18" text-anchor="middle" font-size="10" font-weight="bold" fill="#166534">Time Scale Separation</text>
+
+      <g transform="translate(15, 35)">
+        <text x="0" y="10" font-size="9" fill="#166534" font-weight="600">Distribution (tau = 1s):</text>
+        <text x="130" y="10" font-size="9" fill="#166534">Real-time routing</text>
+      </g>
+      <g transform="translate(15, 52)">
+        <text x="0" y="10" font-size="9" fill="#166534" font-weight="600">Resource (tau = 5s):</text>
+        <text x="130" y="10" font-size="9" fill="#166534">Stability control</text>
+      </g>
+      <g transform="translate(15, 69)">
+        <text x="0" y="10" font-size="9" fill="#166534" font-weight="600">Task (tau = 10 gen):</text>
+        <text x="130" y="10" font-size="9" fill="#166534">Evolution optimization</text>
+      </g>
+    </g>
+
+    <!-- Totals -->
+    <g transform="translate(1010, 45)">
+      <rect x="0" y="0" width="320" height="85" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+      <text x="160" y="18" text-anchor="middle" font-size="10" font-weight="bold" fill="#1e40af">Total L0 TWEANN I/O</text>
+
+      <g transform="translate(20, 35)">
+        <text x="0" y="12" font-size="10" fill="#1e40af">Sensors:</text>
+        <text x="70" y="12" font-size="10" fill="#1e40af" font-weight="bold">43 inputs</text>
+        <text x="130" y="12" font-size="9" fill="#64748b">(13 + 16 + 14)</text>
+      </g>
+      <g transform="translate(20, 55)">
+        <text x="0" y="12" font-size="10" fill="#1e40af">Actuators:</text>
+        <text x="70" y="12" font-size="10" fill="#1e40af" font-weight="bold">30 outputs</text>
+        <text x="130" y="12" font-size="9" fill="#64748b">(8 + 12 + 10)</text>
+      </g>
+      <g transform="translate(20, 75)">
+        <text x="0" y="8" font-size="8" fill="#64748b">Each L0 TWEANN evolves independently</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Implementation note -->
+  <g transform="translate(20, 665)">
+    <rect x="0" y="0" width="1360" height="220" rx="10" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#shadow)"/>
+    <text x="680" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#0f172a">Implementation Modules</text>
+
+    <!-- Resource Silo modules -->
+    <g transform="translate(30, 45)">
+      <rect x="0" y="0" width="420" height="160" rx="6" fill="#dcfce7" stroke="#86efac"/>
+      <text x="210" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#166534">Resource Silo</text>
+
+      <text x="15" y="40" font-size="9" fill="#166534" font-weight="600">resource_l0_morphology.erl</text>
+      <text x="25" y="53" font-size="8" fill="#166534">- Defines 13 sensor specs + 8 actuator specs</text>
+
+      <text x="15" y="70" font-size="9" fill="#166534" font-weight="600">resource_l0_sensors.erl</text>
+      <text x="25" y="83" font-size="8" fill="#166534">- Collects metrics from erlang:memory(), scheduler_wall_time</text>
+
+      <text x="15" y="100" font-size="9" fill="#166534" font-weight="600">resource_l0_actuators.erl</text>
+      <text x="25" y="113" font-size="8" fill="#166534">- Applies controls to worker pool, GC triggers</text>
+
+      <text x="15" y="130" font-size="9" fill="#166534" font-weight="600">resource_silo.erl</text>
+      <text x="25" y="143" font-size="8" fill="#166534">- Main L0/L1/L2 controller, reward computation</text>
+    </g>
+
+    <!-- Task Silo modules -->
+    <g transform="translate(480, 45)">
+      <rect x="0" y="0" width="420" height="160" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+      <text x="210" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e40af">Task Silo</text>
+
+      <text x="15" y="40" font-size="9" fill="#1e40af" font-weight="600">task_l0_morphology.erl</text>
+      <text x="25" y="53" font-size="8" fill="#1e40af">- Defines 16 sensor specs + 12 actuator specs</text>
+
+      <text x="15" y="70" font-size="9" fill="#1e40af" font-weight="600">task_l0_sensors.erl</text>
+      <text x="25" y="83" font-size="8" fill="#1e40af">- Collects population stats from neuroevolution_stats</text>
+
+      <text x="15" y="100" font-size="9" fill="#1e40af" font-weight="600">task_l0_actuators.erl</text>
+      <text x="25" y="113" font-size="8" fill="#1e40af">- Applies mutation rates, selection pressure to evolution</text>
+
+      <text x="15" y="130" font-size="9" fill="#1e40af" font-weight="600">task_silo.erl</text>
+      <text x="25" y="143" font-size="8" fill="#1e40af">- Main L0/L1/L2 controller, stagnation detection</text>
+    </g>
+
+    <!-- Distribution Silo modules -->
+    <g transform="translate(930, 45)">
+      <rect x="0" y="0" width="420" height="160" rx="6" fill="#fce7f3" stroke="#f9a8d4"/>
+      <text x="210" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#9d174d">Distribution Silo</text>
+
+      <text x="15" y="40" font-size="9" fill="#9d174d" font-weight="600">distribution_l0_morphology.erl</text>
+      <text x="25" y="53" font-size="8" fill="#9d174d">- Defines 14 sensor specs + 10 actuator specs</text>
+
+      <text x="15" y="70" font-size="9" fill="#9d174d" font-weight="600">distribution_l0_sensors.erl</text>
+      <text x="25" y="83" font-size="8" fill="#9d174d">- Collects network metrics from mesh/DHT layer</text>
+
+      <text x="15" y="100" font-size="9" fill="#9d174d" font-weight="600">distribution_l0_actuators.erl</text>
+      <text x="25" y="113" font-size="8" fill="#9d174d">- Controls migration, load balancing, island topology</text>
+
+      <text x="15" y="130" font-size="9" fill="#9d174d" font-weight="600">distribution_silo.erl</text>
+      <text x="25" y="143" font-size="8" fill="#9d174d">- Main controller (optional, for mesh networking)</text>
+    </g>
+  </g>
+</svg>

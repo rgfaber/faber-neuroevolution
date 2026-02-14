@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320">
+  <defs>
+    <marker id="arrEA" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4299e1"/>
+    </marker>
+  </defs>
+
+  <text x="350" y="25" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="600" fill="#2d3748" text-anchor="middle">Edge AI: Distributed TWEANN Mesh</text>
+
+  <!-- Edge devices -->
+  <g transform="translate(50, 70)">
+    <rect x="0" y="0" width="120" height="100" rx="6" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+    <text x="60" y="25" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#276749" text-anchor="middle">Edge Node 1</text>
+    <rect x="15" y="35" width="90" height="25" rx="3" fill="#48bb78"/>
+    <text x="60" y="52" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">TWEANN</text>
+    <rect x="15" y="65" width="90" height="25" rx="3" fill="#38a169"/>
+    <text x="60" y="82" font-family="Inter, system-ui, sans-serif" font-size="8" fill="white" text-anchor="middle">Camera sensor</text>
+  </g>
+
+  <g transform="translate(50, 190)">
+    <rect x="0" y="0" width="120" height="100" rx="6" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+    <text x="60" y="25" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#276749" text-anchor="middle">Edge Node 2</text>
+    <rect x="15" y="35" width="90" height="25" rx="3" fill="#48bb78"/>
+    <text x="60" y="52" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">TWEANN</text>
+    <rect x="15" y="65" width="90" height="25" rx="3" fill="#38a169"/>
+    <text x="60" y="82" font-family="Inter, system-ui, sans-serif" font-size="8" fill="white" text-anchor="middle">Temperature</text>
+  </g>
+
+  <g transform="translate(530, 70)">
+    <rect x="0" y="0" width="120" height="100" rx="6" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+    <text x="60" y="25" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#276749" text-anchor="middle">Edge Node 3</text>
+    <rect x="15" y="35" width="90" height="25" rx="3" fill="#48bb78"/>
+    <text x="60" y="52" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">TWEANN</text>
+    <rect x="15" y="65" width="90" height="25" rx="3" fill="#38a169"/>
+    <text x="60" y="82" font-family="Inter, system-ui, sans-serif" font-size="8" fill="white" text-anchor="middle">Motion sensor</text>
+  </g>
+
+  <g transform="translate(530, 190)">
+    <rect x="0" y="0" width="120" height="100" rx="6" fill="#f0fff4" stroke="#48bb78" stroke-width="2"/>
+    <text x="60" y="25" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="500" fill="#276749" text-anchor="middle">Edge Node 4</text>
+    <rect x="15" y="35" width="90" height="25" rx="3" fill="#48bb78"/>
+    <text x="60" y="52" font-family="Inter, system-ui, sans-serif" font-size="9" fill="white" text-anchor="middle">TWEANN</text>
+    <rect x="15" y="65" width="90" height="25" rx="3" fill="#38a169"/>
+    <text x="60" y="82" font-family="Inter, system-ui, sans-serif" font-size="8" fill="white" text-anchor="middle">Audio sensor</text>
+  </g>
+
+  <!-- Central coordinator -->
+  <rect x="250" y="100" width="200" height="120" rx="8" fill="#ebf8ff" stroke="#4299e1" stroke-width="2"/>
+  <text x="350" y="130" font-family="Inter, system-ui, sans-serif" font-size="12" font-weight="500" fill="#2b6cb0" text-anchor="middle">Macula Mesh</text>
+  <text x="350" y="155" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4299e1" text-anchor="middle">Aggregate Decisions</text>
+  <text x="350" y="175" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4299e1" text-anchor="middle">Model Updates</text>
+  <text x="350" y="195" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4299e1" text-anchor="middle">DHT + PubSub</text>
+
+  <!-- Mesh connections -->
+  <line x1="170" y1="120" x2="250" y2="140" stroke="#4299e1" stroke-width="1.5" marker-end="url(#arrEA)"/>
+  <line x1="170" y1="240" x2="250" y2="180" stroke="#4299e1" stroke-width="1.5" marker-end="url(#arrEA)"/>
+  <line x1="530" y1="120" x2="450" y2="140" stroke="#4299e1" stroke-width="1.5" marker-end="url(#arrEA)"/>
+  <line x1="530" y1="240" x2="450" y2="180" stroke="#4299e1" stroke-width="1.5" marker-end="url(#arrEA)"/>
+
+  <!-- Properties -->
+  <rect x="180" y="260" width="340" height="50" rx="4" fill="#f7fafc" stroke="#a0aec0"/>
+  <text x="350" y="280" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568" text-anchor="middle">Decentralized inference - no single point of failure</text>
+  <text x="350" y="298" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#4a5568" text-anchor="middle">Local decisions + global coordination via mesh</text>
+</svg>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="taskBlue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5BA3E0"/>
+      <stop offset="100%" style="stop-color:#4A90D9"/>
+    </linearGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3A7BC8"/>
+      <stop offset="100%" style="stop-color:#2A5A98"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#1e293b">Task Silo Architecture</text>
+
+  <!-- Main container -->
+  <rect x="50" y="60" width="700" height="520" rx="10" fill="white" stroke="#4A90D9" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="50" y="60" width="700" height="40" rx="10" fill="url(#headerGrad)"/>
+  <rect x="50" y="90" width="700" height="10" fill="url(#headerGrad)"/>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white">TASK SILO</text>
+
+  <!-- L2 Strategic Layer -->
+  <rect x="80" y="120" width="640" height="80" rx="8" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="1.5"/>
+  <text x="100" y="145" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#0369a1">L2 Strategic (meta_controller)</text>
+  <text x="100" y="165" font-family="Arial, sans-serif" font-size="11" fill="#0c4a6e">Controls: aggression_factor, exploration_step, topology_aggression</text>
+  <text x="100" y="185" font-family="Arial, sans-serif" font-size="11" fill="#0c4a6e">Time constant: 10K evaluations | Learns across experiments</text>
+  <rect x="550" y="130" width="150" height="55" rx="5" fill="#0ea5e9" opacity="0.2" stroke="#0ea5e9"/>
+  <text x="625" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#0369a1">L2 Guidance</text>
+  <text x="625" y="175" text-anchor="middle" font-family="monospace" font-size="9" fill="#0c4a6e">#l2_guidance{}</text>
+
+  <!-- Arrow L2 to L1 -->
+  <path d="M400 200 L400 220" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- L1 Tactical Layer -->
+  <rect x="80" y="225" width="640" height="100" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="100" y="250" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#b45309">L1 Tactical (task_silo)</text>
+  <text x="100" y="270" font-family="Arial, sans-serif" font-size="11" fill="#78350f">Velocity-based stagnation detection | EMA-smoothed boosts</text>
+  <text x="100" y="290" font-family="Arial, sans-serif" font-size="11" fill="#78350f">Time constant: 1K evaluations | Per-generation adjustments</text>
+
+  <!-- L1 Components -->
+  <rect x="450" y="240" width="120" height="35" rx="4" fill="#fbbf24" opacity="0.3" stroke="#f59e0b"/>
+  <text x="510" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#92400e">exploration_boost</text>
+  <rect x="580" y="240" width="120" height="35" rx="4" fill="#fbbf24" opacity="0.3" stroke="#f59e0b"/>
+  <text x="640" y="262" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#92400e">exploitation_boost</text>
+  <rect x="450" y="285" width="250" height="30" rx="4" fill="#fbbf24" opacity="0.3" stroke="#f59e0b"/>
+  <text x="575" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#92400e">velocity_state (stagnation_severity)</text>
+
+  <!-- Arrow L1 to L0 -->
+  <path d="M400 325 L400 345" stroke="#64748b" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- L0 Reactive Layer -->
+  <rect x="80" y="350" width="640" height="210" rx="8" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="100" y="375" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">L0 Reactive (task_l0_defaults + lc_silo_chain)</text>
+  <text x="100" y="395" font-family="Arial, sans-serif" font-size="11" fill="#14532d">Hard limits and bounds | TWEANN or rule-based control</text>
+
+  <!-- Sensors Box -->
+  <rect x="100" y="410" width="280" height="130" rx="6" fill="white" stroke="#22c55e" stroke-width="1"/>
+  <text x="240" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#166534">SENSORS (16 inputs)</text>
+  <text x="110" y="450" font-family="monospace" font-size="9" fill="#166534">best_fitness, avg_fitness</text>
+  <text x="110" y="465" font-family="monospace" font-size="9" fill="#166534">fitness_variance, improvement_velocity</text>
+  <text x="110" y="480" font-family="monospace" font-size="9" fill="#166534">stagnation_severity, diversity_index</text>
+  <text x="110" y="495" font-family="monospace" font-size="9" fill="#166534">species_count_ratio, complexity</text>
+  <text x="110" y="510" font-family="monospace" font-size="9" fill="#166534">elite_dominance, crossover_success</text>
+  <text x="110" y="525" font-family="monospace" font-size="9" fill="#166534">resource_pressure_signal, ...</text>
+
+  <!-- TWEANN Box -->
+  <rect x="400" y="420" width="100" height="60" rx="6" fill="url(#taskBlue)" stroke="#2563eb" stroke-width="1"/>
+  <text x="450" y="445" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">TWEANN</text>
+  <text x="450" y="465" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">LTC Network</text>
+
+  <!-- Arrows to/from TWEANN -->
+  <path d="M380 455 L400 455" stroke="#22c55e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M500 455 L520 455" stroke="#22c55e" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Actuators Box -->
+  <rect x="520" y="410" width="180" height="130" rx="6" fill="white" stroke="#22c55e" stroke-width="1"/>
+  <text x="610" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#166534">ACTUATORS (12 outputs)</text>
+  <text x="530" y="450" font-family="monospace" font-size="9" fill="#166534">mutation_rate</text>
+  <text x="530" y="465" font-family="monospace" font-size="9" fill="#166534">mutation_strength</text>
+  <text x="530" y="480" font-family="monospace" font-size="9" fill="#166534">add_node_rate</text>
+  <text x="530" y="495" font-family="monospace" font-size="9" fill="#166534">add_link_rate</text>
+  <text x="530" y="510" font-family="monospace" font-size="9" fill="#166534">selection_ratio</text>
+  <text x="530" y="525" font-family="monospace" font-size="9" fill="#166534">crossover_rate, ...</text>
+
+  <!-- Legend -->
+  <rect x="60" y="565" width="15" height="15" fill="#e0f2fe" stroke="#0ea5e9"/>
+  <text x="80" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L2 Strategic</text>
+  <rect x="170" y="565" width="15" height="15" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="190" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L1 Tactical</text>
+  <rect x="280" y="565" width="15" height="15" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="300" y="577" font-family="Arial, sans-serif" font-size="10" fill="#475569">L0 Reactive</text>
+</svg>

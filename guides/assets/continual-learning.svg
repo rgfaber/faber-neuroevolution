@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <linearGradient id="networkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="feedbackGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="550" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="bold" fill="#1e293b">Continual Learning at Inference Time</text>
+  <text x="450" y="50" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#64748b">Liquid Conglomerate enables adaptation during deployment</text>
+
+  <!-- Main inference flow -->
+  <g transform="translate(50, 80)">
+    <!-- Input -->
+    <g transform="translate(0, 100)">
+      <rect x="0" y="0" width="80" height="60" rx="8" fill="#e0e7ff" stroke="#818cf8" stroke-width="2" filter="url(#shadow)"/>
+      <text x="40" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#4338ca">Input</text>
+      <text x="40" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#6366f1">Sensor</text>
+      <text x="40" y="55" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#6366f1">Data</text>
+    </g>
+
+    <!-- Evolved Network -->
+    <g transform="translate(130, 70)">
+      <rect x="0" y="0" width="140" height="120" rx="10" fill="url(#networkGrad)" stroke="#4f46e5" stroke-width="2" filter="url(#shadow)"/>
+      <text x="70" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="white">Evolved</text>
+      <text x="70" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="white">Network</text>
+
+      <!-- Mini network diagram -->
+      <circle cx="35" cy="70" r="8" fill="white" opacity="0.8"/>
+      <circle cx="70" cy="55" r="8" fill="white" opacity="0.8"/>
+      <circle cx="70" cy="85" r="8" fill="white" opacity="0.8"/>
+      <circle cx="105" cy="70" r="8" fill="white" opacity="0.8"/>
+      <line x1="43" y1="70" x2="62" y2="58" stroke="white" stroke-width="1.5" opacity="0.6"/>
+      <line x1="43" y1="70" x2="62" y2="82" stroke="white" stroke-width="1.5" opacity="0.6"/>
+      <line x1="78" y1="58" x2="97" y2="70" stroke="white" stroke-width="1.5" opacity="0.6"/>
+      <line x1="78" y1="82" x2="97" y2="70" stroke="white" stroke-width="1.5" opacity="0.6"/>
+
+      <text x="70" y="108" text-anchor="middle" font-family="monospace" font-size="9" fill="#c7d2fe">LTC/CfC neurons</text>
+    </g>
+
+    <!-- Output -->
+    <g transform="translate(320, 100)">
+      <rect x="0" y="0" width="80" height="60" rx="8" fill="#ecfdf5" stroke="#34d399" stroke-width="2" filter="url(#shadow)"/>
+      <text x="40" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#059669">Output</text>
+      <text x="40" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#10b981">Action/</text>
+      <text x="40" y="55" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#10b981">Prediction</text>
+    </g>
+
+    <!-- Action/Environment -->
+    <g transform="translate(450, 100)">
+      <rect x="0" y="0" width="80" height="60" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" filter="url(#shadow)"/>
+      <text x="40" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="bold" fill="#475569">Env</text>
+      <text x="40" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Real</text>
+      <text x="40" y="55" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">World</text>
+    </g>
+
+    <!-- Arrows in main flow -->
+    <line x1="80" y1="130" x2="125" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="270" y1="130" x2="315" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="400" y1="130" x2="445" y2="130" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- Feedback arrow -->
+  <path d="M 580 230 L 620 230 L 620 340 L 200 340 L 200 270" fill="none" stroke="url(#feedbackGrad)" stroke-width="2" stroke-dasharray="6,3" marker-end="url(#arrowOrange)"/>
+  <text x="410" y="360" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#d97706">Feedback: reward, error, success/failure</text>
+
+  <!-- LC Meta-Controller Box -->
+  <g transform="translate(550, 80)">
+    <rect x="0" y="0" width="300" height="200" rx="12" fill="url(#lcGrad)" stroke="#059669" stroke-width="2" filter="url(#shadow)"/>
+    <text x="150" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="bold" fill="white">LC Meta-Controller (Continual Mode)</text>
+
+    <!-- Monitors -->
+    <g transform="translate(20, 45)">
+      <rect x="0" y="0" width="120" height="65" rx="6" fill="rgba(255,255,255,0.2)"/>
+      <text x="60" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="white">Monitors</text>
+      <text x="10" y="35" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">• Performance drift</text>
+      <text x="10" y="48" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">• Reward signal</text>
+      <text x="10" y="61" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">• Concept shift</text>
+    </g>
+
+    <!-- Actions -->
+    <g transform="translate(160, 45)">
+      <rect x="0" y="0" width="120" height="65" rx="6" fill="rgba(255,255,255,0.2)"/>
+      <text x="60" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="white">Actions</text>
+      <text x="10" y="35" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">• Micro-mutation</text>
+      <text x="10" y="48" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">• Network switch</text>
+      <text x="10" y="61" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">• Trigger retrain</text>
+    </g>
+
+    <!-- Silos active in continual mode -->
+    <g transform="translate(20, 125)">
+      <text x="0" y="15" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="white">Active Silos:</text>
+      <rect x="85" y="3" width="55" height="18" rx="4" fill="rgba(255,255,255,0.3)"/>
+      <text x="112" y="16" text-anchor="middle" font-family="monospace" font-size="9" fill="white">Resource</text>
+      <rect x="145" y="3" width="40" height="18" rx="4" fill="rgba(255,255,255,0.3)"/>
+      <text x="165" y="16" text-anchor="middle" font-family="monospace" font-size="9" fill="white">Task</text>
+      <rect x="190" y="3" width="60" height="18" rx="4" fill="rgba(255,255,255,0.3)"/>
+      <text x="220" y="16" text-anchor="middle" font-family="monospace" font-size="9" fill="white">Temporal</text>
+    </g>
+
+    <!-- Network Portfolio -->
+    <g transform="translate(20, 155)">
+      <text x="0" y="15" font-family="system-ui, sans-serif" font-size="10" font-weight="bold" fill="white">Network Portfolio:</text>
+      <rect x="110" y="0" width="25" height="25" rx="4" fill="#6366f1" stroke="white" stroke-width="1"/>
+      <text x="122" y="17" text-anchor="middle" font-family="monospace" font-size="8" fill="white">N1</text>
+      <rect x="140" y="0" width="25" height="25" rx="4" fill="#94a3b8" stroke="white" stroke-width="1"/>
+      <text x="152" y="17" text-anchor="middle" font-family="monospace" font-size="8" fill="white">N2</text>
+      <rect x="170" y="0" width="25" height="25" rx="4" fill="#94a3b8" stroke="white" stroke-width="1"/>
+      <text x="182" y="17" text-anchor="middle" font-family="monospace" font-size="8" fill="white">N3</text>
+      <text x="210" y="17" font-family="system-ui, sans-serif" font-size="9" fill="#d1fae5">← active</text>
+    </g>
+  </g>
+
+  <!-- Arrow from LC to Network -->
+  <path d="M 550 180 L 320 180 L 320 195" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <text x="435" y="172" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#059669">Adapt: switch network, micro-mutate</text>
+
+  <!-- Feedback arrow to LC -->
+  <path d="M 620 340 L 700 340 L 700 285" fill="none" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Key Benefits Box -->
+  <g transform="translate(50, 390)">
+    <rect x="0" y="0" width="800" height="130" rx="10" fill="white" stroke="#e2e8f0" stroke-width="1" filter="url(#shadow)"/>
+    <text x="400" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#1e293b">Continual Learning Capabilities</text>
+
+    <!-- Columns -->
+    <g transform="translate(30, 45)">
+      <rect x="0" y="0" width="230" height="70" rx="6" fill="#eef2ff"/>
+      <text x="115" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#4338ca">Performance Monitoring</text>
+      <text x="10" y="38" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Track latency, accuracy, error rate</text>
+      <text x="10" y="53" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Detect degradation automatically</text>
+      <text x="10" y="68" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Alert thresholds configurable</text>
+    </g>
+
+    <g transform="translate(285, 45)">
+      <rect x="0" y="0" width="230" height="70" rx="6" fill="#ecfdf5"/>
+      <text x="115" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#059669">Micro-Evolution</text>
+      <text x="10" y="38" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Small weight perturbations</text>
+      <text x="10" y="53" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Keep if performance improves</text>
+      <text x="10" y="68" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Evolution Strategies style</text>
+    </g>
+
+    <g transform="translate(540, 45)">
+      <rect x="0" y="0" width="230" height="70" rx="6" fill="#fef3c7"/>
+      <text x="115" y="18" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="bold" fill="#d97706">Concept Drift Detection</text>
+      <text x="10" y="38" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Statistical tests on inputs</text>
+      <text x="10" y="53" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Detect environment changes</text>
+      <text x="10" y="68" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Trigger full retrain if needed</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <text x="450" y="540" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Reference: Parisi et al. (2019) "Continual Lifelong Learning with Neural Networks: A Review"</text>
+</svg>

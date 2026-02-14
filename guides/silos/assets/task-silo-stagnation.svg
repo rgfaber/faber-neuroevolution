@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <linearGradient id="healthyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#22c55e"/>
+      <stop offset="100%" style="stop-color:#16a34a"/>
+    </linearGradient>
+    <linearGradient id="warningGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <linearGradient id="criticalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ef4444"/>
+      <stop offset="100%" style="stop-color:#dc2626"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1e293b">Velocity-Based Stagnation Detection</text>
+
+  <!-- Velocity Calculation Box -->
+  <rect x="40" y="60" width="350" height="180" rx="8" fill="white" stroke="#4A90D9" stroke-width="2"/>
+  <rect x="40" y="60" width="350" height="35" rx="8" fill="#4A90D9"/>
+  <rect x="40" y="85" width="350" height="10" fill="#4A90D9"/>
+  <text x="215" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Improvement Velocity</text>
+
+  <text x="60" y="120" font-family="Arial, sans-serif" font-size="12" fill="#334155">Formula:</text>
+  <text x="60" y="145" font-family="monospace" font-size="11" fill="#1e40af">velocity = (delta_fitness / delta_evals) * 1000</text>
+
+  <text x="60" y="175" font-family="Arial, sans-serif" font-size="12" fill="#334155">Rolling window average over last N checkpoints</text>
+  <text x="60" y="195" font-family="Arial, sans-serif" font-size="12" fill="#334155">Default window size: 10 checkpoints</text>
+  <text x="60" y="220" font-family="Arial, sans-serif" font-size="11" fill="#64748b">Measures fitness improvement per 1000 evaluations</text>
+
+  <!-- Severity Calculation Box -->
+  <rect x="410" y="60" width="350" height="180" rx="8" fill="white" stroke="#f59e0b" stroke-width="2"/>
+  <rect x="410" y="60" width="350" height="35" rx="8" fill="#f59e0b"/>
+  <rect x="410" y="85" width="350" height="10" fill="#f59e0b"/>
+  <text x="585" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Stagnation Severity</text>
+
+  <text x="430" y="120" font-family="Arial, sans-serif" font-size="12" fill="#334155">Formula:</text>
+  <text x="430" y="145" font-family="monospace" font-size="11" fill="#92400e">severity = clamp((threshold - velocity) / threshold, 0, 1)</text>
+
+  <text x="430" y="175" font-family="Arial, sans-serif" font-size="12" fill="#334155">Continuous 0.0 to 1.0 signal</text>
+  <text x="430" y="195" font-family="Arial, sans-serif" font-size="12" fill="#334155">Default velocity_threshold: 0.001</text>
+  <text x="430" y="220" font-family="Arial, sans-serif" font-size="11" fill="#64748b">Higher severity = more aggressive intervention</text>
+
+  <!-- Arrow between boxes -->
+  <path d="M390 150 L410 150" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Severity Zones -->
+  <text x="400" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#1e293b">Severity Zones &amp; Thresholds</text>
+
+  <!-- Severity bar -->
+  <rect x="100" y="300" width="600" height="40" rx="5" fill="#e2e8f0"/>
+
+  <!-- Healthy zone (0 - 0.3) -->
+  <rect x="100" y="300" width="180" height="40" rx="5" fill="url(#healthyGrad)"/>
+  <text x="190" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">HEALTHY</text>
+
+  <!-- Warning zone (0.3 - 0.5) -->
+  <rect x="280" y="300" width="120" height="40" fill="url(#warningGrad)"/>
+  <text x="340" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">WARNING</text>
+
+  <!-- Intervention zone (0.5 - 0.7) -->
+  <rect x="400" y="300" width="120" height="40" fill="#f97316"/>
+  <text x="460" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">INTERVENE</text>
+
+  <!-- Critical zone (0.7 - 1.0) -->
+  <rect x="520" y="300" width="180" height="40" rx="5" fill="url(#criticalGrad)"/>
+  <text x="610" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">CRITICAL</text>
+
+  <!-- Scale labels -->
+  <text x="100" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">0.0</text>
+  <text x="280" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">0.3</text>
+  <text x="400" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">0.5</text>
+  <text x="520" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">0.7</text>
+  <text x="700" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#64748b">1.0</text>
+
+  <!-- Response descriptions -->
+  <rect x="60" y="380" width="680" height="100" rx="6" fill="white" stroke="#cbd5e1" stroke-width="1"/>
+
+  <circle cx="90" cy="405" r="8" fill="#22c55e"/>
+  <text x="105" y="410" font-family="Arial, sans-serif" font-size="11" fill="#334155"><tspan font-weight="bold">Healthy:</tspan> Normal operation, no boost applied</text>
+
+  <circle cx="90" cy="430" r="8" fill="#f59e0b"/>
+  <text x="105" y="435" font-family="Arial, sans-serif" font-size="11" fill="#334155"><tspan font-weight="bold">Warning:</tspan> Emit warning event, mild exploration boost</text>
+
+  <circle cx="90" cy="455" r="8" fill="#f97316"/>
+  <text x="105" y="460" font-family="Arial, sans-serif" font-size="11" fill="#334155"><tspan font-weight="bold">Intervention:</tspan> Active intervention, boost mutation_rate and add_node_rate</text>
+
+  <circle cx="460" cy="405" r="8" fill="#ef4444"/>
+  <text x="475" y="410" font-family="Arial, sans-serif" font-size="11" fill="#334155"><tspan font-weight="bold">Critical:</tspan> Maximum exploration boost, topology changes encouraged</text>
+
+  <text x="475" y="435" font-family="Arial, sans-serif" font-size="11" fill="#64748b">Thresholds are L2-controlled via l2_guidance record</text>
+  <text x="475" y="455" font-family="Arial, sans-serif" font-size="11" fill="#64748b">Asymmetric EMA: fast escalation, slow de-escalation</text>
+</svg>

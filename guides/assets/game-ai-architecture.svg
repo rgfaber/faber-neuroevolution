@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 250" width="550" height="250">
+  <!-- Background -->
+  <rect width="550" height="250" fill="#f7fafc" rx="8"/>
+
+  <!-- Game Server container -->
+  <rect x="20" y="20" width="510" height="210" rx="8" fill="#edf2f7" stroke="#a0aec0" stroke-width="2"/>
+  <text x="275" y="45" text-anchor="middle" fill="#2d3748" font-family="sans-serif" font-size="14" font-weight="bold">Game Server</text>
+
+  <!-- Game State -->
+  <rect x="50" y="70" width="120" height="60" rx="6" fill="#4299e1" stroke="#2b6cb0" stroke-width="2"/>
+  <text x="110" y="97" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">Game State</text>
+  <text x="110" y="115" text-anchor="middle" fill="#bee3f8" font-family="sans-serif" font-size="9">(ECS)</text>
+
+  <!-- Arrow -->
+  <line x1="170" y1="100" x2="220" y2="100" stroke="#718096" stroke-width="2"/>
+  <polygon points="220 100, 210 95, 210 105" fill="#718096"/>
+
+  <!-- AI Inference Pool -->
+  <rect x="230" y="70" width="130" height="60" rx="6" fill="#9f7aea" stroke="#6b46c1" stroke-width="2"/>
+  <text x="295" y="97" text-anchor="middle" fill="white" font-family="sans-serif" font-size="11" font-weight="bold">AI Inference</text>
+  <text x="295" y="115" text-anchor="middle" fill="#e9d8fd" font-family="sans-serif" font-size="9">Pool</text>
+
+  <!-- Arrow down -->
+  <line x1="295" y1="130" x2="295" y2="155" stroke="#718096" stroke-width="2"/>
+
+  <!-- Agents row -->
+  <rect x="60" y="160" width="90" height="50" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="105" y="182" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10" font-weight="bold">Agent 1</text>
+  <text x="105" y="198" text-anchor="middle" fill="#c6f6d5" font-family="sans-serif" font-size="8">(evolved)</text>
+
+  <rect x="170" y="160" width="90" height="50" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="215" y="182" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10" font-weight="bold">Agent 2</text>
+  <text x="215" y="198" text-anchor="middle" fill="#c6f6d5" font-family="sans-serif" font-size="8">(evolved)</text>
+
+  <rect x="280" y="160" width="90" height="50" rx="6" fill="#48bb78" stroke="#276749" stroke-width="2"/>
+  <text x="325" y="182" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10" font-weight="bold">Agent N</text>
+  <text x="325" y="198" text-anchor="middle" fill="#c6f6d5" font-family="sans-serif" font-size="8">(evolved)</text>
+
+  <!-- Connection lines -->
+  <line x1="295" y1="155" x2="105" y2="160" stroke="#718096" stroke-width="1"/>
+  <line x1="295" y1="155" x2="215" y2="160" stroke="#718096" stroke-width="1"/>
+  <line x1="295" y1="155" x2="325" y2="160" stroke="#718096" stroke-width="1"/>
+
+  <!-- Latency label -->
+  <rect x="400" y="90" width="100" height="30" rx="4" fill="#faf5ff" stroke="#9f7aea"/>
+  <text x="450" y="110" text-anchor="middle" fill="#553c9a" font-family="monospace" font-size="9">&lt;1ms latency</text>
+</svg>

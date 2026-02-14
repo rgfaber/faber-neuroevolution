@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#666"/>
+    </marker>
+    <linearGradient id="sensorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#388E3C;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="actuatorGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F57C00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="networkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1976D2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="envGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7B1FA2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="bridgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#607D8B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#455A64;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="500" fill="#fafafa"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#333">Agent SDK Architecture</text>
+
+  <!-- Environment Box -->
+  <rect x="50" y="60" width="200" height="380" rx="10" fill="url(#envGrad)" opacity="0.15" stroke="#9C27B0" stroke-width="2"/>
+  <text x="150" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7B1FA2">Environment</text>
+
+  <!-- Environment module -->
+  <rect x="70" y="100" width="160" height="60" rx="5" fill="url(#envGrad)"/>
+  <text x="150" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">agent_environment</text>
+  <text x="150" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">init, tick, apply_action</text>
+
+  <!-- World State -->
+  <rect x="70" y="180" width="160" height="50" rx="5" fill="#E1BEE7" stroke="#9C27B0"/>
+  <text x="150" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#4A148C" font-weight="bold">World State</text>
+  <text x="150" y="218" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#4A148C">positions, items, agents</text>
+
+  <!-- Agent State -->
+  <rect x="70" y="250" width="160" height="50" rx="5" fill="#E1BEE7" stroke="#9C27B0"/>
+  <text x="150" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#4A148C" font-weight="bold">Agent State</text>
+  <text x="150" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#4A148C">health, energy, inventory</text>
+
+  <!-- Metrics -->
+  <rect x="70" y="320" width="160" height="50" rx="5" fill="#E1BEE7" stroke="#9C27B0"/>
+  <text x="150" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#4A148C" font-weight="bold">Episode Metrics</text>
+  <text x="150" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#4A148C">ticks, food_eaten, kills</text>
+
+  <!-- Evaluator -->
+  <rect x="70" y="385" width="160" height="45" rx="5" fill="#E91E63"/>
+  <text x="150" y="405" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">agent_evaluator</text>
+  <text x="150" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">calculate_fitness</text>
+
+  <!-- Bridge Box -->
+  <rect x="280" y="140" width="240" height="280" rx="10" fill="url(#bridgeGrad)" opacity="0.15" stroke="#607D8B" stroke-width="2"/>
+  <text x="400" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#455A64">agent_bridge</text>
+
+  <!-- Sensors -->
+  <rect x="300" y="185" width="90" height="80" rx="5" fill="url(#sensorGrad)"/>
+  <text x="345" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">Sensors</text>
+  <text x="345" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">agent_sensor</text>
+  <text x="345" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">read()</text>
+  <text x="345" y="258" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#C8E6C9">input_count</text>
+
+  <!-- Neural Network -->
+  <rect x="300" y="280" width="200" height="70" rx="5" fill="url(#networkGrad)"/>
+  <text x="400" y="305" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">Neural Network</text>
+  <text x="400" y="323" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">faber_tweann</text>
+  <text x="400" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#BBDEFB">forward(Network, Inputs) -> Outputs</text>
+
+  <!-- Actuators -->
+  <rect x="410" y="185" width="90" height="80" rx="5" fill="url(#actuatorGrad)"/>
+  <text x="455" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">Actuators</text>
+  <text x="455" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">agent_actuator</text>
+  <text x="455" y="245" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">act()</text>
+  <text x="455" y="258" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#FFE0B2">output_count</text>
+
+  <!-- Definition -->
+  <rect x="300" y="365" width="200" height="45" rx="5" fill="#795548"/>
+  <text x="400" y="385" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white" font-weight="bold">agent_definition</text>
+  <text x="400" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">network_topology: {8, [16], 4}</text>
+
+  <!-- Evolution Box -->
+  <rect x="550" y="60" width="200" height="150" rx="10" fill="#E3F2FD" stroke="#2196F3" stroke-width="2"/>
+  <text x="650" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1976D2">Neuroevolution</text>
+
+  <rect x="570" y="100" width="160" height="40" rx="5" fill="#2196F3"/>
+  <text x="650" y="125" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="white">neuroevolution_server</text>
+
+  <rect x="570" y="150" width="75" height="30" rx="3" fill="#64B5F6"/>
+  <text x="607" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">Selection</text>
+
+  <rect x="655" y="150" width="75" height="30" rx="3" fill="#64B5F6"/>
+  <text x="692" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="white">Mutation</text>
+
+  <!-- Fitness output -->
+  <rect x="550" y="230" width="200" height="50" rx="5" fill="#4CAF50"/>
+  <text x="650" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">Fitness Score</text>
+  <text x="650" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">drives evolution</text>
+
+  <!-- Arrows: Environment to Sensors -->
+  <path d="M 230 205 L 295 215" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="262" y="198" font-family="Arial, sans-serif" font-size="8" fill="#666">state</text>
+
+  <!-- Arrows: Sensors to Network -->
+  <path d="M 345 265 L 345 275" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="360" y="273" font-family="Arial, sans-serif" font-size="8" fill="#666">inputs</text>
+
+  <!-- Arrows: Network to Actuators -->
+  <path d="M 455 280 L 455 268" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="470" y="278" font-family="Arial, sans-serif" font-size="8" fill="#666">outputs</text>
+
+  <!-- Arrows: Actuators to Environment -->
+  <path d="M 410 230 L 235 230" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="320" y="223" font-family="Arial, sans-serif" font-size="8" fill="#666">actions</text>
+
+  <!-- Arrows: Metrics to Evaluator -->
+  <path d="M 150 370 L 150 380" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrows: Evaluator to Fitness -->
+  <path d="M 230 407 L 545 260" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="380" y="330" font-family="Arial, sans-serif" font-size="8" fill="#666">fitness</text>
+
+  <!-- Arrows: Network from Evolution -->
+  <path d="M 570 180 L 505 290" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="540" y="220" font-family="Arial, sans-serif" font-size="8" fill="#666">network</text>
+
+  <!-- Arrows: Fitness to Evolution -->
+  <path d="M 650 230 L 650 195" stroke="#666" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+  <!-- Legend -->
+  <rect x="550" y="310" width="200" height="120" rx="5" fill="white" stroke="#ddd"/>
+  <text x="650" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#333">Sense-Think-Act Cycle</text>
+
+  <circle cx="570" cy="350" r="8" fill="#4CAF50"/>
+  <text x="585" y="354" font-family="Arial, sans-serif" font-size="9" fill="#333">1. SENSE: read environment</text>
+
+  <circle cx="570" cy="375" r="8" fill="#2196F3"/>
+  <text x="585" y="379" font-family="Arial, sans-serif" font-size="9" fill="#333">2. THINK: forward pass</text>
+
+  <circle cx="570" cy="400" r="8" fill="#FF9800"/>
+  <text x="585" y="404" font-family="Arial, sans-serif" font-size="9" fill="#333">3. ACT: apply actions</text>
+
+  <!-- Version -->
+  <text x="790" y="490" text-anchor="end" font-family="Arial, sans-serif" font-size="9" fill="#999">faber-neuroevolution v0.28.0</text>
+</svg>
