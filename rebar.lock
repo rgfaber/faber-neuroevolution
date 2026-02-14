@@ -1,1 +1,8 @@
-[].
+{"1.2.0",
+[{<<"faber_tweann">>,{pkg,<<"faber_tweann">>,<<"0.1.0">>},0}]}.
+[
+{pkg_hash,[
+ {<<"faber_tweann">>, <<"FDEB1A0B1A43F9420D0CE466FA8C795CF26DC21A119A52410DF36DB9DEA90189">>}]},
+{pkg_hash_ext,[
+ {<<"faber_tweann">>, <<"C017E5C95C01C0D946D76894D4E87BE0666E3CEB3BD7EC8B91B9E56A13507051">>}]}
+].
