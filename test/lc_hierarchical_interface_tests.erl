@@ -88,62 +88,35 @@ l2_guidance_record_test_() ->
 
 %% Run all task_silo tests sequentially in a single test to avoid registration conflicts
 task_silo_l2_integration_test() ->
-    %% Ensure clean state — stop task_silo and its lc_silo_chain children
-    catch gen_server:stop(task_silo),
-    catch gen_server:stop(lc_task_silo_chain),
-    catch gen_server:stop(lc_silo_chain),
-    catch unregister(task_silo),
-    catch unregister(lc_task_silo_chain),
-    catch unregister(lc_silo_chain),
-    timer:sleep(200),
+    %% Ensure clean state
+    kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
 
     try
         %% Test 1: Start with L2 enabled
         test_task_silo_l2_enabled(),
-
-        %% Cleanup
-        catch gen_server:stop(task_silo),
-        timer:sleep(50),
+        kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
 
         %% Test 2: Accept and apply L2 guidance
         test_task_silo_set_l2_guidance(),
-
-        %% Cleanup
-        catch gen_server:stop(task_silo),
-        timer:sleep(50),
+        kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
 
         %% Test 3: L2 guidance in state output
         test_task_silo_l2_guidance_in_state(),
-
-        %% Cleanup
-        catch gen_server:stop(task_silo),
-        timer:sleep(50),
+        kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
 
         %% Test 4: Different aggression factors produce different results
         test_aggression_factor_impact(),
-
-        %% Cleanup
-        catch gen_server:stop(task_silo),
-        timer:sleep(50),
+        kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
 
         %% Test 5: L0 bounds enforcement
         test_l0_bounds_enforcement(),
-
-        %% Cleanup
-        catch gen_server:stop(task_silo),
-        timer:sleep(50),
+        kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
 
         %% Test 6: Backward compatibility
         test_backward_compatibility()
 
     after
-        catch gen_server:stop(task_silo),
-        catch gen_server:stop(lc_task_silo_chain),
-        catch gen_server:stop(lc_silo_chain),
-        catch unregister(task_silo),
-        catch unregister(lc_task_silo_chain),
-        catch unregister(lc_silo_chain),
-        timer:sleep(100)
+        kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain])
     end.
 
 %%% ============================================================================
@@ -155,6 +128,8 @@ test_task_silo_l2_enabled() ->
         realm => <<"test">>,
         l2_enabled => true
     },
+    %% Force-kill any existing task_silo and friends, wait for unregistration
+    kill_and_wait([task_silo, lc_task_silo_chain, lc_silo_chain]),
     {ok, _Pid} = task_silo:start_link(Config),
 
     %% Get state - l2_guidance should have default values
@@ -340,3 +315,34 @@ test_backward_compatibility() ->
     ?assertEqual(0.5, maps:get(exploration_step, L2Info, -1)),
     ?assertEqual(2.5, maps:get(topology_aggression, L2Info, -1)),
     ok.
+
+%%% ============================================================================
+%%% Helpers
+%%% ============================================================================
+
+%% @private Forcibly kill named processes and wait until they are unregistered.
+%% Also kills lc_supervisor first, since it supervises task_silo and would
+%% restart it if we only killed task_silo directly.
+kill_and_wait(Names) ->
+    %% Kill lc_supervisor first to prevent it from restarting children
+    lists:foreach(fun(Name) ->
+        case whereis(Name) of
+            undefined ->
+                ok;
+            Pid ->
+                erlang:unlink(Pid),
+                exit(Pid, kill),
+                wait_for_down(Name, 50)
+        end
+    end, [lc_supervisor | Names]).
+
+wait_for_down(_Name, 0) ->
+    ok;
+wait_for_down(Name, Retries) ->
+    case whereis(Name) of
+        undefined ->
+            ok;
+        _ ->
+            timer:sleep(10),
+            wait_for_down(Name, Retries - 1)
+    end.

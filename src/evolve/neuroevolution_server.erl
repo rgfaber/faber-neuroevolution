@@ -188,9 +188,6 @@ init({Id, Config}) when is_record(Config, neuro_config) ->
     %% Start mesh supervisor if mesh evaluation is enabled
     maybe_start_mesh_sup(Config),
 
-    %% Start self-play manager if configured
-    SelfPlayManager = maybe_start_self_play_manager(Config),
-
     %% Initialize checkpoint manager if configured
     maybe_init_checkpoint_manager(Config),
 
@@ -201,7 +198,6 @@ init({Id, Config}) when is_record(Config, neuro_config) ->
         total_games = TotalGames,
         meta_controller = MetaController,
         lc_chain = LcChain,
-        self_play_manager = SelfPlayManager,
         strategy_module = StrategyModule,
         strategy_state = StrategyState,
         %% Initialize checkpoint tracking for continuous evolution
@@ -729,7 +725,7 @@ get_max_concurrent_from_config(Config) ->
 %% @doc Evaluate all individuals with bounded concurrency.
 %% MaxConcurrent is passed in from caller (computed before spawning using cached
 %% resource silo recommendations via the event-driven read model pattern).
-evaluate_population_parallel(Population, Config, MaxConcurrent, ServerPid, Generation, SelfPlayManager) ->
+evaluate_population_parallel(Population, Config, MaxConcurrent, ServerPid, Generation) ->
     EvaluatorModule = Config#neuro_config.evaluator_module,
     EvaluatorOptions = Config#neuro_config.evaluator_options,
     GamesPerIndividual = Config#neuro_config.evaluations_per_individual,
@@ -745,12 +741,7 @@ evaluate_population_parallel(Population, Config, MaxConcurrent, ServerPid, Gener
         games => GamesPerIndividual,
         notify_pid => ServerPid
     }),
-    Options = case SelfPlayManager of
-        undefined -> BaseOptions;
-        Pid when is_pid(Pid) -> BaseOptions#{
-            self_play_manager => Pid
-        }
-    end,
+    Options = BaseOptions,
 
     EventCtx = #{
         config => Config,
@@ -764,7 +755,7 @@ evaluate_population_parallel(Population, Config, MaxConcurrent, ServerPid, Gener
         true ->
             %% Use distributed evaluation across connected nodes
             neuroevolution_evaluator:evaluate_batch_distributed(
-                Population, EvaluatorModule, Options, SelfPlayManager
+                Population, EvaluatorModule, Options
             );
         false ->
             %% Use local parallel evaluation
@@ -894,7 +885,6 @@ start_direct_evaluation(Population, State) ->
     Config = State#neuro_state.config,
     ServerPid = self(),
     Generation = State#neuro_state.generation,
-    SelfPlayManager = State#neuro_state.self_play_manager,
     CachedResourceRecs = State#neuro_state.cached_resource_recommendations,
 
     %% Compute MaxConcurrent BEFORE spawning using cached recommendations (event-driven)
@@ -902,7 +892,7 @@ start_direct_evaluation(Population, State) ->
     MaxConcurrent = get_max_concurrent(Config, CachedResourceRecs),
 
     spawn_link(fun() ->
-        Results = evaluate_population_parallel(Population, Config, MaxConcurrent, ServerPid, Generation, SelfPlayManager),
+        Results = evaluate_population_parallel(Population, Config, MaxConcurrent, ServerPid, Generation),
         ServerPid ! {evaluation_complete, Results}
     end),
 
@@ -1162,15 +1152,7 @@ handle_evaluation_complete(State, EvaluatedPopulation) ->
         population_size => length(Sorted)
     }}),
 
-    %% Report top performers to self-play manager (if active)
-    %% This adds eligible candidates to the local Erlang archive directly
-    report_to_self_play_manager(
-        State#neuro_state.self_play_manager,
-        Sorted,
-        State#neuro_state.generation
-    ),
-
-    %% Emit archive_candidates event for self-play mode (for Elixir subscribers)
+    %% Emit archive_candidates event (for subscribers)
     %% Top 20% of population WITH network data for opponent archive
     ArchiveCandidates = build_archive_candidates(Sorted, State#neuro_state.generation),
     notify_event(State, {archive_candidates, #{
@@ -1529,20 +1511,7 @@ build_stats(State) ->
         species_count => maps:get(species_count, Snapshot, 0)
     },
 
-    %% Add self-play stats if manager is present
-    maybe_add_self_play_stats(BaseStats, State#neuro_state.self_play_manager).
-
-%% @private
-maybe_add_self_play_stats(Stats, undefined) ->
-    Stats;
-maybe_add_self_play_stats(Stats, ManagerPid) when is_pid(ManagerPid) ->
-    case is_process_alive(ManagerPid) of
-        true ->
-            SelfPlayStats = self_play_manager:get_stats(ManagerPid),
-            Stats#{self_play => SelfPlayStats};
-        false ->
-            Stats
-    end.
+    BaseStats.
 
 %% @private
 notify_event(#neuro_state{config = Config}, Event) ->
@@ -1888,68 +1857,6 @@ maybe_start_lc_chain(Config) ->
 %%% ============================================================================
 %%% Self-Play Integration
 %%% ============================================================================
-
-%% @private Start self-play manager if configured.
-%%
-%% When self_play_config is set, starts a self_play_manager process that
-%% manages the opponent archive and provides opponents for evaluation.
-%% Pure self-play mode: no heuristics, population is the opponent pool.
-maybe_start_self_play_manager(Config) ->
-    case Config#neuro_config.self_play_config of
-        undefined ->
-            undefined;
-        #self_play_config{enabled = false} ->
-            undefined;
-        #self_play_config{enabled = true} = SelfPlayConfig ->
-            Realm = Config#neuro_config.realm,
-            ManagerOpts = #{
-                archive_size => SelfPlayConfig#self_play_config.archive_size,
-                archive_threshold => SelfPlayConfig#self_play_config.archive_threshold,
-                min_fitness_percentile => SelfPlayConfig#self_play_config.min_fitness_percentile
-            },
-            case self_play_manager:start_link(Realm, ManagerOpts) of
-                {ok, Pid} ->
-                    error_logger:info_msg(
-                        "[neuroevolution_server] Started self-play manager (pure mode) for realm ~p~n",
-                        [Realm]
-                    ),
-                    Pid;
-                {error, Reason} ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] Failed to start self-play manager: ~p~n",
-                        [Reason]
-                    ),
-                    undefined
-            end
-    end.
-
-%% @private Report evaluation results to self-play manager.
-%%
-%% After evaluation completes, reports top performers to the self-play manager
-%% so they can be added to the opponent archive if they meet the threshold.
-report_to_self_play_manager(undefined, _Sorted, _Generation) ->
-    ok;
-report_to_self_play_manager(ManagerPid, Sorted, Generation) when is_list(Sorted), length(Sorted) > 0 ->
-    %% Report top 20% as potential champions
-    CandidateCount = max(1, length(Sorted) div 5),
-    TopPerformers = lists:sublist(Sorted, CandidateCount),
-
-    lists:foreach(
-        fun(Ind) ->
-            %% CRITICAL: Strip compiled_ref to prevent NIF memory leaks.
-            %% The compiled_ref holds a Rust ResourceArc that keeps native memory alive.
-            StrippedNetwork = network_evaluator:strip_compiled_ref(Ind#individual.network),
-            Result = #{
-                individual => #{network => StrippedNetwork},
-                fitness => Ind#individual.fitness,
-                generation => Generation
-            },
-            self_play_manager:report_result(ManagerPid, Result)
-        end,
-        TopPerformers
-    );
-report_to_self_play_manager(_ManagerPid, _Sorted, _Generation) ->
-    ok.
 
 %% @private Update hyperparameters via LC chain if active.
 %%

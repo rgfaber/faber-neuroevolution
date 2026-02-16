@@ -41,7 +41,6 @@
 %% @author R.G. Lefever
 %% @copyright 2024-2026 R.G. Lefever
 %% @see agent_species
-%% @see coevolution_trainer
 -module(species_registry).
 
 %%% ============================================================================

@@ -225,40 +225,6 @@
 -type mutation_config() :: #mutation_config{}.
 
 %%% ============================================================================
-%%% Self-Play Configuration Record
-%%% ============================================================================
-
-%% @doc Configuration for self-play evaluation mode.
-%%
-%% When enabled, individuals are evaluated against opponents from an archive
-%% of previous top performers, creating arms-race dynamics.
-%%
-%% Pure self-play: No heuristic opponents. When archive is empty (first
-%% generation), individuals compete against each other within the batch.
-%% This is how systems like AlphaZero and OpenAI Five work.
-%%
-%% The archive is managed by self_play_manager (Erlang) and can optionally
-%% sync across the mesh network for distributed self-play training.
--record(self_play_config, {
-    %% Enable self-play mode (default: false)
-    enabled = false :: boolean(),
-
-    %% Maximum opponents in archive (default: 50)
-    archive_size = 50 :: pos_integer(),
-
-    %% Fitness threshold for archive entry: float() | auto (default: auto)
-    %% - auto: Uses 50% of average archive fitness as threshold
-    %% - float(): Fixed minimum fitness to enter archive
-    archive_threshold = auto :: float() | auto,
-
-    %% Minimum fitness percentile to enter archive (default: 0.5)
-    %% Only top N% of population can be considered for archive
-    min_fitness_percentile = 0.5 :: float()
-}).
-
--type self_play_config() :: #self_play_config{}.
-
-%%% ============================================================================
 %%% Configuration Record
 %%% ============================================================================
 
@@ -329,12 +295,6 @@
     %% Speciation configuration: speciation_config() | undefined
     %% When set, enables NEAT-style speciation for niche-based evolution
     speciation_config :: speciation_config() | undefined,
-
-    %% Self-play configuration: self_play_config() | undefined
-    %% When set, enables self-play evaluation mode where individuals compete
-    %% against archived opponents from previous generations (arms race dynamics)
-    %% See self_play_manager.erl for the evaluation mode manager
-    self_play_config :: self_play_config() | undefined,
 
     %% Realm for multi-tenancy and event topic scoping
     %% Events are published to "neuro.<realm>.<event_type>"
@@ -524,10 +484,6 @@
     %% When active, provides hyperparameters via cascaded LTC networks
     %% Supersedes both task_silo (L1) and meta_controller (legacy L2)
     lc_chain :: pid() | undefined,
-
-    %% Self-play manager PID (when self_play_config is set)
-    %% Manages opponent archive and provides opponents for evaluation
-    self_play_manager :: pid() | undefined,
 
     %% Evolution strategy module and state
     %% The strategy module handles all evolution logic (selection, breeding, etc.)

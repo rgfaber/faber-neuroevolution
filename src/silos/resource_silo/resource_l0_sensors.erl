@@ -140,7 +140,7 @@ update_cross_silo_signal(SignalName, Value) ->
 update_evaluation_metrics(CurrentConcurrency, Throughput) ->
     gen_server:cast(?SERVER, {eval_metrics, CurrentConcurrency, Throughput}).
 
-%% @doc Update archive memory statistics from opponent_archive.
+%% @doc Update archive memory statistics.
 %%
 %% Expected keys in Stats map:
 %% - archive_memory_bytes: Memory used by archive entries

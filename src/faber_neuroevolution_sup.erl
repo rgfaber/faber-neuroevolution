@@ -2,7 +2,6 @@
 %%
 %% This supervisor manages:
 %% - Liquid Conglomerate (LC) supervisor for resource/task/distribution silos
-%% - Competitive Coevolution supervisor for Red Team vs Blue Team dynamics
 %% - Dynamic neuroevolution server supervisor for training sessions
 %%
 %% == Usage ==
@@ -89,16 +88,6 @@ init([]) ->
         modules => [lc_supervisor]
     },
 
-    %% Competitive Coevolution supervisor (Red Team vs Blue Team)
-    CoevolutionSupSpec = #{
-        id => coevolution_sup,
-        start => {coevolution_sup, start_link, []},
-        restart => permanent,
-        shutdown => infinity,
-        type => supervisor,
-        modules => [coevolution_sup]
-    },
-
     %% Dynamic neuroevolution server supervisor
     ServerSupSpec = #{
         id => ?SERVER_SUP,
@@ -109,7 +98,7 @@ init([]) ->
         modules => []
     },
 
-    {ok, {SupFlags, [LcSupSpec, CoevolutionSupSpec, ServerSupSpec]}};
+    {ok, {SupFlags, [LcSupSpec, ServerSupSpec]}};
 
 %% @private Initialize the server supervisor (simple_one_for_one for dynamic servers)
 init(server_sup) ->

@@ -90,8 +90,8 @@
     %% Progress tracking
     total_evaluations :: non_neg_integer(),
 
-    %% Self-play archive stats
-    archive_stats :: map(),  % Archive metrics from opponent_archive
+    %% Archive stats
+    archive_stats :: map(),  % Archive metrics
 
     %% Event publishing state
     last_published_sensors :: map(),  % For change detection
@@ -160,7 +160,7 @@ update_mutation_impact(FitnessChange) ->
 update_crossover_success(Success) ->
     gen_server:cast(?SERVER, {crossover_success, Success}).
 
-%% @doc Update archive statistics from opponent_archive.
+%% @doc Update archive statistics.
 %%
 %% Expected keys in Stats map:
 %% - size: current archive size

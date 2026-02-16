@@ -5,21 +5,47 @@ All notable changes to faber-neuroevolution will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-02-16
+
+### Stable Release
+
+First stable release. All APIs are considered stable.
+
+### Features (stable)
+
+- **5 Evolution Strategies**: Generational, steady-state, novelty search, MAP-Elites, island model
+- **13-Silo Liquid Conglomerate**: Self-tuning subsystems with cross-silo signaling
+- **LTC Meta-Controller**: Hierarchical L0/L1/L2 hyperparameter adaptation
+- **Domain SDK**: Behaviour-based SDK for building neuroevolution domains
+- **Seeded Population**: Continue training from champion networks
+- **Distributed Evaluation**: Multi-node evaluation via mesh or Erlang distribution
+- **Lineage Tracking**: CQRS-based genealogy with event store backend
+- **93 Behavioral Events**: Per-silo event system with pub/sub
+- **Network Checkpointing**: Save/load evolved networks at milestones
+- **Layer-Specific Mutation**: Different rates for reservoir vs readout layers
+- **944 tests passing**
+
+### Removed
+
+- **Self-play manager** — Incomplete feature, never implemented. Self-play evaluation will be handled at the application level (e.g., hecate-daemon's Snake Gladiators).
+- **Coevolution strategy** — `coevolution_sup.erl`, `coevolution_manager.erl`, `coevolution_trainer.erl`, `red_team_archive.erl`, `archive_crdt.erl` removed. Red Team vs Blue Team coevolution will be developed as a standalone strategy when needed.
+- **Self-play guides and assets** — Removed `guides/self-play.md` and related SVG assets
+- **Self-play test stubs** — Removed `.pending` test files for unimplemented modules
+
+### Changed
+
+- `neuroevolution_server` no longer initializes self-play manager
+- `neuroevolution_evaluator:evaluate_batch_distributed/4` simplified to `/3` (no SelfPlayManager param)
+- `faber_neuroevolution_sup` no longer starts coevolution supervisor
+- Morphology specs use generic `archive` source/target instead of `opponent_archive`
+- Dependency: `faber_tweann ~> 1.0` (was `~> 0.1.0`)
+
+---
+
 ## [0.2.0] - 2026-02-16
 
 ### Added
 - **Seeded population creation** in `generational_strategy.erl`
-  - `seed_networks` field in `neuro_config` record
-  - When seed networks are provided, initial population is composed of:
-    - ~25% exact copies of seed networks
-    - ~25% mutated variants of seed networks
-    - ~50% random individuals (ensures exploration)
-  - Balances exploitation (building on known-good networks) with exploration
-  - Default: empty list (all random, preserves current behavior)
-
-### Changed
-- `neuro_config:from_map/1` and `to_map/1` now handle `seed_networks` key
-- `generational_strategy:create_initial_population/2` dispatches to seeded or random creation
 
 ---
 

@@ -97,7 +97,7 @@ sensor_names() ->
         evaluation_progress,       % 14. Training progress (evaluations done)
         entropy,                   % 15. Population entropy
         convergence_trend,         % 16. Convergence direction
-        %% Self-play archive sensors (17-21)
+        %% Archive sensors (17-21)
         archive_fill_ratio,        % 17. Archive size / max_size
         archive_fitness_mean,      % 18. Average fitness in archive
         archive_fitness_variance,  % 19. Fitness variance in archive
@@ -219,33 +219,33 @@ sensor_spec(convergence_trend) ->
         source => computed,
         description => <<"Convergence direction (-1=diverging, +1=converging)">>
     };
-%% Self-play archive sensors
+%% Archive sensors
 sensor_spec(archive_fill_ratio) ->
     #{
         name => archive_fill_ratio,
         range => {0.0, 1.0},
-        source => opponent_archive,
+        source => archive,
         description => <<"Archive size / max_size (0=empty, 1=full)">>
     };
 sensor_spec(archive_fitness_mean) ->
     #{
         name => archive_fitness_mean,
         range => {0.0, 1.0},
-        source => opponent_archive,
+        source => archive,
         description => <<"Average fitness of archived opponents (normalized)">>
     };
 sensor_spec(archive_fitness_variance) ->
     #{
         name => archive_fitness_variance,
         range => {0.0, 1.0},
-        source => opponent_archive,
+        source => archive,
         description => <<"Fitness variance in archive (0=homogeneous, 1=diverse)">>
     };
 sensor_spec(archive_staleness) ->
     #{
         name => archive_staleness,
         range => {0.0, 1.0},
-        source => opponent_archive,
+        source => archive,
         description => <<"Average age of archive entries (0=fresh, 1=stale)">>
     };
 sensor_spec(population_vs_archive_ratio) ->
@@ -291,7 +291,7 @@ actuator_names() ->
         reservoir_mutation_strength,% 14. Hidden layer mutation strength
         readout_mutation_rate,      % 15. Output layer mutation rate
         readout_mutation_strength,  % 16. Output layer mutation strength
-        %% Self-play archive actuators (17-20)
+        %% Archive actuators (17-20)
         archive_threshold_percentile,  % 17. Entry threshold
         archive_sampling_temperature,  % 18. Fitness-weighted sampling
         archive_prune_ratio,           % 19. Keep top X%
@@ -416,33 +416,33 @@ actuator_spec(readout_mutation_strength) ->
         target => layer_mutation,
         description => <<"Output layer weight perturbation strength">>
     };
-%% Self-play archive actuators
+%% Archive actuators
 actuator_spec(archive_threshold_percentile) ->
     #{
         name => archive_threshold_percentile,
         range => {0.3, 0.95},
-        target => opponent_archive,
+        target => archive,
         description => <<"Minimum fitness percentile for archive entry">>
     };
 actuator_spec(archive_sampling_temperature) ->
     #{
         name => archive_sampling_temperature,
         range => {0.0, 1.0},
-        target => opponent_archive,
+        target => archive,
         description => <<"Sampling temperature: 0=uniform, 1=fitness-weighted">>
     };
 actuator_spec(archive_prune_ratio) ->
     #{
         name => archive_prune_ratio,
         range => {0.5, 1.0},
-        target => opponent_archive,
+        target => archive,
         description => <<"Keep top X% when pruning archive">>
     };
 actuator_spec(archive_max_size_delta) ->
     #{
         name => archive_max_size_delta,
         range => {-5, 5},
-        target => opponent_archive,
+        target => archive,
         description => <<"Change to maximum archive size">>
     };
 actuator_spec(_) ->
@@ -465,7 +465,7 @@ l0_hyperparameters() ->
         complexity_penalty_weight,     % 6. Penalize bloat
         diversity_bonus_weight,        % 7. Reward diversity
         resource_sensitivity,          % 8. How much to heed Resource Silo
-        %% Self-play archive hyperparameters (9-12)
+        %% Archive hyperparameters (9-12)
         archive_threshold_min,         % 9. Floor for archive entry threshold
         archive_threshold_max,         % 10. Ceiling for archive entry threshold
         archive_diversity_weight,      % 11. Fitness vs diversity in sampling
@@ -530,7 +530,7 @@ l0_hyperparameter_spec(resource_sensitivity) ->
         range => {0.0, 1.0},
         description => <<"How much to respond to Resource Silo signals">>
     };
-%% Self-play archive hyperparameters
+%% Archive hyperparameters
 l0_hyperparameter_spec(archive_threshold_min) ->
     #{
         name => archive_threshold_min,
@@ -575,7 +575,7 @@ get_l0_defaults() ->
         complexity_penalty_weight => 0.1,
         diversity_bonus_weight => 0.1,
         resource_sensitivity => 0.5,
-        %% Self-play archive hyperparameters
+        %% Archive hyperparameters
         archive_threshold_min => 0.3,
         archive_threshold_max => 0.95,
         archive_diversity_weight => 0.3,
@@ -595,7 +595,7 @@ get_l0_bounds() ->
         complexity_penalty_weight => {0.0, 0.5},
         diversity_bonus_weight => {0.0, 0.5},
         resource_sensitivity => {0.0, 1.0},
-        %% Self-play archive hyperparameters
+        %% Archive hyperparameters
         archive_threshold_min => {0.1, 0.5},
         archive_threshold_max => {0.8, 0.99},
         archive_diversity_weight => {0.0, 0.7},

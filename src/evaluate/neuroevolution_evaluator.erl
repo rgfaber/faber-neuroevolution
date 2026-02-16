@@ -84,7 +84,7 @@
 -export([
     evaluate_individual/3,
     evaluate_batch_parallel/3,
-    evaluate_batch_distributed/4,
+    evaluate_batch_distributed/3,
     get_worker_nodes/0,
     default_fitness/1
 ]).
@@ -246,15 +246,13 @@ collect_batch_results(Tasks, Acc, Timeout) ->
 %% @param Population List of individuals to evaluate
 %% @param EvaluatorModule Module implementing evaluate/2 callback
 %% @param Options Evaluation options map
-%% @param SelfPlayManager Optional self-play manager PID (or undefined)
 %% @returns List of evaluated individuals
--spec evaluate_batch_distributed(Population, EvaluatorModule, Options, SelfPlayManager) -> Results when
+-spec evaluate_batch_distributed(Population, EvaluatorModule, Options) -> Results when
     Population :: [individual()],
     EvaluatorModule :: module(),
     Options :: map(),
-    SelfPlayManager :: pid() | undefined,
     Results :: [individual()].
-evaluate_batch_distributed(Population, EvaluatorModule, Options, SelfPlayManager) ->
+evaluate_batch_distributed(Population, EvaluatorModule, Options) ->
     Workers = get_worker_nodes(),
     AllNodes = [node() | Workers],
     NumNodes = length(AllNodes),
@@ -290,7 +288,7 @@ evaluate_batch_distributed(Population, EvaluatorModule, Options, SelfPlayManager
                 fun(Batch, Node) ->
                     Ref = make_ref(),
                     spawn_link(fun() ->
-                        Result = evaluate_on_node(Batch, EvaluatorModule, Options, SelfPlayManager, Node, Timeout),
+                        Result = evaluate_on_node(Batch, EvaluatorModule, Options, Node, Timeout),
                         Parent ! {distributed_eval_result, Ref, Result}
                     end),
                     {Ref, Node, length(Batch)}
@@ -309,19 +307,13 @@ get_worker_nodes() ->
     nodes(connected).
 
 %% @private Evaluate a batch on a specific node
-evaluate_on_node([], _EvaluatorModule, _Options, _SelfPlayManager, _Node, _Timeout) ->
+evaluate_on_node([], _EvaluatorModule, _Options, _Node, _Timeout) ->
     [];
-evaluate_on_node(Batch, EvaluatorModule, Options, SelfPlayManager, Node, Timeout) ->
-    %% Add self_play_manager to options if present (only works on local node)
-    EvalOptions = case {Node == node(), SelfPlayManager} of
-        {true, Pid} when is_pid(Pid) -> Options#{self_play_manager => Pid};
-        _ -> Options
-    end,
-
+evaluate_on_node(Batch, EvaluatorModule, Options, Node, Timeout) ->
     case Node == node() of
         true ->
             %% Local evaluation
-            Results = evaluate_batch_parallel(Batch, EvaluatorModule, EvalOptions),
+            Results = evaluate_batch_parallel(Batch, EvaluatorModule, Options),
             extract_individuals(Results);
         false ->
             %% Remote evaluation via erpc
@@ -330,7 +322,7 @@ evaluate_on_node(Batch, EvaluatorModule, Options, SelfPlayManager, Node, Timeout
                     Node,
                     ?MODULE,
                     evaluate_batch_parallel,
-                    [Batch, EvaluatorModule, EvalOptions],
+                    [Batch, EvaluatorModule, Options],
                     Timeout
                 )
             of
@@ -342,7 +334,7 @@ evaluate_on_node(Batch, EvaluatorModule, Options, SelfPlayManager, Node, Timeout
                         "[neuroevolution_evaluator] Node ~p disconnected, retrying locally~n",
                         [Node]
                     ),
-                    LocalResults = evaluate_batch_parallel(Batch, EvaluatorModule, EvalOptions),
+                    LocalResults = evaluate_batch_parallel(Batch, EvaluatorModule, Options),
                     extract_individuals(LocalResults);
                 Class:Reason:Stacktrace ->
                     error_logger:error_msg(

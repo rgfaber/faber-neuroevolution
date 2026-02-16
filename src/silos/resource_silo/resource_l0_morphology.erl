@@ -88,7 +88,7 @@ sensor_names() ->
         task_silo_exploration,     % 11. Cross-silo: Task Silo exploration state
         evaluation_throughput,     % 12. Performance feedback
         time_since_last_gc,        % 13. GC timing
-        %% Self-play archive sensors (14-15)
+        %% Archive sensors (14-15)
         archive_memory_ratio,      % 14. Archive memory / total memory
         crdt_state_size_ratio      % 15. CRDT sync state overhead
     ].
@@ -192,26 +192,26 @@ sensor_spec(time_since_last_gc) ->
         source => computed,
         description => <<"Time since last GC (normalized)">>
     };
-%% Self-play archive sensors
+%% Archive sensors
 sensor_spec(archive_memory_ratio) ->
     #{
         name => archive_memory_ratio,
         range => {0.0, 1.0},
-        source => opponent_archive,
+        source => archive,
         description => <<"Archive memory usage / total memory">>
     };
 sensor_spec(crdt_state_size_ratio) ->
     #{
         name => crdt_state_size_ratio,
         range => {0.0, 1.0},
-        source => opponent_archive,
+        source => archive,
         description => <<"CRDT sync state size / archive data size">>
     };
 sensor_spec(_) ->
     undefined.
 
 %%% ============================================================================
-%%% Actuator Definitions (10 outputs: 8 resource + 1 self-play archive + 1 timeout)
+%%% Actuator Definitions (10 outputs: 8 resource + 1 archive + 1 timeout)
 %%% ============================================================================
 
 %% @doc Number of actuators (neural network outputs).
@@ -231,7 +231,7 @@ actuator_names() ->
         max_evals_per_individual,   % 6. Statistical confidence vs speed
         task_silo_pressure_signal,  % 7. Cross-silo: Tell Task Silo to back off
         gc_aggressiveness,          % 8. GC strategy (gentle vs aggressive)
-        %% Self-play archive actuator (9)
+        %% Archive actuator (9)
         archive_gc_pressure,        % 9. Force archive cleanup under memory pressure
         %% Timeout control actuator (10)
         evaluation_timeout          % 10. Worker timeout in milliseconds (1000-10000ms)
@@ -301,12 +301,12 @@ actuator_spec(gc_aggressiveness) ->
         target => gc_strategy,
         description => <<"GC strategy: gentle (0) vs aggressive (1)">>
     };
-%% Self-play archive actuator
+%% Archive actuator
 actuator_spec(archive_gc_pressure) ->
     #{
         name => archive_gc_pressure,
         range => {0.0, 1.0},
-        target => opponent_archive,
+        target => archive,
         description => <<"Archive pruning pressure: 0=no pruning, 1=aggressive pruning">>
     };
 %% Timeout control actuator

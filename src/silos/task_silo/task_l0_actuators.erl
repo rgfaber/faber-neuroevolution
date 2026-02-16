@@ -8,7 +8,7 @@
 %%
 %% 1. Convert TWEANN outputs (0.0-1.0) to evolution parameter ranges
 %% 2. Apply outputs to neuroevolution_server (evolution params)
-%% 3. Apply outputs to opponent_archive (self-play archive params)
+%% 3. Apply archive management outputs
 %% 4. Handle delta outputs (population_size_delta, compatibility_threshold_delta, archive_max_size_delta)
 %% 5. Track applied values for debugging/monitoring
 %%
@@ -403,12 +403,12 @@ apply_evolution_params(EvolutionParams, _State) ->
 %% @private Apply archive parameters via event publication.
 %%
 %% Event-driven pattern: Publish archive hyperparameter events.
-%% When self_play_manager is implemented, it will subscribe to this topic.
+%% Archive management subscribers will receive this event.
 %%
 %% Event: <<"l0.archive_params">>
 %% Payload: #{threshold_percentile => ..., sampling_temperature => ..., ...}
 apply_archive_params(ArchiveParams, _State) ->
-    %% Publish event - self_play_manager (when implemented) will subscribe
+    %% Publish event for archive management subscribers
     Event = #{
         event_type => <<"l0_archive_params_computed">>,
         timestamp => erlang:system_time(millisecond),

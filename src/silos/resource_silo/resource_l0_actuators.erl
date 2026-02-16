@@ -8,8 +8,7 @@
 %%
 %% 1. Convert TWEANN outputs (0.0-1.0) to target ranges
 %% 2. Apply outputs to neuroevolution_server and other targets
-%% 3. Apply archive GC pressure to opponent_archive (self-play)
-%% 4. Emit cross-silo signals to Task Silo
+%% 3. Emit cross-silo signals to Task Silo
 %% 5. Track applied values for debugging/monitoring
 %%
 %% == Actuators (10 total) ==
@@ -78,7 +77,7 @@
     %% Cross-silo output callback
     task_silo_callback :: fun((float()) -> ok) | undefined,
 
-    %% Archive GC callback (for integration with opponent_archive)
+    %% Reserved for future archive callback
     archive_callback :: fun((float()) -> ok) | undefined
 }).
 
@@ -314,7 +313,6 @@ apply_to_targets(ActuatorValues, State) ->
 
     %% Legacy callback support (for custom handlers)
     emit_task_silo_signal(PressureSignal, State),
-    emit_archive_gc_pressure(ArchiveGcPressure, State),
 
     ok.
 
@@ -328,19 +326,6 @@ emit_task_silo_signal(PressureSignal, #state{task_silo_callback = undefined}) ->
     end;
 emit_task_silo_signal(PressureSignal, #state{task_silo_callback = Callback}) ->
     Callback(PressureSignal).
-
-%% @private Emit archive GC pressure to opponent_archive.
-emit_archive_gc_pressure(_GcPressure, #state{archive_callback = undefined}) ->
-    %% Try to send to opponent_archive if running
-    case whereis(opponent_archive) of
-        undefined -> ok;
-        _Pid ->
-            %% Would call opponent_archive:apply_gc_pressure(GcPressure)
-            %% GcPressure > 0.8 triggers aggressive pruning
-            ok
-    end;
-emit_archive_gc_pressure(GcPressure, #state{archive_callback = Callback}) ->
-    Callback(GcPressure).
 
 %%% ============================================================================
 %%% Internal Functions - Utilities
