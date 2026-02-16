@@ -99,7 +99,10 @@ from_map(Map) when is_map(Map) ->
         max_concurrent_evaluations = normalize_nil(maps:get(max_concurrent_evaluations, Map, undefined)),
 
         %% Evolution strategy
-        strategy_config = get_strategy_config(Map)
+        strategy_config = get_strategy_config(Map),
+
+        %% Seed networks for population initialization
+        seed_networks = maps:get(seed_networks, Map, [])
     }.
 
 %% @doc Convert a #neuro_config{} record to a map.
@@ -131,7 +134,8 @@ to_map(Config) when is_record(Config, neuro_config) ->
         evaluation_mode => Config#neuro_config.evaluation_mode,
         evaluation_timeout => Config#neuro_config.evaluation_timeout,
         max_concurrent_evaluations => Config#neuro_config.max_concurrent_evaluations,
-        strategy_config => Config#neuro_config.strategy_config
+        strategy_config => Config#neuro_config.strategy_config,
+        seed_networks => Config#neuro_config.seed_networks
     }.
 
 %% @doc Create a default configuration.

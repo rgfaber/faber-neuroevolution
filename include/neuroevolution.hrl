@@ -390,7 +390,15 @@
     %% - save_on_fitness_record: Save when new best fitness (default: true)
     %% - generation_interval: Save every N generations (0 = disabled)
     %% - max_checkpoints_per_reason: Max checkpoints to keep per reason (default: 20)
-    checkpoint_config :: map() | undefined
+    checkpoint_config :: map() | undefined,
+
+    %% Seed networks for population initialization
+    %% When non-empty, initial population is seeded with these networks:
+    %% - ~25% exact copies of seeds
+    %% - ~25% mutated variants of seeds
+    %% - ~50% random (ensures exploration)
+    %% Default: [] (all random, current behavior)
+    seed_networks = [] :: [term()]
 }).
 
 -type neuro_config() :: #neuro_config{}.

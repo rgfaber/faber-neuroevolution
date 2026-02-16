@@ -5,6 +5,24 @@ All notable changes to faber-neuroevolution will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-02-16
+
+### Added
+- **Seeded population creation** in `generational_strategy.erl`
+  - `seed_networks` field in `neuro_config` record
+  - When seed networks are provided, initial population is composed of:
+    - ~25% exact copies of seed networks
+    - ~25% mutated variants of seed networks
+    - ~50% random individuals (ensures exploration)
+  - Balances exploitation (building on known-good networks) with exploration
+  - Default: empty list (all random, preserves current behavior)
+
+### Changed
+- `neuro_config:from_map/1` and `to_map/1` now handle `seed_networks` key
+- `generational_strategy:create_initial_population/2` dispatches to seeded or random creation
+
+---
+
 ## [0.1.0] - 2026-02-14
 
 ### Changed
@@ -727,7 +745,8 @@ Initial public release with core neuroevolution functionality.
 
 ---
 
-[Unreleased]: https://github.com/rgfaber/faber-neuroevolution/compare/v0.28.0...HEAD
+[Unreleased]: https://github.com/rgfaber/faber-neuroevolution/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/rgfaber/faber-neuroevolution/compare/v0.1.0...v0.2.0
 [0.28.0]: https://github.com/rgfaber/faber-neuroevolution/compare/v0.27.0...v0.28.0
 [0.27.0]: https://github.com/rgfaber/faber-neuroevolution/compare/v0.26.0...v0.27.0
 [0.26.0]: https://github.com/rgfaber/faber-neuroevolution/compare/v0.25.0...v0.26.0

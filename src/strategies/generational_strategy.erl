@@ -432,40 +432,105 @@ handle_cohort_complete(State, AccEvents) ->
 %%% Internal Functions - Population Management
 %%% ============================================================================
 
-%% @private Create initial random population.
+%% @private Create initial population, optionally seeded with existing networks.
 %%
+%% When seed_networks is non-empty, the population is composed of:
+%% - ~25% exact copies of seed networks
+%% - ~25% mutated variants of seeds
+%% - ~50% random individuals (ensures exploration)
+%%
+%% When seed_networks is empty (default), creates all-random population.
 %% When topology_mutation_config is set, creates NEAT genomes for each
-%% individual. Otherwise creates fixed-topology networks.
+%% random individual. Otherwise creates fixed-topology networks.
 create_initial_population(Config, NetworkFactory) ->
+    Seeds = Config#neuro_config.seed_networks,
+    case Seeds of
+        [_ | _] ->
+            create_seeded_population(Config, Seeds, NetworkFactory);
+        _ ->
+            create_random_population(Config, NetworkFactory)
+    end.
+
+%% @private Create all-random population (original behavior).
+create_random_population(Config, NetworkFactory) ->
     PopSize = Config#neuro_config.population_size,
     UseNeat = Config#neuro_config.topology_mutation_config =/= undefined,
-
     lists:map(
         fun(Index) ->
-            case UseNeat of
-                true ->
-                    %% NEAT mode: create minimal genome and derive network
-                    Genome = genome_factory:create_minimal(Config),
-                    Network = genome_factory:to_network(Genome),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        genome = Genome,
-                        generation_born = 1
-                    };
-                false ->
-                    %% Legacy mode: create fixed-topology network
-                    Topology = Config#neuro_config.network_topology,
-                    Network = NetworkFactory:create_feedforward(Topology),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        generation_born = 1
-                    }
-            end
+            create_random_individual(Config, NetworkFactory, UseNeat, Index)
         end,
         lists:seq(1, PopSize)
     ).
+
+%% @private Create a single random individual.
+create_random_individual(Config, _NetworkFactory, true = _UseNeat, Index) ->
+    Genome = genome_factory:create_minimal(Config),
+    Network = genome_factory:to_network(Genome),
+    #individual{
+        id = {initial, Index},
+        network = Network,
+        genome = Genome,
+        generation_born = 1
+    };
+create_random_individual(Config, NetworkFactory, false = _UseNeat, Index) ->
+    Topology = Config#neuro_config.network_topology,
+    Network = NetworkFactory:create_feedforward(Topology),
+    #individual{
+        id = {initial, Index},
+        network = Network,
+        generation_born = 1
+    }.
+
+%% @private Create population seeded with existing networks.
+%% ~25% exact copies, ~25% mutated variants, ~50% random.
+create_seeded_population(Config, Seeds, NetworkFactory) ->
+    PopSize = Config#neuro_config.population_size,
+    SeedCount = min(length(Seeds), max(1, PopSize div 4)),
+    MutantCount = min(SeedCount, max(1, PopSize div 4)),
+    RandomCount = PopSize - SeedCount - MutantCount,
+
+    %% Exact copies of seed networks
+    SeedIndividuals = lists:map(
+        fun({SeedNet, Idx}) ->
+            #individual{
+                id = {seed, Idx},
+                network = SeedNet,
+                generation_born = 1,
+                is_survivor = true
+            }
+        end,
+        lists:zip(lists:sublist(Seeds, SeedCount), lists:seq(1, SeedCount))
+    ),
+
+    %% Mutated variants of seed networks
+    MutantIndividuals = lists:map(
+        fun(Idx) ->
+            SeedIdx = ((Idx - 1) rem SeedCount) + 1,
+            SeedNet = lists:nth(SeedIdx, Seeds),
+            MutatedNet = NetworkFactory:mutate(
+                SeedNet,
+                Config#neuro_config.mutation_strength
+            ),
+            #individual{
+                id = {seed_mutant, Idx},
+                network = MutatedNet,
+                generation_born = 1,
+                is_offspring = true
+            }
+        end,
+        lists:seq(1, MutantCount)
+    ),
+
+    %% Random individuals (ensures exploration)
+    UseNeat = Config#neuro_config.topology_mutation_config =/= undefined,
+    RandomIndividuals = lists:map(
+        fun(Idx) ->
+            create_random_individual(Config, NetworkFactory, UseNeat, Idx)
+        end,
+        lists:seq(1, RandomCount)
+    ),
+
+    SeedIndividuals ++ MutantIndividuals ++ RandomIndividuals.
 
 %% @private Reset individual for next generation.
 reset_individual(Ind, IsSurvivor) ->
