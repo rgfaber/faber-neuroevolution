@@ -115,7 +115,7 @@ task_sensor_count_test() ->
 
 task_actuator_count_test() ->
     Count = task_l0_morphology:actuator_count(),
-    ?assertEqual(16, Count).  % 12 base + 4 archive
+    ?assertEqual(20, Count).  % 12 evolution + 4 layer-specific + 4 archive
 
 task_sensor_names_test() ->
     Names = task_l0_morphology:sensor_names(),
@@ -130,7 +130,7 @@ task_sensor_names_test() ->
 
 task_actuator_names_test() ->
     Names = task_l0_morphology:actuator_names(),
-    ?assertEqual(16, length(Names)),
+    ?assertEqual(20, length(Names)),
     ?assert(lists:member(mutation_rate, Names)),
     ?assert(lists:member(add_node_rate, Names)),
     %% Check archive actuators

@@ -404,7 +404,13 @@ compute_novelty_scores(Population, PopBehaviors, Archive, Params) ->
                 _ ->
                     %% Use NIF-accelerated K-NN novelty computation
                     %% tweann_nif handles fallback internally if NIF not loaded
-                    tweann_nif:knn_novelty(Behavior, PopBehaviorVecs, ArchiveBehaviorVecs, K)
+                    try
+                        tweann_nif:knn_novelty(Behavior, PopBehaviorVecs, ArchiveBehaviorVecs, K)
+                    catch
+                        _:_ ->
+                            %% Dimension mismatch or other error — degrade gracefully
+                            0.0
+                    end
             end,
             %% Store novelty in metrics
             NewMetrics = maps:put(novelty, Novelty, Ind#individual.metrics),

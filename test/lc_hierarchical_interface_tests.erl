@@ -88,10 +88,14 @@ l2_guidance_record_test_() ->
 
 %% Run all task_silo tests sequentially in a single test to avoid registration conflicts
 task_silo_l2_integration_test() ->
-    %% Ensure clean state
+    %% Ensure clean state — stop task_silo and its lc_silo_chain children
     catch gen_server:stop(task_silo),
+    catch gen_server:stop(lc_task_silo_chain),
+    catch gen_server:stop(lc_silo_chain),
     catch unregister(task_silo),
-    timer:sleep(100),
+    catch unregister(lc_task_silo_chain),
+    catch unregister(lc_silo_chain),
+    timer:sleep(200),
 
     try
         %% Test 1: Start with L2 enabled
@@ -134,7 +138,12 @@ task_silo_l2_integration_test() ->
 
     after
         catch gen_server:stop(task_silo),
-        catch unregister(task_silo)
+        catch gen_server:stop(lc_task_silo_chain),
+        catch gen_server:stop(lc_silo_chain),
+        catch unregister(task_silo),
+        catch unregister(lc_task_silo_chain),
+        catch unregister(lc_silo_chain),
+        timer:sleep(100)
     end.
 
 %%% ============================================================================
