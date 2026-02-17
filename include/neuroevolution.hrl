@@ -511,7 +511,12 @@
     %% These are updated via silo_events when silos publish changes,
     %% eliminating blocking get_recommendations() calls from the event flow.
     cached_resource_recommendations = #{} :: map(),
-    cached_task_recommendations = #{} :: map()
+    cached_task_recommendations = #{} :: map(),
+
+    %% Last fully-evaluated population (sorted by fitness descending).
+    %% Captured BEFORE the strategy replaces/resets the population.
+    %% Use get_last_evaluated_population/1 to retrieve after training_complete.
+    last_evaluated_population = [] :: [individual()]
 }).
 
 -type neuro_state() :: #neuro_state{}.

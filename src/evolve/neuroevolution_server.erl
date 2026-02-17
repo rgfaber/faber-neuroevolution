@@ -56,6 +56,7 @@
     stop_training/1,
     get_stats/1,
     get_population/1,
+    get_last_evaluated_population/1,
     get_population_snapshot/1,
     update_config/2
 ]).
@@ -117,10 +118,23 @@ get_stats(ServerRef) ->
     gen_server:call(ServerRef, get_stats).
 
 %% @doc Get the current population (raw individuals).
+%% NOTE: After training_complete, this returns the post-breeding population
+%% where non-elite individuals have fitness reset to 0. For the fully
+%% evaluated population with all fitness values, use
+%% get_last_evaluated_population/1.
 -spec get_population(ServerRef) -> {ok, [individual()]} when
     ServerRef :: pid() | atom().
 get_population(ServerRef) ->
     gen_server:call(ServerRef, get_population).
+
+%% @doc Get the last fully-evaluated population, sorted by fitness descending.
+%% This is captured before the strategy replaces/resets individuals for the
+%% next generation. All individuals retain their fitness values.
+%% Returns empty list if no evaluation has completed yet.
+-spec get_last_evaluated_population(ServerRef) -> {ok, [individual()]} when
+    ServerRef :: pid() | atom().
+get_last_evaluated_population(ServerRef) ->
+    gen_server:call(ServerRef, get_last_evaluated_population).
 
 %% @doc Get population snapshot from the strategy.
 -spec get_population_snapshot(ServerRef) -> {ok, population_snapshot()} when
@@ -258,6 +272,9 @@ handle_call(get_stats, _From, State) ->
 
 handle_call(get_population, _From, State) ->
     {reply, {ok, State#neuro_state.population}, State};
+
+handle_call(get_last_evaluated_population, _From, State) ->
+    {reply, {ok, State#neuro_state.last_evaluated_population}, State};
 
 handle_call(get_population_snapshot, _From, State) ->
     StrategyModule = State#neuro_state.strategy_module,
@@ -1264,7 +1281,10 @@ handle_evaluation_complete(State, EvaluatedPopulation) ->
         competitive_history = UpdatedCompetitiveHistory,
         strategy_state = FinalStrategyState,
         evaluating = false,
-        games_completed = 0
+        games_completed = 0,
+        %% Preserve the evaluated population (sorted by fitness desc)
+        %% before strategy replaces it. Used for multi-champion extraction.
+        last_evaluated_population = Sorted
     },
 
     %% Save checkpoint on fitness record
