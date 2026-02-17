@@ -364,10 +364,26 @@ handle_cohort_complete(State, AccEvents) ->
     %% Create death events for eliminated individuals
     DeathEvents = [create_death_event(Ind, selection_pressure) || Ind <- Eliminated],
 
-    %% Breed offspring
-    NumOffspring = State#gen_state.population_size - NumSurvivors2,
+    %% Elitism: preserve top N individuals unchanged (no reset, no mutation)
+    EliteCount = case Params#generational_params.elitism of
+        true -> min(Params#generational_params.elite_count, NumSurvivors2);
+        false -> 0
+    end,
+    {Elites, NonEliteSurvivors} = lists:split(EliteCount, Survivors),
+
+    %% Stagnation response: boost mutation when fitness plateaus
+    Improved = BestFitness > State#gen_state.best_fitness_ever,
+    NewStagnation = case Improved of
+        true -> 0;
+        false -> State#gen_state.stagnation_count + 1
+    end,
+    EffectiveConfig = apply_stagnation_boost(Config, NewStagnation),
+
+    %% Breed offspring to fill remaining slots
+    NumOffspring = State#gen_state.population_size - EliteCount - length(NonEliteSurvivors),
     NetworkFactory = State#gen_state.network_factory,
-    {Offspring, BirthEvents} = breed_offspring(Survivors, Config, Generation, NumOffspring, NetworkFactory),
+    {Offspring, BirthEvents} = breed_offspring(
+        Survivors, EffectiveConfig, Params, Generation, NumOffspring, NetworkFactory),
 
     %% Create breeding_complete event
     BreedingEvent = #breeding_complete{
@@ -378,21 +394,16 @@ handle_cohort_complete(State, AccEvents) ->
         timestamp = erlang:timestamp()
     },
 
-    %% Reset survivors for next generation
-    ResetSurvivors = [reset_individual(Ind, true) || Ind <- Survivors],
+    %% Elite individuals keep their fitness (already proven); others reset
+    ResetSurvivors = [reset_individual(Ind, true) || Ind <- NonEliteSurvivors],
+    PreservedElites = [Ind#individual{is_survivor = true, is_offspring = false}
+                       || Ind <- Elites],
 
-    %% Form next population
-    NextPopulation = ResetSurvivors ++ Offspring,
+    %% Form next population: elites first (unchanged), then reset survivors, then offspring
+    NextPopulation = PreservedElites ++ ResetSurvivors ++ Offspring,
 
     %% Rebuild population map for next generation
     NextPopMap = build_population_map(NextPopulation),
-
-    %% Update stagnation tracking
-    Improved = BestFitness > State#gen_state.best_fitness_ever,
-    NewStagnation = case Improved of
-        true -> 0;
-        false -> State#gen_state.stagnation_count + 1
-    end,
 
     %% Create generation_advanced event
     GenAdvancedEvent = #generation_advanced{
@@ -565,28 +576,44 @@ update_individual_in_list(UpdatedInd, Population) ->
 
 %% @private Breed offspring from survivors.
 %%
+%% Honors crossover_rate: some offspring use crossover+mutation, others mutation-only.
 %% When LC is enabled, gets current mutation rates from L0 controller.
-%% This enables dynamic adaptation of layer-specific mutation rates.
-breed_offspring(Survivors, Config, Generation, Count, NetworkFactory) ->
+breed_offspring(Survivors, Config, Params, Generation, Count, NetworkFactory) ->
     %% Get L0-controlled params if LC is running
     DynamicConfig = neuro_config:with_l0_params(Config),
-    breed_offspring(Survivors, DynamicConfig, Generation, Count, NetworkFactory, [], []).
+    TournamentSize = Params#generational_params.tournament_size,
+    CrossoverRate = Params#generational_params.crossover_rate,
+    breed_offspring(Survivors, DynamicConfig, TournamentSize, CrossoverRate,
+                    Generation, Count, NetworkFactory, [], []).
 
-breed_offspring(_Survivors, _Config, _Generation, 0, _NetworkFactory, Offspring, Events) ->
+breed_offspring(_Survivors, _Config, _TS, _CR, _Generation, 0, _NF, Offspring, Events) ->
     {lists:reverse(Offspring), lists:reverse(Events)};
-breed_offspring(Survivors, Config, Generation, Remaining, NetworkFactory, Offspring, Events) ->
-    %% Select two parents
-    {Parent1, Parent2} = select_parents(Survivors),
+breed_offspring(Survivors, Config, TS, CR, Generation, Remaining, NF, Offspring, Events) ->
+    %% Select parents using configured tournament size
+    {Parent1, Parent2} = select_parents(Survivors, TS),
 
-    %% Create offspring via crossover and mutation using the factory
-    Child = create_offspring_with_factory(
-        Parent1, Parent2, Config, Generation + 1, NetworkFactory
-    ),
+    %% Honor crossover rate: some offspring are mutation-only
+    UseCrossover = rand:uniform() < CR,
+    Child = case UseCrossover of
+        true ->
+            create_offspring_with_factory(
+                Parent1, Parent2, Config, Generation + 1, NF
+            );
+        false ->
+            create_mutation_only_offspring(
+                Parent1, Config, Generation + 1, NF
+            )
+    end,
 
     %% Create birth event
-    BirthEvent = create_birth_event(Child, crossover, [Parent1#individual.id, Parent2#individual.id]),
+    Origin = case UseCrossover of true -> crossover; false -> mutation end,
+    ParentIds = case UseCrossover of
+        true -> [Parent1#individual.id, Parent2#individual.id];
+        false -> [Parent1#individual.id]
+    end,
+    BirthEvent = create_birth_event(Child, Origin, ParentIds),
 
-    breed_offspring(Survivors, Config, Generation, Remaining - 1, NetworkFactory,
+    breed_offspring(Survivors, Config, TS, CR, Generation, Remaining - 1, NF,
                    [Child | Offspring], [BirthEvent | Events]).
 
 %% @private Create offspring using the network factory.
@@ -621,13 +648,36 @@ create_offspring_with_factory(Parent1, Parent2, Config, Generation, NetworkFacto
             }
     end.
 
+%% @private Create offspring via mutation only (no crossover).
+%% Used when crossover_rate check fails — preserves parent structure
+%% but explores via mutation alone.
+create_mutation_only_offspring(Parent, Config, Generation, NetworkFactory) ->
+    case Parent#individual.genome of
+        Genome when Genome =/= undefined ->
+            %% NEAT mode: self-crossover (identity) + mutation
+            neuroevolution_genetic:create_offspring(Parent, Parent, Config, Generation);
+        _ ->
+            %% Legacy mode: copy parent network and mutate
+            MutatedNetwork = NetworkFactory:mutate(
+                Parent#individual.network,
+                Config#neuro_config.mutation_strength
+            ),
+            ChildId = make_ref(),
+            #individual{
+                id = ChildId,
+                network = MutatedNetwork,
+                parent1_id = Parent#individual.id,
+                generation_born = Generation,
+                is_offspring = true
+            }
+    end.
+
 %% @private Select two parents for breeding.
-select_parents(Survivors) when length(Survivors) >= 2 ->
-    %% Tournament selection with size 2
-    P1 = tournament_select(Survivors, 2),
-    P2 = tournament_select(Survivors, 2),
+select_parents(Survivors, TournamentSize) when length(Survivors) >= 2 ->
+    P1 = tournament_select(Survivors, TournamentSize),
+    P2 = tournament_select(Survivors, TournamentSize),
     {P1, P2};
-select_parents([Single]) ->
+select_parents([Single], _TournamentSize) ->
     {Single, Single}.
 
 %% @private Tournament selection.
@@ -745,3 +795,17 @@ normalize_value(Value, Min, Max) ->
 %% @private Bound value to range.
 bound_value(Value, Min, Max) ->
     max(Min, min(Max, Value)).
+
+%% @private Boost mutation strength when evolution stagnates.
+%%
+%% After 5 consecutive generations without improvement, gradually increase
+%% mutation strength (up to 3x base). This helps escape local optima by
+%% making larger jumps in weight space. Resets automatically when fitness
+%% improves (stagnation_count goes back to 0).
+apply_stagnation_boost(Config, StagnationCount) when StagnationCount < 5 ->
+    Config;
+apply_stagnation_boost(Config, StagnationCount) ->
+    %% Linearly increase mutation strength: 1.0x at 5, 2.0x at 15, cap at 3.0x
+    Multiplier = min(3.0, 1.0 + (StagnationCount - 5) / 10.0),
+    BaseStrength = Config#neuro_config.mutation_strength,
+    Config#neuro_config{mutation_strength = BaseStrength * Multiplier}.
