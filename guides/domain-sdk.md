@@ -351,8 +351,8 @@ Outputs = nn:forward(Network, Inputs),
 %% Actions = [{move, 0, 1}, attack]
 
 %% Or do all three in one call:
-{ok, Actions, NewAgentState} = agent_bridge:sense_think_act(
-    Bridge, Network, EnvState, AgentState
+{Inputs, Outputs, Actions, UpdatedNetwork} = agent_bridge:sense_think_act(
+    Bridge, Network, AgentState, EnvState
 ).
 ```
 

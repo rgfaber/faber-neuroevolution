@@ -194,11 +194,14 @@ test_sense_think_act_cycle() ->
     %% Simple network that returns fixed outputs
     Network = fun(_Inputs) -> [0.1, 0.2, 0.8, 0.1, 0.1, 0.1, 0.1, 0.5] end,
 
-    {Inputs, Outputs, Actions} = agent_bridge:sense_think_act(Bridge, Network, AgentState, EnvState),
+    {Inputs, Outputs, Actions, UpdatedNetwork} =
+        agent_bridge:sense_think_act(Bridge, Network, AgentState, EnvState),
 
     ?assertEqual(23, length(Inputs)),
     ?assertEqual(8, length(Outputs)),
-    ?assertEqual(2, length(Actions)).
+    ?assertEqual(2, length(Actions)),
+    %% For function-based networks, the network is returned unchanged
+    ?assertEqual(Network, UpdatedNetwork).
 
 %%% ============================================================================
 %%% Episode Test Cases

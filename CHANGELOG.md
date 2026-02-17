@@ -5,6 +5,29 @@ All notable changes to faber-neuroevolution will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2026-02-17
+
+### Fixed
+
+- **CfC/LTC temporal state lost during training** — `agent_bridge:evaluate_network/2` always
+  used stateless `network_evaluator:evaluate/2`, even for CfC networks. This meant CfC temporal
+  dynamics were never trained — the network learned a stateless policy but was deployed with
+  stateful `evaluate_with_state/2` in duels, causing unpredictable behavior divergence.
+  Now detects CfC networks via `get_neuron_meta/1` and uses `evaluate_with_state/2`, threading
+  the updated network through `episode_loop` so temporal state accumulates across ticks — matching
+  deployment evaluation exactly.
+
+### Changed
+
+- **`sense_think_act/4` return type** — Now returns `{Inputs, Outputs, Actions, UpdatedNetwork}`
+  (was `{Inputs, Outputs, Actions}`). The 4th element is the (possibly updated) network. For
+  standard networks this is the same reference; for CfC networks it carries accumulated temporal
+  state. Callers matching the old 3-tuple must update to 4-tuple.
+- **`episode_loop/5`** — Threads `UpdatedNetwork` through each iteration, preserving CfC state
+  across ticks within an episode.
+
+---
+
 ## [1.2.2] - 2026-02-17
 
 ### Fixed

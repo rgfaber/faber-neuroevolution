@@ -288,26 +288,30 @@ act(Bridge, Outputs, AgentState, EnvState) ->
 %% 2. Think: Evaluate neural network
 %% 3. Act: Convert outputs to actions
 %%
-%% Returns the list of actions to apply to the environment.
--spec sense_think_act(Bridge, Network, AgentState, EnvState) -> {Inputs, Outputs, Actions} when
+%% Returns inputs, outputs, actions, and the (possibly updated) network.
+%% For CfC/LTC networks, the network accumulates internal state across
+%% ticks via evaluate_with_state. Standard networks are returned unchanged.
+-spec sense_think_act(Bridge, Network, AgentState, EnvState) ->
+    {Inputs, Outputs, Actions, UpdatedNetwork} when
     Bridge :: validated_bridge(),
     Network :: network(),
     AgentState :: agent_state(),
     EnvState :: env_state(),
     Inputs :: [float()],
     Outputs :: [float()],
-    Actions :: [map()].
+    Actions :: [map()],
+    UpdatedNetwork :: network().
 sense_think_act(Bridge, Network, AgentState, EnvState) ->
     %% 1. SENSE
     Inputs = sense(Bridge, AgentState, EnvState),
 
-    %% 2. THINK (evaluate neural network)
-    Outputs = evaluate_network(Network, Inputs),
+    %% 2. THINK (evaluate neural network — stateful for CfC, stateless otherwise)
+    {Outputs, UpdatedNetwork} = evaluate_network(Network, Inputs),
 
     %% 3. ACT
     Actions = act(Bridge, Outputs, AgentState, EnvState),
 
-    {Inputs, Outputs, Actions}.
+    {Inputs, Outputs, Actions, UpdatedNetwork}.
 
 %% @doc Runs a complete evaluation episode.
 %%
@@ -427,6 +431,9 @@ validate_actuators([Module | Rest], Offset, Acc) ->
     validate_actuators(Rest, Offset + Count, [Spec | Acc]).
 
 %% @private
+%% Episode loop threads the updated network through each iteration.
+%% For CfC/LTC networks, this preserves temporal state across ticks
+%% (matching how duels evaluate networks with evaluate_with_state).
 episode_loop(Bridge, Network, AgentState, EnvState, EnvModule) ->
     case EnvModule:is_terminal(AgentState, EnvState) of
         true ->
@@ -435,14 +442,15 @@ episode_loop(Bridge, Network, AgentState, EnvState, EnvModule) ->
             %% Tick environment
             {ok, AgentState1, EnvState1} = EnvModule:tick(AgentState, EnvState),
 
-            %% Sense→Think→Act
-            {_Inputs, _Outputs, Actions} = sense_think_act(Bridge, Network, AgentState1, EnvState1),
+            %% Sense→Think→Act (UpdatedNetwork preserves CfC temporal state)
+            {_Inputs, _Outputs, Actions, UpdatedNetwork} =
+                sense_think_act(Bridge, Network, AgentState1, EnvState1),
 
             %% Apply all actions
             {AgentState2, EnvState2} = apply_actions(Actions, AgentState1, EnvState1, EnvModule),
 
-            %% Continue loop
-            episode_loop(Bridge, Network, AgentState2, EnvState2, EnvModule)
+            %% Continue loop with updated network
+            episode_loop(Bridge, UpdatedNetwork, AgentState2, EnvState2, EnvModule)
     end.
 
 %% @private
@@ -454,29 +462,44 @@ apply_actions([Action | Rest], AgentState, EnvState, EnvModule) ->
 
 %% @private
 %% Evaluate the neural network.
+%% Returns {Outputs, UpdatedNetwork} where UpdatedNetwork may have
+%% accumulated CfC/LTC temporal state.
+%%
 %% Supports multiple network formats:
-%% - network_evaluator record (from faber_tweann)
-%% - function/1 (for testing)
-%% - map with output_count (for testing stubs)
+%% - network_evaluator record (from faber_tweann) — CfC-aware
+%% - function/1 (for testing) — stateless
+%% - map with output_count (for testing stubs) — stateless
 evaluate_network(Network, Inputs) when is_function(Network, 1) ->
-    %% Function-based network (for testing)
-    Network(Inputs);
+    %% Function-based network (for testing) — stateless
+    {Network(Inputs), Network};
 evaluate_network(Network, Inputs) when is_map(Network) ->
-    %% Map-based network representation (for testing)
+    %% Map-based network representation (for testing) — stateless
     OutputCount = maps:get(output_count, Network, length(Inputs)),
-    lists:duplicate(OutputCount, 0.5);
+    {lists:duplicate(OutputCount, 0.5), Network};
 evaluate_network(Network, Inputs) when is_tuple(Network), element(1, Network) =:= network ->
-    %% network_evaluator record from faber_tweann
-    network_evaluator:evaluate(Network, Inputs);
+    %% network_evaluator record from faber_tweann.
+    %% CfC networks use evaluate_with_state to preserve temporal dynamics.
+    %% Standard networks use stateless evaluate.
+    case network_evaluator:get_neuron_meta(Network) of
+        undefined ->
+            {network_evaluator:evaluate(Network, Inputs), Network};
+        _CfcMeta ->
+            network_evaluator:evaluate_with_state(Network, Inputs)
+    end;
 evaluate_network(Network, Inputs) ->
-    %% Try network_evaluator first (faber_tweann)
+    %% Try network_evaluator (faber_tweann)
     try
-        network_evaluator:evaluate(Network, Inputs)
+        case network_evaluator:get_neuron_meta(Network) of
+            undefined ->
+                {network_evaluator:evaluate(Network, Inputs), Network};
+            _CfcMeta ->
+                network_evaluator:evaluate_with_state(Network, Inputs)
+        end
     catch
         error:undef ->
             %% Fallback: return zeros - should only happen without dependencies
             io:format("[agent_bridge] WARNING: network_evaluator not available~n"),
-            lists:duplicate(9, 0.0)
+            {lists:duplicate(9, 0.0), Network}
     end.
 
 %% @private
