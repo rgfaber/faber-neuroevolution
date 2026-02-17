@@ -5,6 +5,23 @@ All notable changes to faber-neuroevolution will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-02-17
+
+### Fixed
+
+- **`neuro_config:from_map/1` missing fields** — `lc_chain_config`, `checkpoint_interval`,
+  and `checkpoint_config` fields exist in `#neuro_config{}` record but were never set by
+  `from_map/1`, always remaining `undefined` regardless of input. Now properly extracted
+  from the input map with support for both record and map forms of `lc_chain_config`.
+
+### Added
+
+- `lc_chain_config`, `checkpoint_interval`, `checkpoint_config` in `neuro_config:to_map/1`
+- `lc_chain_config_from_map/1` and `lc_chain_config_to_map/1` internal helpers
+- Unit tests for `neuro_config:from_map/1` with LC chain config
+
+---
+
 ## [1.2.1] - 2026-02-17
 
 ### Fixed

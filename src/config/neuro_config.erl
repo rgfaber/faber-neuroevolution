@@ -20,6 +20,7 @@
 
 -include("neuroevolution.hrl").
 -include("evolution_strategy.hrl").
+-include("lc_chain.hrl").
 
 -export([
     from_map/1,
@@ -101,6 +102,15 @@ from_map(Map) when is_map(Map) ->
         %% Evolution strategy
         strategy_config = get_strategy_config(Map),
 
+        %% Chained LTC Controller configuration
+        lc_chain_config = get_lc_chain_config(Map),
+
+        %% Checkpoint interval (evaluations between progress_checkpoint events)
+        checkpoint_interval = normalize_nil(maps:get(checkpoint_interval, Map, undefined)),
+
+        %% Network checkpoint configuration
+        checkpoint_config = normalize_nil(maps:get(checkpoint_config, Map, undefined)),
+
         %% Seed networks for population initialization
         seed_networks = maps:get(seed_networks, Map, [])
     }.
@@ -135,6 +145,9 @@ to_map(Config) when is_record(Config, neuro_config) ->
         evaluation_timeout => Config#neuro_config.evaluation_timeout,
         max_concurrent_evaluations => Config#neuro_config.max_concurrent_evaluations,
         strategy_config => Config#neuro_config.strategy_config,
+        lc_chain_config => lc_chain_config_to_map(Config#neuro_config.lc_chain_config),
+        checkpoint_interval => Config#neuro_config.checkpoint_interval,
+        checkpoint_config => Config#neuro_config.checkpoint_config,
         seed_networks => Config#neuro_config.seed_networks
     }.
 
@@ -307,6 +320,48 @@ meta_config_to_map(undefined) -> undefined;
 meta_config_to_map(Config) when is_tuple(Config), element(1, Config) =:= meta_config ->
     meta_config:to_map(Config);
 meta_config_to_map(_) -> undefined.
+
+%% @private Extract LC chain config from map.
+get_lc_chain_config(Map) ->
+    case maps:get(lc_chain_config, Map, undefined) of
+        undefined -> undefined;
+        nil -> undefined;  %% Elixir nil
+        Config when is_tuple(Config), element(1, Config) =:= lc_chain_config -> Config;
+        ConfigMap when is_map(ConfigMap) -> lc_chain_config_from_map(ConfigMap);
+        _ -> undefined
+    end.
+
+%% @private Convert lc_chain_config map to record.
+lc_chain_config_from_map(Map) ->
+    #lc_chain_config{
+        l2_tau = maps:get(l2_tau, Map, ?LC_L2_TAU),
+        l1_tau = maps:get(l1_tau, Map, ?LC_L1_TAU),
+        l0_tau = maps:get(l0_tau, Map, ?LC_L0_TAU),
+        learning_rate = maps:get(learning_rate, Map, 0.001),
+        evolve_topology = maps:get(evolve_topology, Map, true),
+        l2_hidden_layers = maps:get(l2_hidden_layers, Map, [8, 4]),
+        l1_hidden_layers = maps:get(l1_hidden_layers, Map, [6, 4]),
+        l0_hidden_layers = maps:get(l0_hidden_layers, Map, [10, 6]),
+        activation = maps:get(activation, Map, tanh),
+        gamma = maps:get(gamma, Map, 0.95)
+    }.
+
+%% @private Convert lc_chain_config record to map.
+lc_chain_config_to_map(undefined) -> undefined;
+lc_chain_config_to_map(Config) when is_record(Config, lc_chain_config) ->
+    #{
+        l2_tau => Config#lc_chain_config.l2_tau,
+        l1_tau => Config#lc_chain_config.l1_tau,
+        l0_tau => Config#lc_chain_config.l0_tau,
+        learning_rate => Config#lc_chain_config.learning_rate,
+        evolve_topology => Config#lc_chain_config.evolve_topology,
+        l2_hidden_layers => Config#lc_chain_config.l2_hidden_layers,
+        l1_hidden_layers => Config#lc_chain_config.l1_hidden_layers,
+        l0_hidden_layers => Config#lc_chain_config.l0_hidden_layers,
+        activation => Config#lc_chain_config.activation,
+        gamma => Config#lc_chain_config.gamma
+    };
+lc_chain_config_to_map(_) -> undefined.
 
 %%% ============================================================================
 %%% L0 Integration Functions
