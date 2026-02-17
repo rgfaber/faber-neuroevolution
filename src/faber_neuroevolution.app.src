@@ -1,6 +1,6 @@
 {application, faber_neuroevolution, [
     {description, "Population-based evolutionary training with NEAT topology evolution"},
-    {vsn, "1.1.0"},
+    {vsn, "1.2.0"},
     {registered, []},
     {mod, {faber_neuroevolution_app, []}},
     {applications, [
