@@ -4,17 +4,18 @@
 %% strategies, delegating to the real network_evaluator from faber_tweann.
 %%
 %% The factory interface provides:
-%% - create_feedforward/1 - Create a new feedforward network
-%% - mutate/2 - Mutate a network's weights
-%% - crossover/2 - Create offspring from two parent networks
+%% create_feedforward/1 to create a new feedforward network,
+%% mutate/2 to mutate a network's weights,
+%% crossover/2 to create offspring from two parent networks.
 %%
-%% This abstraction enables:
-%% - Dependency injection for testing (use mock_network_factory in tests)
-%% - Clean separation between evolution logic and network implementation
-%% - Future support for different network types (RNNs, LSTMs, etc.)
+%% This abstraction enables dependency injection for testing
+%% (use mock_network_factory in tests), clean separation between
+%% evolution logic and network implementation, and future support
+%% for different network types (RNNs, LSTMs, etc.).
 %%
 %% @author R.G. Lefever
 %% @copyright 2024-2026 R.G. Lefever
+%% @end
 -module(network_factory).
 
 -export([
@@ -29,10 +30,9 @@
 %% @doc Create a new feedforward neural network.
 %%
 %% Delegates to network_evaluator:create_feedforward/3 from faber_tweann.
-%%
-%% @param Topology Network topology as {InputSize, HiddenLayers, OutputSize}
-%%        where HiddenLayers is a list of layer sizes
-%% @returns A new feedforward network
+%% Topology is {InputSize, HiddenLayers, OutputSize} where HiddenLayers
+%% is a list of layer sizes.
+%% @end
 -spec create_feedforward(Topology) -> network_evaluator:network() when
     Topology :: {pos_integer(), [pos_integer()], pos_integer()}.
 create_feedforward({InputSize, HiddenLayers, OutputSize}) ->
@@ -42,9 +42,7 @@ create_feedforward({InputSize, HiddenLayers, OutputSize}) ->
 %%
 %% Combines network creation and NIF compilation in one step.
 %% Uses NIF acceleration when available (50-100x faster evaluation).
-%%
-%% @param Topology Network topology as {InputSize, HiddenLayers, OutputSize}
-%% @returns {ok, CompiledNetwork} | {error, Reason}
+%% @end
 -spec create_compiled_feedforward(Topology) -> Result when
     Topology :: {pos_integer(), [pos_integer()], pos_integer()},
     Result :: {ok, nif_network:compiled_network()} | {error, term()}.
@@ -55,9 +53,7 @@ create_compiled_feedforward({InputSize, HiddenLayers, OutputSize}) ->
 %%
 %% Takes a network from create_feedforward/1 and compiles it for
 %% fast repeated evaluation via NIF.
-%%
-%% @param Network Network from create_feedforward/1
-%% @returns {ok, CompiledNetwork} | {error, Reason}
+%% @end
 -spec compile(Network) -> Result when
     Network :: network_evaluator:network(),
     Result :: {ok, nif_network:compiled_network()} | {error, term()}.
@@ -67,11 +63,8 @@ compile(Network) ->
 %% @doc Mutate a network's weights.
 %%
 %% Creates a copy of the network with mutated weights. The mutation applies
-%% gaussian noise to each weight with the given strength.
-%%
-%% @param Network The network to mutate
-%% @param MutationStrength Standard deviation of gaussian noise to add
-%% @returns A new network with mutated weights
+%% gaussian noise to each weight with the given strength (standard deviation).
+%% @end
 -spec mutate(Network, MutationStrength) -> network_evaluator:network() when
     Network :: network_evaluator:network(),
     MutationStrength :: float().
@@ -89,10 +82,7 @@ mutate(Network, MutationStrength) ->
 %%
 %% Performs uniform crossover: each weight in the offspring is randomly
 %% selected from either parent with equal probability.
-%%
-%% @param Parent1 First parent network
-%% @param Parent2 Second parent network
-%% @returns A new network combining weights from both parents
+%% @end
 -spec crossover(Parent1, Parent2) -> network_evaluator:network() when
     Parent1 :: network_evaluator:network(),
     Parent2 :: network_evaluator:network().
@@ -119,15 +109,12 @@ crossover(Parent1, Parent2) ->
 %% @doc Mutate a CfC network's weights and neuron parameters.
 %%
 %% Extends standard weight mutation with CfC-specific parameter mutations:
-%% - Tau values: perturbed with gaussian noise, clamped to [0.01, 10.0]
-%% - State bounds: perturbed with gaussian noise, clamped to [0.1, 5.0]
-%% - Neuron type toggle: ~5% chance to flip standard <-> cfc
+%% tau values perturbed with gaussian noise clamped to [0.01, 10.0],
+%% state bounds perturbed with gaussian noise clamped to [0.1, 5.0],
+%% and a 5% chance to toggle neuron type between standard and cfc.
 %%
 %% For standard networks (no neuron_meta), behaves identically to mutate/2.
-%%
-%% @param Network The CfC network to mutate
-%% @param MutationStrength Standard deviation of gaussian noise
-%% @returns A new network with mutated weights and CfC parameters
+%% @end
 -spec mutate_cfc(Network, MutationStrength) -> network_evaluator:network() when
     Network :: network_evaluator:network(),
     MutationStrength :: float().
