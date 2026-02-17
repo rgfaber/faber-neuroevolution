@@ -22,6 +22,7 @@
     create_compiled_feedforward/1,
     compile/1,
     mutate/2,
+    mutate_cfc/2,
     crossover/2
 ]).
 
@@ -114,3 +115,64 @@ crossover(Parent1, Parent2) ->
 
     %% Create child network with crossed weights
     network_evaluator:set_weights(Parent1, ChildWeights).
+
+%% @doc Mutate a CfC network's weights and neuron parameters.
+%%
+%% Extends standard weight mutation with CfC-specific parameter mutations:
+%% - Tau values: perturbed with gaussian noise, clamped to [0.01, 10.0]
+%% - State bounds: perturbed with gaussian noise, clamped to [0.1, 5.0]
+%% - Neuron type toggle: ~5% chance to flip standard <-> cfc
+%%
+%% For standard networks (no neuron_meta), behaves identically to mutate/2.
+%%
+%% @param Network The CfC network to mutate
+%% @param MutationStrength Standard deviation of gaussian noise
+%% @returns A new network with mutated weights and CfC parameters
+-spec mutate_cfc(Network, MutationStrength) -> network_evaluator:network() when
+    Network :: network_evaluator:network(),
+    MutationStrength :: float().
+mutate_cfc(Network, MutationStrength) ->
+    %% 1. Mutate weights (same as standard)
+    Weights = network_evaluator:get_weights(Network),
+    MutatedWeights = [W + (rand:normal() * MutationStrength) || W <- Weights],
+    Network1 = network_evaluator:set_weights(Network, MutatedWeights),
+    %% 2. Mutate CfC neuron parameters
+    case network_evaluator:get_neuron_meta(Network1) of
+        undefined ->
+            Network1;
+        Meta ->
+            MutatedMeta = mutate_neuron_meta(Meta, MutationStrength),
+            network_evaluator:set_neuron_meta(Network1, MutatedMeta)
+    end.
+
+%% @private Mutate neuron metadata for all layers.
+mutate_neuron_meta(LayerMetas, Strength) ->
+    [mutate_layer_meta(LayerM, Strength) || LayerM <- LayerMetas].
+
+%% @private Mutate neuron metadata for a single layer.
+mutate_layer_meta(NeuronMetas, Strength) ->
+    [mutate_single_neuron_meta(M, Strength) || M <- NeuronMetas].
+
+%% @private Mutate a single neuron's CfC parameters.
+mutate_single_neuron_meta(#{neuron_type := Type, tau := Tau,
+                            state_bound := Bound} = Meta, Strength) ->
+    %% Mutate tau: gaussian perturbation, clamp to [0.01, 10.0]
+    NewTau = clamp(Tau + rand:normal() * Strength * 0.5, 0.01, 10.0),
+    %% Mutate state bound: gaussian perturbation, clamp to [0.1, 5.0]
+    NewBound = clamp(Bound + rand:normal() * Strength * 0.3, 0.1, 5.0),
+    %% Neuron type toggle: ~5% chance
+    NewType = case rand:uniform() < 0.05 of
+        true ->
+            case Type of
+                standard -> cfc;
+                cfc -> standard
+            end;
+        false ->
+            Type
+    end,
+    Meta#{neuron_type := NewType, tau := NewTau, state_bound := NewBound}.
+
+%% @private Clamp value to range.
+clamp(Val, Min, _Max) when Val < Min -> Min;
+clamp(Val, _Min, Max) when Val > Max -> Max;
+clamp(Val, _Min, _Max) -> Val.
