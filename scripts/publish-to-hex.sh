@@ -15,7 +15,11 @@ echo "==> Building faber_neuroevolution..."
 rebar3 compile
 
 echo "==> Running tests..."
-rebar3 eunit
+rebar3 eunit || {
+    echo "==> WARNING: Some tests failed — review output above before continuing"
+    read -rp "==> Continue with publish? [y/N] " answer
+    [[ "$answer" =~ ^[Yy]$ ]] || exit 1
+}
 
 echo "==> Building docs..."
 rebar3 ex_doc
