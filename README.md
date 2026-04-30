@@ -252,5 +252,5 @@ Apache License 2.0
 ## Links
 
 - [Documentation](https://hexdocs.pm/faber_neuroevolution)
-- [GitHub](https://github.com/rgfaber/faber-neuroevolution)
+- [Codeberg](https://codeberg.org/rgfaber/faber-neuroevolution)
 - [faber_tweann](https://hex.pm/packages/faber_tweann) - Neural network library
