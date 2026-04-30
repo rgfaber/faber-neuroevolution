@@ -377,7 +377,7 @@ handle_cohort_complete(State, AccEvents) ->
         true -> 0;
         false -> State#gen_state.stagnation_count + 1
     end,
-    EffectiveConfig = apply_stagnation_boost(Config, NewStagnation),
+    EffectiveConfig = apply_stagnation_boost(Config, Params, NewStagnation),
 
     %% Breed offspring to fill remaining slots
     NumOffspring = State#gen_state.population_size - EliteCount - length(NonEliteSurvivors),
@@ -752,7 +752,9 @@ parse_params(Params) when is_map(Params) ->
         mutation_strength = maps:get(mutation_strength, Params, 0.3),
         crossover_rate = maps:get(crossover_rate, Params, 0.75),
         elitism = maps:get(elitism, Params, true),
-        elite_count = maps:get(elite_count, Params, 1)
+        elite_count = maps:get(elite_count, Params, 1),
+        stagnation_threshold = maps:get(stagnation_threshold, Params, 5),
+        stagnation_max_boost = maps:get(stagnation_max_boost, Params, 3.0)
     };
 parse_params(_) ->
     #generational_params{}.
@@ -798,14 +800,25 @@ bound_value(Value, Min, Max) ->
 
 %% @private Boost mutation strength when evolution stagnates.
 %%
-%% After 5 consecutive generations without improvement, gradually increase
-%% mutation strength (up to 3x base). This helps escape local optima by
-%% making larger jumps in weight space. Resets automatically when fitness
-%% improves (stagnation_count goes back to 0).
-apply_stagnation_boost(Config, StagnationCount) when StagnationCount < 5 ->
+%% After stagnation_threshold consecutive generations without improvement,
+%% gradually increase mutation strength up to stagnation_max_boost times base.
+%% Set stagnation_threshold to 0 to disable boost entirely.
+%% Set stagnation_max_boost to 1.0 to effectively disable boost.
+%% Resets automatically when fitness improves (stagnation_count goes to 0).
+apply_stagnation_boost(Config, #generational_params{stagnation_threshold = 0}, _) ->
     Config;
-apply_stagnation_boost(Config, StagnationCount) ->
-    %% Linearly increase mutation strength: 1.0x at 5, 2.0x at 15, cap at 3.0x
-    Multiplier = min(3.0, 1.0 + (StagnationCount - 5) / 10.0),
-    BaseStrength = Config#neuro_config.mutation_strength,
-    Config#neuro_config{mutation_strength = BaseStrength * Multiplier}.
+apply_stagnation_boost(Config, #generational_params{stagnation_max_boost = MaxBoost}, _)
+  when MaxBoost =< 1.0 ->
+    Config;
+apply_stagnation_boost(Config, Params, StagnationCount) ->
+    Threshold = Params#generational_params.stagnation_threshold,
+    MaxBoost = Params#generational_params.stagnation_max_boost,
+    case StagnationCount < Threshold of
+        true ->
+            Config;
+        false ->
+            %% Linearly increase: 1.0x at threshold, MaxBoost at threshold+10*(MaxBoost-1)
+            Multiplier = min(MaxBoost, 1.0 + (StagnationCount - Threshold) / 10.0),
+            BaseStrength = Config#neuro_config.mutation_strength,
+            Config#neuro_config{mutation_strength = BaseStrength * Multiplier}
+    end.

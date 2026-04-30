@@ -115,7 +115,14 @@
     elitism = true :: boolean(),
 
     %% Number of elite individuals to preserve unchanged
-    elite_count = 1 :: pos_integer()
+    elite_count = 1 :: pos_integer(),
+
+    %% Stagnation boost: generations without improvement before boosting mutation
+    %% Set to 0 to disable stagnation boost entirely
+    stagnation_threshold = 5 :: non_neg_integer(),
+
+    %% Maximum stagnation boost multiplier (1.0 = no boost, 3.0 = up to 3x)
+    stagnation_max_boost = 3.0 :: float()
 }).
 
 -type generational_params() :: #generational_params{}.
