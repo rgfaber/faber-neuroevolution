@@ -112,7 +112,8 @@ from_map(Map) when is_map(Map) ->
         checkpoint_config = normalize_nil(maps:get(checkpoint_config, Map, undefined)),
 
         %% Seed networks for population initialization
-        seed_networks = maps:get(seed_networks, Map, [])
+        seed_networks = maps:get(seed_networks, Map, []),
+        rng_seed = maps:get(rng_seed, Map, undefined)
     }.
 
 %% @doc Convert a #neuro_config{} record to a map.

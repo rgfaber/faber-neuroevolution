@@ -358,7 +358,20 @@
     %% - ~25% mutated variants of seeds
     %% - ~50% random (ensures exploration)
     %% Default: [] (all random, current behavior)
-    seed_networks = [] :: [term()]
+    seed_networks = [] :: [term()],
+
+    %% RNG seed for reproducible evolutionary runs.
+    %%
+    %% undefined (default) means the VM's default seeding, so runs differ.
+    %% Set an integer to make a run replayable: the server seeds its own
+    %% process at init, which covers genome creation, mutation, crossover,
+    %% selection and speciation, all of which execute in the server process.
+    %%
+    %% NOTE this does NOT cover fitness evaluation, which runs in spawned
+    %% processes with independent RNG state. Deterministic environments (XOR,
+    %% pole balancing) are unaffected. A stochastic environment needs its own
+    %% per-episode seeding, derived from this one.
+    rng_seed = undefined :: integer() | undefined
 }).
 
 -type neuro_config() :: #neuro_config{}.

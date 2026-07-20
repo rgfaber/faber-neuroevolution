@@ -384,6 +384,7 @@ build_neuro_config(Bridge, EnvConfig, Options) ->
     %% Merge with user options (excluding keys handled explicitly above)
     SpecialKeys = [generations, env_config, episodes_per_eval, population_size,
                    strategy, train_timeout],
+    %% rng_seed passes through in UserOptions to neuro_config:from_map/1.
     UserOptions = maps:without(SpecialKeys, Options),
     MergedConfig = maps:merge(BaseConfig, UserOptions),
 

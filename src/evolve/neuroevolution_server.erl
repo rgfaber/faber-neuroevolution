@@ -166,6 +166,15 @@ init({Id, Config}) when is_map(Config) ->
 
 %% Handle record config (native Erlang)
 init({Id, Config}) when is_record(Config, neuro_config) ->
+    %% Seed before anything draws from the RNG. Genome creation, mutation,
+    %% crossover, selection and speciation all execute in this process, so
+    %% seeding here makes an evolutionary run replayable.
+    %%
+    %% Fitness evaluation runs in spawned processes with independent RNG
+    %% state and is NOT covered. That is harmless for deterministic
+    %% environments and must be handled per-episode for stochastic ones.
+    maybe_seed_rng(Config#neuro_config.rng_seed),
+
     error_logger:info_msg(
         "[neuroevolution_server] Initializing with population size ~p~n",
         [Config#neuro_config.population_size]
@@ -1532,6 +1541,16 @@ build_stats(State) ->
     },
 
     BaseStats.
+
+%% @private
+%% @doc Seed this process's RNG when a run seed is configured.
+maybe_seed_rng(undefined) ->
+    ok;
+maybe_seed_rng(Seed) when is_integer(Seed) ->
+    _ = rand:seed(exsss, {Seed, Seed bsr 16, Seed bsr 32}),
+    error_logger:info_msg(
+        "[neuroevolution_server] RNG seeded with ~p (run is replayable)~n", [Seed]),
+    ok.
 
 %% @private
 notify_event(#neuro_state{config = Config}, Event) ->
