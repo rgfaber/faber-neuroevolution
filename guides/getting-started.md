@@ -8,7 +8,7 @@ Add to your `rebar.config`:
 
 ```erlang
 {deps, [
-    {faber_neuroevolution, "~> 0.12.0"}
+    {faber_neuroevolution, "~> 1.2"}
 ]}.
 ```
 
