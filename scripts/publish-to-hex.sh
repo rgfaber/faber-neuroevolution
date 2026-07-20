@@ -15,11 +15,9 @@ echo "==> Building faber_neuroevolution..."
 rebar3 compile
 
 echo "==> Running tests..."
-rebar3 eunit || {
-    echo "==> WARNING: Some tests failed — review output above before continuing"
-    read -rp "==> Continue with publish? [y/N] " answer
-    [[ "$answer" =~ ^[Yy]$ ]] || exit 1
-}
+# Tests must pass. Do not reintroduce an interactive override here: a prompt
+# under release pressure is not a gate.
+rebar3 eunit
 
 echo "==> Building docs..."
 rebar3 ex_doc
