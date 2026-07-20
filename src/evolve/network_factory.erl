@@ -41,7 +41,7 @@ create_feedforward({InputSize, HiddenLayers, OutputSize}) ->
 %% @doc Create a NIF-compiled feedforward network for fast evaluation.
 %%
 %% Combines network creation and NIF compilation in one step.
-%% Uses NIF acceleration when available (50-100x faster evaluation).
+%% Uses the native path when configured (speedup unmeasured; see ROADMAP.md).
 %% @end
 -spec create_compiled_feedforward(Topology) -> Result when
     Topology :: {pos_integer(), [pos_integer()], pos_integer()},

@@ -226,7 +226,7 @@ weight_based_distance(Ind1, Ind2) ->
 %% @private Calculate NEAT compatibility distance with default coefficients.
 %%
 %% Uses standard NEAT coefficients: c1=1.0, c2=1.0, c3=0.4
-%% Automatically uses NIF acceleration when available (30-50x faster).
+%% Uses the native path when configured (speedup unmeasured; see ROADMAP.md).
 -spec neat_compatibility_distance(genome(), genome()) -> float().
 neat_compatibility_distance(Genome1, Genome2) ->
     %% Default NEAT coefficients

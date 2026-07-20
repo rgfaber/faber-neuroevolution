@@ -104,7 +104,7 @@ to_network(Genome) ->
 %% @doc Convert a genome to a NIF-compiled network for fast evaluation.
 %%
 %% This is the optimized path: compile once, evaluate many times.
-%% Uses NIF acceleration when available (50-100x faster evaluation).
+%% Uses the native path when configured (speedup unmeasured; see ROADMAP.md).
 %%
 %% @param Genome The genome to convert
 %% @returns {ok, CompiledNetwork} | {error, Reason}

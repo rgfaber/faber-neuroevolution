@@ -96,7 +96,7 @@
 %% Catches and logs any exceptions from the evaluator.
 %%
 %% PERFORMANCE: Compiles the network for NIF evaluation before calling the
-%% evaluator. This provides 50-100x faster network evaluation compared to
+%% evaluator. Speedup over pure Erlang is not measured; see ROADMAP.md. Compared to
 %% pure Erlang. The compiled_ref is stripped by the caller after evaluation
 %% to prevent memory leaks (see neuroevolution_server:strip_compiled_ref_from_individual/1).
 -spec evaluate_individual(Individual, EvaluatorModule, Options) -> Result when
@@ -106,7 +106,7 @@
     Result :: {ok, individual()} | {error, term()}.
 evaluate_individual(Individual, EvaluatorModule, Options) ->
     try
-        %% Compile network for NIF-accelerated evaluation (50-100x faster).
+        %% Compile network for NIF-accelerated evaluation (speedup unmeasured).
         %% The compiled_ref is stripped after evaluation by the caller.
         CompiledIndividual = compile_network_for_nif(Individual),
         EvaluatorModule:evaluate(CompiledIndividual, Options)

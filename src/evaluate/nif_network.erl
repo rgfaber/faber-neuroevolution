@@ -2,7 +2,7 @@
 %%
 %% This module provides high-performance network evaluation using
 %% Rust NIFs from faber_tweann. When the NIF is available, operations
-%% are 50-100x faster than pure Erlang.
+%% use the native path. Speedup over pure Erlang is not measured; see ROADMAP.md.
 %%
 %% == Features ==
 %%
@@ -17,7 +17,7 @@
 %% %% Compile a network for fast evaluation
 %% {ok, CompiledNet} = nif_network:compile(Network),
 %%
-%% %% Evaluate (50-100x faster than pure Erlang)
+%% %% Evaluate via the native path
 %% Outputs = nif_network:evaluate(CompiledNet, Inputs),
 %%
 %% %% Batch evaluate (even more efficient)
@@ -147,7 +147,7 @@ compile_feedforward(InputSize, HiddenLayers, OutputSize) ->
 
 %% @doc Evaluate a compiled network with given inputs.
 %%
-%% Uses NIF evaluation when available (50-100x faster), otherwise
+%% Uses NIF evaluation when configured (speedup unmeasured), otherwise
 %% falls back to pure Erlang network_evaluator.
 %%
 %% @param CompiledNetwork Compiled network from compile/1
