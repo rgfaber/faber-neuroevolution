@@ -296,6 +296,27 @@ do_train(Bridge, EnvConfig, Options) ->
             {error, {start_failed, Reason}}
     end.
 
+%% @private
+%% @doc One evaluation for a deterministic environment, otherwise the
+%% engine default of 10. Environments declare this via the optional
+%% agent_environment:is_deterministic/0 callback.
+default_evaluations_per_individual(Bridge) ->
+    case maps:get(environment, Bridge, undefined) of
+        undefined ->
+            10;
+        EnvModule ->
+            _ = code:ensure_loaded(EnvModule),
+            case erlang:function_exported(EnvModule, is_deterministic, 0) of
+                true ->
+                    case EnvModule:is_deterministic() of
+                        true  -> 1;
+                        false -> 10
+                    end;
+                false ->
+                    10
+            end
+    end.
+
 %% @private Event handler callback (neuroevolution_server calls
 %% Module:handle_event/2 with the configured InitArg). We pass the caller's
 %% pid as InitArg so training completion can be awaited synchronously.
@@ -370,6 +391,14 @@ build_neuro_config(Bridge, EnvConfig, Options) ->
         evaluator_module => bridge_evaluator,
         evaluator_options => EvaluatorOptions,
         max_generations => maps:get(generations, Options, 100),
+        %% A deterministic environment gains nothing from repeated evaluation
+        %% of the same individual: every repeat recomputes an identical
+        %% result. Leaving the default of 10 in place inflated the first
+        %% measured evaluations-to-solve figure tenfold (insight 006).
+        %% An explicit caller setting always wins.
+        evaluations_per_individual =>
+            maps:get(evaluations_per_individual, Options,
+                     default_evaluations_per_individual(Bridge)),
         %% Relay server events to the caller so training completion can be
         %% awaited. do_train/3 blocks on this.
         event_handler => {?MODULE, self()}

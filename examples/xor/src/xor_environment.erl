@@ -33,6 +33,7 @@
 %% Exported so the sensor, the evaluator and tests share one definition of
 %% the problem rather than each restating it.
 -export([cases/0, tolerance/0, case_count/0]).
+-export([is_deterministic/0]).
 
 -define(CASES, [
     {[-1.0, -1.0], -1.0},
@@ -47,6 +48,11 @@
 
 %% @doc Environment name.
 name() -> <<"xor">>.
+
+%% @doc XOR is fully deterministic: four fixed cases in fixed order, no
+%% randomness anywhere in the episode. Repeating an evaluation recomputes an
+%% identical result, so the engine evaluates each individual once.
+is_deterministic() -> true.
 
 %% @doc The four XOR cases as {Inputs, Target}.
 cases() -> ?CASES.

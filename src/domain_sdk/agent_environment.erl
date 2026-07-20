@@ -291,6 +291,28 @@
     AgentState :: agent_state(),
     EnvState :: env_state().
 
+%% @doc Declares whether this environment is deterministic (optional).
+%%
+%% A deterministic environment produces identical metrics for identical
+%% network behaviour: no randomness in case selection, initial conditions or
+%% transitions. XOR and pole balancing are deterministic; a foraging world
+%% with random food placement is not.
+%%
+%% When true, the engine evaluates each individual ONCE rather than averaging
+%% over repeated episodes, because every repeat would recompute an identical
+%% result. This is not a micro-optimisation: the default of 10 inflated the
+%% first measured evaluations-to-solve figure by an order of magnitude (see
+%% insight 006), which is the kind of distortion that quietly invalidates a
+%% comparison against published numbers.
+%%
+%% Defaults to false when not exported, which is the safe direction: averaging
+%% a deterministic environment wastes work, but NOT averaging a stochastic one
+%% produces noisy fitness and misleads selection.
+-callback is_deterministic() -> boolean().
+
+-optional_callbacks([is_deterministic/0]).
+
+
 %%% ============================================================================
 %%% API Functions
 %%% ============================================================================
