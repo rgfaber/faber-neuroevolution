@@ -1,6 +1,6 @@
 {application, faber_neuroevolution, [
     {description, "Population-based evolutionary training with NEAT topology evolution"},
-    {vsn, "1.2.3"},
+    {vsn, "1.2.4"},
     {registered, []},
     {mod, {faber_neuroevolution_app, []}},
     {applications, [
@@ -12,9 +12,28 @@
     {modules, []},
     {licenses, ["Apache-2.0"]},
     {links, [
-        {"GitHub", "https://github.com/rgfaber/faber-neuroevolution"},
+        {"Codeberg", "https://codeberg.org/rgfaber/faber-neuroevolution"},
+        {"GitHub (mirror)", "https://github.com/rgfaber/faber-neuroevolution"},
         {"HexDocs", "https://hexdocs.pm/faber_neuroevolution"}
     ]},
     {maintainers, ["R.G. Lefever"]},
-    {build_tools, ["rebar3"]}
+    {build_tools, ["rebar3"]},
+
+    %% Hex package contents.
+    %%
+    %% MUST live here, not in rebar.config's {hex, [...]} block. rebar3_hex
+    %% reads it from this file via rebar_app_info:app_details/1 and silently
+    %% falls back to a default file set when absent. faber_tweann 2.0.0 shipped
+    %% unbuildable for exactly this reason.
+    %%
+    %% Without this, ROADMAP.md does not reach hexdocs or hex.pm readers, while
+    %% the guides it corrects all do.
+    {files, ["src",
+             "include",
+             "guides",
+             "rebar.config",
+             "README.md",
+             "ROADMAP.md",
+             "CHANGELOG.md",
+             "LICENSE"]}
 ]}.
