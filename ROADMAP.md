@@ -98,7 +98,27 @@ Depends on item 1.
 
 ## 6. Verify the evolution strategies
 
-**Status:** implemented, entirely unverified.
+**Status:** partially verified as of Phase 2. Three of five work; two are broken.
+
+Running XOR against real fitness for the first time (see `test/xor_tests.erl`)
+established:
+
+| Strategy | State |
+|---|---|
+| `generational_strategy` | completes a run, returns an evaluable champion |
+| `steady_state_strategy` | completes a run |
+| `novelty_strategy` | completes a run |
+| `island_strategy` | **broken.** `badarg` from `erlang:length/1` applied to the island map. Kills the calling process. |
+| `map_elites_strategy` | **broken.** Fails to complete a run. |
+
+`known_broken_strategies_test_/0` asserts the two failures so the suite stays
+green while the breakage stays visible. Fixing either makes that test fail,
+which is the signal to move it into the working list.
+
+island_strategy matters most: it is the headline distribution feature and
+Phase 9 of PLAN_FABER_FOUNDATION rests on it.
+
+Original note, still true of the two broken ones:
 
 `generational_strategy`, `steady_state_strategy`, `island_strategy`,
 `novelty_strategy` and `map_elites_strategy` are all tested exclusively against

@@ -68,6 +68,8 @@
 %% @see neuro_config
 -module(agent_trainer).
 
+-include("neuroevolution.hrl").
+
 %%% ============================================================================
 %%% Types
 %%% ============================================================================
@@ -103,6 +105,10 @@
     evaluate/3,
     evaluate_many/4
 ]).
+
+%% Callback invoked by neuroevolution_server via its event_handler config.
+%% Not part of the public API.
+-export([handle_event/2]).
 
 %% @doc Trains an agent using neuroevolution.
 %%
@@ -251,31 +257,91 @@ evaluate_many(Bridge, Network, EnvConfig, Episodes) ->
 
 %% @private
 do_train(Bridge, EnvConfig, Options) ->
-    Generations = maps:get(generations, Options, 100),
+    %% Rewritten against neuroevolution_server's actual export list.
+    %%
+    %% This function previously called neuroevolution_server:evolve/2,
+    %% get_best/1 and stop/1. None of the three exist, so every call to
+    %% train/2,3 died with undef. The server exports start_training/1,
+    %% stop_training/1, get_stats/1 and get_last_evaluated_population/1.
+    %%
+    %% Training is asynchronous: start_training/1 returns immediately and the
+    %% server runs until its own stop condition, announcing completion through
+    %% the event_handler callback. We register ourselves as that handler and
+    %% block on the message.
+    Timeout = maps:get(train_timeout, Options, 300000),
     Config = build_neuro_config(Bridge, EnvConfig, Options),
-
-    %% Start neuroevolution server
     case neuroevolution_server:start_link(Config) of
         {ok, Pid} ->
             try
-                %% Run evolution
-                ok = neuroevolution_server:evolve(Pid, Generations),
-
-                %% Get results
-                Stats = neuroevolution_server:get_stats(Pid),
-                Best = neuroevolution_server:get_best(Pid),
-
-                %% Stop server
-                neuroevolution_server:stop(Pid),
-
-                {ok, Best, Stats}
+                %% start_training/1 replies {ok, started} or
+                %% {ok, already_running}; it does not reply a bare ok.
+                {ok, _} = neuroevolution_server:start_training(Pid),
+                case await_training_complete(Pid, Timeout) of
+                    ok ->
+                        {ok, Stats} = neuroevolution_server:get_stats(Pid),
+                        case best_network(Pid) of
+                            {ok, Network} -> {ok, Network, Stats};
+                            {error, Reason} -> {error, Reason}
+                        end;
+                    {error, Reason} ->
+                        {error, Reason}
+                end
             catch
-                Class:Reason:Stack ->
-                    neuroevolution_server:stop(Pid),
-                    {error, {training_failed, Class, Reason, Stack}}
+                Class:CaughtReason:Stack ->
+                    {error, {training_failed, Class, CaughtReason, Stack}}
+            after
+                stop_server(Pid)
             end;
         {error, Reason} ->
             {error, {start_failed, Reason}}
+    end.
+
+%% @private Event handler callback (neuroevolution_server calls
+%% Module:handle_event/2 with the configured InitArg). We pass the caller's
+%% pid as InitArg so training completion can be awaited synchronously.
+handle_event(Event, Pid) when is_pid(Pid) ->
+    Pid ! {?MODULE, neuro_event, Event},
+    ok;
+handle_event(_Event, _Other) ->
+    ok.
+
+%% @private
+await_training_complete(Pid, Timeout) ->
+    Monitor = erlang:monitor(process, Pid),
+    Result = await_loop(Pid, Monitor, Timeout),
+    erlang:demonitor(Monitor, [flush]),
+    Result.
+
+await_loop(Pid, Monitor, Timeout) ->
+    receive
+        {?MODULE, neuro_event, {training_complete, _Info}} ->
+            ok;
+        {?MODULE, neuro_event, _Other} ->
+            await_loop(Pid, Monitor, Timeout);
+        {'DOWN', Monitor, process, Pid, Reason} ->
+            {error, {server_died, Reason}}
+    after Timeout ->
+        {error, {training_timeout, Timeout}}
+    end.
+
+%% @private Champion is the head of the last fully evaluated population,
+%% which the server sorts by fitness descending.
+best_network(Pid) ->
+    case neuroevolution_server:get_last_evaluated_population(Pid) of
+        {ok, [#individual{network = Network} | _]} ->
+            {ok, Network};
+        {ok, []} ->
+            {error, no_evaluated_population};
+        Other ->
+            {error, {unexpected_population, Other}}
+    end.
+
+%% @private neuroevolution_server exports no stop/1; it is a gen_server.
+stop_server(Pid) ->
+    try
+        gen_server:stop(Pid, normal, 5000)
+    catch
+        _:_ -> ok
     end.
 
 %% @private
@@ -291,16 +357,33 @@ build_neuro_config(Bridge, EnvConfig, Options) ->
         episodes_per_eval => EpisodesPerEval
     },
 
-    %% Build base config map for neuro_config:from_map/1
-    BaseConfig = #{
+    %% Build base config map for neuro_config:from_map/1.
+    %%
+    %% generations and strategy were previously listed in SpecialKeys, which
+    %% strips them from UserOptions, but neither was added back into
+    %% BaseConfig. Both were therefore silently discarded: train/3 ran to
+    %% max_generations = infinity regardless of the caller's generations, and
+    %% always used the default strategy no matter what strategy was requested.
+    BaseConfig0 = #{
         population_size => maps:get(population_size, Options, 100),
         network_topology => Topology,
         evaluator_module => bridge_evaluator,
-        evaluator_options => EvaluatorOptions
+        evaluator_options => EvaluatorOptions,
+        max_generations => maps:get(generations, Options, 100),
+        %% Relay server events to the caller so training completion can be
+        %% awaited. do_train/3 blocks on this.
+        event_handler => {?MODULE, self()}
     },
+    BaseConfig = case maps:get(strategy, Options, undefined) of
+        undefined ->
+            BaseConfig0;
+        Strategy ->
+            BaseConfig0#{strategy_config => #{strategy_module => Strategy}}
+    end,
 
-    %% Merge with user options (excluding our special keys)
-    SpecialKeys = [generations, env_config, episodes_per_eval, population_size, strategy],
+    %% Merge with user options (excluding keys handled explicitly above)
+    SpecialKeys = [generations, env_config, episodes_per_eval, population_size,
+                   strategy, train_timeout],
     UserOptions = maps:without(SpecialKeys, Options),
     MergedConfig = maps:merge(BaseConfig, UserOptions),
 

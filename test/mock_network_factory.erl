@@ -20,6 +20,9 @@
 -spec create_feedforward(Topology :: term()) -> map().
 create_feedforward(Topology) ->
     #{
+        %% Marks this as a test stub so agent_bridge:evaluate_network/2 will
+        %% use its constant-output path deliberately rather than by accident.
+        mock => true,
         type => feedforward,
         topology => Topology,
         weights => random_weights(Topology),

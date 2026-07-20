@@ -472,8 +472,15 @@ apply_actions([Action | Rest], AgentState, EnvState, EnvModule) ->
 evaluate_network(Network, Inputs) when is_function(Network, 1) ->
     %% Function-based network (for testing) — stateless
     {Network(Inputs), Network};
-evaluate_network(Network, Inputs) when is_map(Network) ->
-    %% Map-based network representation (for testing) — stateless
+evaluate_network(#{mock := true} = Network, Inputs) ->
+    %% Test stub. Gated behind an explicit mock marker.
+    %%
+    %% This previously matched ANY map and returned a constant 0.5 for every
+    %% output, sitting above the real clauses on the production dispatch path.
+    %% Any map-shaped network silently produced constant output instead of
+    %% evaluating, so evolution ran on a flat fitness landscape with no error
+    %% and no warning. A map without the marker now falls through and fails
+    %% loudly rather than being quietly mistaken for a stub.
     OutputCount = maps:get(output_count, Network, length(Inputs)),
     {lists:duplicate(OutputCount, 0.5), Network};
 evaluate_network(Network, Inputs) when is_tuple(Network), element(1, Network) =:= network ->
@@ -497,9 +504,14 @@ evaluate_network(Network, Inputs) ->
         end
     catch
         error:undef ->
-            %% Fallback: return zeros - should only happen without dependencies
-            io:format("[agent_bridge] WARNING: network_evaluator not available~n"),
-            {lists:duplicate(9, 0.0), Network}
+            %% faber_tweann is a hard dependency, so this cannot occur in a
+            %% correctly built release. It previously returned nine zeros, a
+            %% magic number unrelated to any actuator's output count, which
+            %% meant a missing dependency produced identical zero-output
+            %% agents and evolution silently optimised noise.
+            erlang:error({network_evaluator_unavailable,
+                          "faber_tweann's network_evaluator is not loaded. "
+                          "Check that faber_tweann is a dependency and built."})
     end.
 
 %% @private

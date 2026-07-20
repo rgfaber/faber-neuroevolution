@@ -51,7 +51,10 @@ evaluate(Individual, Options) ->
         {ok, Fitness, Metrics} ->
             UpdatedIndividual = Individual#individual{
                 fitness = Fitness,
-                metrics = Metrics
+                %% Carry the domain evaluator's fitness in the metrics so it
+                %% survives neuroevolution_server's recomputation step. See
+                %% calculate_fitness/1 for why this is necessary.
+                metrics = Metrics#{'$bridge_fitness' => Fitness}
             },
             {ok, UpdatedIndividual};
         {ok, Metrics} when is_map(Metrics) ->
@@ -73,7 +76,27 @@ evaluate(Individual, Options) ->
 %% Normally, fitness is calculated by agent_evaluator via the bridge.
 -spec calculate_fitness(Metrics) -> float() when
     Metrics :: map().
+calculate_fitness(#{'$bridge_fitness' := Fitness}) ->
+    %% Return the fitness the domain's agent_evaluator already computed.
+    %%
+    %% neuroevolution_server:handle_evaluation_complete/2 recomputes fitness
+    %% for every individual by calling EvaluatorModule:calculate_fitness/1 on
+    %% the metrics, and overwrites whatever evaluate/2 stored. That callback
+    %% receives only the metrics map, so it cannot reach the bridge or the
+    %% domain evaluator.
+    %%
+    %% Before this, the overwrite silently replaced the domain fitness with
+    %% default_fitness/1, which sums every numeric value in the metrics map.
+    %% For XOR that produced fitness = sse + correct + presented + cases, an
+    %% objective that INCREASES with squared error, so evolution correctly
+    %% maximised a function that rewards being wrong. Every individual
+    %% converged to near-identical fitness and no search was possible.
+    %%
+    %% evaluate/2 therefore stashes the real fitness in the metrics under a
+    %% reserved key so it survives the round trip.
+    Fitness;
 calculate_fitness(Metrics) ->
+    %% No bridge fitness present: the bridge had no evaluator configured.
     default_fitness(Metrics).
 
 %%% ============================================================================
