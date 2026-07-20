@@ -113,7 +113,8 @@ from_map(Map) when is_map(Map) ->
 
         %% Seed networks for population initialization
         seed_networks = maps:get(seed_networks, Map, []),
-        rng_seed = maps:get(rng_seed, Map, undefined)
+        rng_seed = maps:get(rng_seed, Map, undefined),
+        stop_on_solved = maps:get(stop_on_solved, Map, false)
     }.
 
 %% @doc Convert a #neuro_config{} record to a map.

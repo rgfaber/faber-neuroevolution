@@ -14,7 +14,7 @@
 -module(xor_evaluator).
 -behaviour(agent_evaluator).
 
--export([name/0, calculate_fitness/1, fitness_components/1]).
+-export([name/0, calculate_fitness/1, fitness_components/1, is_solved/1]).
 
 -define(EPSILON, 1.0e-5).
 
@@ -26,3 +26,12 @@ calculate_fitness(#{sse := Sse, cases := Cases}) when Cases > 0 ->
 
 fitness_components(#{sse := Sse, cases := Cases, correct := Correct}) ->
     #{sse => Sse, rmse => math:sqrt(Sse / Cases), correct => Correct}.
+
+%% @doc Solved means every case on the correct side of zero by a clear margin.
+%%
+%% Deliberately not a fitness threshold: fitness is continuous and unbounded,
+%% so any threshold would be arbitrary and would drift with the epsilon.
+is_solved(#{correct := Correct, cases := Cases}) ->
+    Correct =:= Cases;
+is_solved(_) ->
+    false.

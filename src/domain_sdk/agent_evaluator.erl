@@ -156,7 +156,19 @@
     Components :: fitness_components().
 
 %% Make fitness_components optional
--optional_callbacks([fitness_components/1]).
+%% Callback: is_solved/1 (optional)
+%%
+%% Answers whether an episode's metrics represent a SOLVED task, as opposed to
+%% merely a high-scoring one. Fitness is a continuous search signal and makes a
+%% poor success criterion; this is the discrete one.
+%%
+%% When implemented, the engine records evaluations_to_solve at the first
+%% individual that satisfies it. That count is the metric every entry in the
+%% neuroevolution literature reports, and it cannot be derived from fitness.
+-callback is_solved(Metrics) -> boolean() when
+    Metrics :: map().
+
+-optional_callbacks([fitness_components/1, is_solved/1]).
 
 %%% ============================================================================
 %%% API Functions

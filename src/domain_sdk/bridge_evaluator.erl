@@ -54,7 +54,8 @@ evaluate(Individual, Options) ->
                 %% Carry the domain evaluator's fitness in the metrics so it
                 %% survives neuroevolution_server's recomputation step. See
                 %% calculate_fitness/1 for why this is necessary.
-                metrics = Metrics#{'$bridge_fitness' => Fitness}
+                metrics = Metrics#{'$bridge_fitness' => Fitness,
+                                   '$solved' => is_solved(Bridge, Metrics)}
             },
             {ok, UpdatedIndividual};
         {ok, Metrics} when is_map(Metrics) ->
@@ -102,6 +103,26 @@ calculate_fitness(Metrics) ->
 %%% ============================================================================
 %%% Internal Functions
 %%% ============================================================================
+
+%% @private
+%% @doc Ask the domain's evaluator whether these metrics represent a solved
+%% task. The callback is optional; absent it, nothing is solvable and
+%% evaluations_to_solve is never recorded.
+is_solved(Bridge, Metrics) ->
+    case maps:get(evaluator, Bridge, undefined) of
+        undefined ->
+            false;
+        Evaluator ->
+            %% ensure_loaded first: erlang:function_exported/3 answers false
+            %% for a module that simply has not been loaded yet, which would
+            %% silently skip the callback on the first evaluation and lose the
+            %% earliest solve.
+            _ = code:ensure_loaded(Evaluator),
+            case erlang:function_exported(Evaluator, is_solved, 1) of
+                true  -> Evaluator:is_solved(Metrics);
+                false -> false
+            end
+    end.
 
 %% @private
 %% Run single or multi-episode evaluation

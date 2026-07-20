@@ -1259,7 +1259,11 @@ handle_evaluation_complete(State, EvaluatedPopulation) ->
 
     %% Emit progress_checkpoint event for continuous evolution tracking
     %% Update state temporarily with new evaluations count for checkpoint calculation
-    TempState = NewState1#neuro_state{total_evaluations = NewTotalEvaluations},
+    %% Record evaluations-to-solve the first time any individual solves.
+    %% Latched: only the first solve counts, later ones do not overwrite it.
+    SolveState = maybe_record_solve(NewState1, Sorted, NewTotalEvaluations),
+
+    TempState = SolveState#neuro_state{total_evaluations = NewTotalEvaluations},
     StateWithCheckpoint = emit_progress_checkpoint(TempState, Sorted),
 
     notify_event(StateWithCheckpoint, {generation_complete, #{
@@ -1471,6 +1475,9 @@ calculate_fitness(Individual, Config) ->
 -spec should_stop(neuro_state()) -> {true, atom()} | false.
 should_stop(#neuro_state{running = false}) ->
     {true, stopped};
+should_stop(#neuro_state{evaluations_to_solve = N, config = Config})
+  when N =/= undefined, Config#neuro_config.stop_on_solved ->
+    {true, solved};
 should_stop(#neuro_state{
     config = Config,
     total_evaluations = TotalEvaluations,
@@ -1532,6 +1539,8 @@ build_stats(State) ->
         running => State#neuro_state.running,
         evaluating => State#neuro_state.evaluating,
         last_gen_best => State#neuro_state.last_gen_best,
+        %% undefined when the task was never solved during the run
+        evaluations_to_solve => State#neuro_state.evaluations_to_solve,
         last_gen_avg => State#neuro_state.last_gen_avg,
         generation_history => State#neuro_state.generation_history,
         %% Strategy-provided data
@@ -1541,6 +1550,23 @@ build_stats(State) ->
     },
 
     BaseStats.
+
+%% @private
+%% @doc Latch total_evaluations at the first solved individual.
+maybe_record_solve(#neuro_state{evaluations_to_solve = N} = State, _Pop, _Evals)
+  when N =/= undefined ->
+    State;
+maybe_record_solve(State, Population, TotalEvaluations) ->
+    case lists:any(fun(I) -> maps:get('$solved', I#individual.metrics, false) end,
+                   Population) of
+        true ->
+            error_logger:info_msg(
+                "[neuroevolution_server] SOLVED after ~p evaluations~n",
+                [TotalEvaluations]),
+            State#neuro_state{evaluations_to_solve = TotalEvaluations};
+        false ->
+            State
+    end.
 
 %% @private
 %% @doc Seed this process's RNG when a run seed is configured.

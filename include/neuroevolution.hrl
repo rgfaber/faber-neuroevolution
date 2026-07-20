@@ -371,7 +371,12 @@
     %% processes with independent RNG state. Deterministic environments (XOR,
     %% pole balancing) are unaffected. A stochastic environment needs its own
     %% per-episode seeding, derived from this one.
-    rng_seed = undefined :: integer() | undefined
+    rng_seed = undefined :: integer() | undefined,
+
+    %% Halt as soon as an individual solves the task, rather than running to
+    %% max_generations. Off by default so existing behaviour is unchanged.
+    %% Benchmarks that report evaluations-to-solve want this on.
+    stop_on_solved = false :: boolean()
 }).
 
 -type neuro_config() :: #neuro_config{}.
@@ -529,7 +534,16 @@
     %% Last fully-evaluated population (sorted by fitness descending).
     %% Captured BEFORE the strategy replaces/resets the population.
     %% Use get_last_evaluated_population/1 to retrieve after training_complete.
-    last_evaluated_population = [] :: [individual()]
+    last_evaluated_population = [] :: [individual()],
+
+    %% Total evaluations at the moment the FIRST individual solved the task,
+    %% as judged by the evaluator's optional is_solved/1 callback.
+    %%
+    %% This is the metric the neuroevolution literature reports (Sher's
+    %% Table 14.1 is entirely evaluations-to-solve). It cannot be derived from
+    %% fitness, which is continuous and whose scale is problem-specific.
+    %% undefined means the task was never solved during the run.
+    evaluations_to_solve = undefined :: non_neg_integer() | undefined
 }).
 
 -type neuro_state() :: #neuro_state{}.
