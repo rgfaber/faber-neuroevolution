@@ -140,49 +140,48 @@ handle_evaluation_result(IndividualId, FitnessResult, State) ->
     PopMap = State#gen_state.population_map,
     case maps:find(IndividualId, PopMap) of
         {ok, Individual} ->
-            UpdatedInd = Individual#individual{fitness = Fitness, metrics = Metrics},
-
-            %% Update both map and list
-            NewPopMap = maps:put(IndividualId, UpdatedInd, PopMap),
-            UpdatedPop = update_individual_in_list(UpdatedInd, State#gen_state.population),
-
-            %% Track evaluation progress
-            NewEvaluatedCount = State#gen_state.evaluated_count + 1,
-            NewEvaluatedInds = [UpdatedInd | State#gen_state.evaluated_individuals],
-
-            %% Create individual_evaluated event
-            EvalEvent = #individual_evaluated{
-                id = IndividualId,
-                fitness = Fitness,
-                metrics = Metrics,
-                timestamp = erlang:timestamp(),
-                metadata = #{generation => State#gen_state.generation}
-            },
-
-            %% Check if all individuals have been evaluated
-            PopSize = State#gen_state.population_size,
-            case NewEvaluatedCount >= PopSize of
-                true ->
-                    %% All evaluated - trigger breeding
-                    handle_cohort_complete(State#gen_state{
-                        population = UpdatedPop,
-                        population_map = NewPopMap,
-                        evaluated_count = NewEvaluatedCount,
-                        evaluated_individuals = NewEvaluatedInds
-                    }, [EvalEvent]);
-                false ->
-                    %% Still evaluating - just update state
-                    NewState = State#gen_state{
-                        population = UpdatedPop,
-                        population_map = NewPopMap,
-                        evaluated_count = NewEvaluatedCount,
-                        evaluated_individuals = NewEvaluatedInds
-                    },
-                    {[], [EvalEvent], NewState}
-            end;
+            record_evaluated_individual(IndividualId, Fitness, Metrics, Individual, State);
         error ->
             %% Individual not found (shouldn't happen)
             {[], [], State}
+    end.
+
+%% @private Accumulate one evaluated individual and trigger breeding when the cohort is complete.
+record_evaluated_individual(IndividualId, Fitness, Metrics, Individual, State) ->
+    UpdatedInd = Individual#individual{fitness = Fitness, metrics = Metrics},
+
+    %% Update both map and list
+    NewPopMap = maps:put(IndividualId, UpdatedInd, State#gen_state.population_map),
+    UpdatedPop = update_individual_in_list(UpdatedInd, State#gen_state.population),
+
+    %% Track evaluation progress
+    NewEvaluatedCount = State#gen_state.evaluated_count + 1,
+    NewEvaluatedInds = [UpdatedInd | State#gen_state.evaluated_individuals],
+
+    %% Create individual_evaluated event
+    EvalEvent = #individual_evaluated{
+        id = IndividualId,
+        fitness = Fitness,
+        metrics = Metrics,
+        timestamp = erlang:timestamp(),
+        metadata = #{generation => State#gen_state.generation}
+    },
+
+    %% Check if all individuals have been evaluated
+    PopSize = State#gen_state.population_size,
+    UpdatedState = State#gen_state{
+        population = UpdatedPop,
+        population_map = NewPopMap,
+        evaluated_count = NewEvaluatedCount,
+        evaluated_individuals = NewEvaluatedInds
+    },
+    case NewEvaluatedCount >= PopSize of
+        true ->
+            %% All evaluated - trigger breeding
+            handle_cohort_complete(UpdatedState, [EvalEvent]);
+        false ->
+            %% Still evaluating - just update state
+            {[], [EvalEvent], UpdatedState}
     end.
 
 %% @doc Periodic tick - not heavily used in generational strategy.
@@ -564,15 +563,14 @@ build_population_map(Population) ->
 %% Uses the individual's ID to find and replace.
 update_individual_in_list(UpdatedInd, Population) ->
     Id = UpdatedInd#individual.id,
-    lists:map(
-        fun(Ind) ->
-            case Ind#individual.id =:= Id of
-                true -> UpdatedInd;
-                false -> Ind
-            end
-        end,
-        Population
-    ).
+    lists:map(fun(Ind) -> replace_if_same_id(Ind, Id, UpdatedInd) end, Population).
+
+%% @private Replace Ind with UpdatedInd when their IDs match.
+replace_if_same_id(Ind, Id, UpdatedInd) ->
+    case Ind#individual.id =:= Id of
+        true -> UpdatedInd;
+        false -> Ind
+    end.
 
 %% @private Breed offspring from survivors.
 %%
@@ -685,16 +683,14 @@ tournament_select(Population, TournamentSize) ->
     %% Select random individuals for tournament
     Candidates = random_sample(Population, TournamentSize),
     %% Return the one with highest fitness
-    lists:foldl(
-        fun(Ind, Best) ->
-            case Ind#individual.fitness > Best#individual.fitness of
-                true -> Ind;
-                false -> Best
-            end
-        end,
-        hd(Candidates),
-        tl(Candidates)
-    ).
+    lists:foldl(fun keep_fitter/2, hd(Candidates), tl(Candidates)).
+
+%% @private Keep whichever individual has the higher fitness.
+keep_fitter(Ind, Best) ->
+    case Ind#individual.fitness > Best#individual.fitness of
+        true -> Ind;
+        false -> Best
+    end.
 
 %% @private Random sample from list.
 random_sample(List, N) when N >= length(List) -> List;

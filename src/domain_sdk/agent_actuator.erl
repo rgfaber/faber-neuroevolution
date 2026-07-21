@@ -218,12 +218,7 @@ validate(Module) ->
         fun() -> validate_output_count(Module) end
     ],
     Errors = lists:filtermap(
-        fun(Check) ->
-            case Check() of
-                ok -> false;
-                {error, Reason} -> {true, Reason}
-            end
-        end,
+        fun(Check) -> run_check(Check) end,
         Checks
     ),
     case Errors of
@@ -276,10 +271,7 @@ validate_outputs(Module, Outputs) when is_list(Outputs) ->
         false ->
             {error, {output_count_mismatch, #{expected => ExpectedCount, actual => ActualCount}}};
         true ->
-            case lists:all(fun is_number/1, Outputs) of
-                true -> ok;
-                false -> {error, {non_numeric_outputs, Outputs}}
-            end
+            validate_all_numeric_outputs(Outputs)
     end;
 validate_outputs(_Module, Outputs) ->
     {error, {outputs_not_list, Outputs}}.
@@ -287,6 +279,20 @@ validate_outputs(_Module, Outputs) ->
 %%% ============================================================================
 %%% Internal Functions
 %%% ============================================================================
+
+%% @private Run a single validation check, keeping only its error reason.
+run_check(Check) ->
+    case Check() of
+        ok -> false;
+        {error, Reason} -> {true, Reason}
+    end.
+
+%% @private Validate that all output values are numbers.
+validate_all_numeric_outputs(Outputs) ->
+    case lists:all(fun is_number/1, Outputs) of
+        true -> ok;
+        false -> {error, {non_numeric_outputs, Outputs}}
+    end.
 
 %% @private
 validate_exports(Module) ->

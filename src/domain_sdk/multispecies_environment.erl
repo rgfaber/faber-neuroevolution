@@ -213,23 +213,25 @@ extract_all_metrics(Module, {AgentStates, EnvState}) ->
     ),
 
     %% Extract metrics per species
-    case erlang:function_exported(Module, extract_species_metrics, 3) of
-        true ->
-            maps:map(
-                fun(SpeciesId, Agents) ->
-                    Module:extract_species_metrics(SpeciesId, Agents, EnvState)
-                end,
-                BySpecies
-            );
-        false ->
-            %% Fallback: use standard metrics
-            maps:map(
-                fun(_SpeciesId, Agents) ->
-                    aggregate_metrics(Module, Agents, EnvState)
-                end,
-                BySpecies
-            )
-    end.
+    HasCallback = erlang:function_exported(Module, extract_species_metrics, 3),
+    map_species_metrics(HasCallback, Module, BySpecies, EnvState).
+
+%% @private Map species metrics using module callback or standard fallback.
+map_species_metrics(true, Module, BySpecies, EnvState) ->
+    maps:map(
+        fun(SpeciesId, Agents) ->
+            Module:extract_species_metrics(SpeciesId, Agents, EnvState)
+        end,
+        BySpecies
+    );
+map_species_metrics(false, Module, BySpecies, EnvState) ->
+    %% Fallback: use standard metrics
+    maps:map(
+        fun(_SpeciesId, Agents) ->
+            aggregate_metrics(Module, Agents, EnvState)
+        end,
+        BySpecies
+    ).
 
 %%% ============================================================================
 %%% Internal Functions
@@ -240,16 +242,17 @@ spawn_species_agents(Module, SpeciesId, Count, EnvState) ->
     lists:foldl(
         fun(I, {Agents, Env}) ->
             AgentId = {SpeciesId, I, make_ref()},
-            case Module:spawn_agent(AgentId, SpeciesId, Env) of
-                {ok, Agent, NewEnv} ->
-                    {[Agent | Agents], NewEnv};
-                {error, _Reason} ->
-                    {Agents, Env}
-            end
+            accumulate_spawned_agent(Module:spawn_agent(AgentId, SpeciesId, Env), Agents, Env)
         end,
         {[], EnvState},
         lists:seq(1, Count)
     ).
+
+%% @private Accumulate a spawned agent, keeping the env unchanged on error.
+accumulate_spawned_agent({ok, Agent, NewEnv}, Agents, _Env) ->
+    {[Agent | Agents], NewEnv};
+accumulate_spawned_agent({error, _Reason}, Agents, Env) ->
+    {Agents, Env}.
 
 %% @private
 process_all_interactions(Module, AgentStates, EnvState) ->
@@ -259,33 +262,36 @@ process_all_interactions(Module, AgentStates, EnvState) ->
 
     {FinalAgents, FinalEnv} = lists:foldl(
         fun({Agent1, Agent2}, {Agents, Env}) ->
-            case Module:handle_interaction(Agent1, Agent2, Env) of
-                {ok, NewAgent1, NewAgent2, NewEnv} ->
-                    %% Update agents in list
-                    Agents1 = update_agent(Agents, Agent1, NewAgent1),
-                    Agents2 = update_agent(Agents1, Agent2, NewAgent2),
-                    {Agents2, NewEnv};
-                _ ->
-                    {Agents, Env}
-            end
+            apply_interaction(Module:handle_interaction(Agent1, Agent2, Env),
+                              Agent1, Agent2, Agents, Env)
         end,
         {AgentStates, EnvState},
         UniquePairs
     ),
     {ok, FinalAgents, FinalEnv}.
 
+%% @private Apply an interaction result, updating both agents on success.
+apply_interaction({ok, NewAgent1, NewAgent2, NewEnv}, Agent1, Agent2, Agents, _Env) ->
+    %% Update agents in list
+    Agents1 = update_agent(Agents, Agent1, NewAgent1),
+    Agents2 = update_agent(Agents1, Agent2, NewAgent2),
+    {Agents2, NewEnv};
+apply_interaction(_, _Agent1, _Agent2, Agents, Env) ->
+    {Agents, Env}.
+
 %% @private
 update_agent(Agents, OldAgent, NewAgent) ->
     OldId = maps:get(id, OldAgent),
     lists:map(
         fun(A) ->
-            case maps:get(id, A) =:= OldId of
-                true -> NewAgent;
-                false -> A
-            end
+            replace_if_match(maps:get(id, A) =:= OldId, A, NewAgent)
         end,
         Agents
     ).
+
+%% @private Replace the agent when its id matches.
+replace_if_match(true, _A, NewAgent) -> NewAgent;
+replace_if_match(false, A, _NewAgent) -> A.
 
 %% @private
 aggregate_metrics(Module, Agents, EnvState) ->

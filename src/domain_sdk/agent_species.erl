@@ -143,17 +143,19 @@ validate(Module) ->
         {subspeciation_threshold, 0}
     ],
     Missing = lists:filtermap(
-        fun({Fun, Arity}) ->
-            case erlang:function_exported(Module, Fun, Arity) of
-                true -> false;
-                false -> {true, {missing_callback, Fun, Arity}}
-            end
-        end,
+        fun(Callback) -> missing_callback(Module, Callback) end,
         Callbacks
     ),
     case Missing of
         [] -> validate_species_consistency(Module);
         _ -> {error, Missing}
+    end.
+
+%% @private Report a callback as missing when the module does not export it.
+missing_callback(Module, {Fun, Arity}) ->
+    case erlang:function_exported(Module, Fun, Arity) of
+        true -> false;
+        false -> {true, {missing_callback, Fun, Arity}}
     end.
 
 %% @doc Extracts species configuration from a module.

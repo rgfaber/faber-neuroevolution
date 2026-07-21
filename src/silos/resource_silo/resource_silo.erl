@@ -424,35 +424,39 @@ check_l0_emergency(Metrics, State) ->
         false -> State;
         true ->
             MemoryPressure = maps:get(memory_pressure, Metrics, 0.0),
+            apply_l0_pressure_response(MemoryPressure, Critical, High, State)
+    end.
 
-            if
-                MemoryPressure >= Critical ->
-                    %% Critical: Force GC, increment pause counter
-                    error_logger:warning_msg(
-                        "[resource_silo:L0] CRITICAL memory pressure (~.1f%) - forcing GC~n",
-                        [MemoryPressure * 100]),
-                    trigger_gc(),
-                    State#state{
-                        gc_triggered_count = State#state.gc_triggered_count + 1,
-                        pause_count = State#state.pause_count + 1
-                    };
+%% @private Apply the L0 protective response for the current memory pressure.
+apply_l0_pressure_response(MemoryPressure, Critical, _High, State)
+  when MemoryPressure >= Critical ->
+    %% Critical: Force GC, increment pause counter
+    error_logger:warning_msg(
+        "[resource_silo:L0] CRITICAL memory pressure (~.1f%) - forcing GC~n",
+        [MemoryPressure * 100]),
+    trigger_gc(),
+    State#state{
+        gc_triggered_count = State#state.gc_triggered_count + 1,
+        pause_count = State#state.pause_count + 1
+    };
+apply_l0_pressure_response(MemoryPressure, _Critical, High, State)
+  when MemoryPressure >= High ->
+    %% High: Log warning, may trigger GC if rising
+    maybe_gc_on_rising_pressure(MemoryPressure, State);
+apply_l0_pressure_response(_MemoryPressure, _Critical, _High, State) ->
+    State.
 
-                MemoryPressure >= High ->
-                    %% High: Log warning, may trigger GC if rising
-                    case is_pressure_rising(State#state.pressure_history, State) of
-                        true ->
-                            error_logger:warning_msg(
-                                "[resource_silo:L0] HIGH memory pressure (~.1f%) rising - forcing GC~n",
-                                [MemoryPressure * 100]),
-                            trigger_gc(),
-                            State#state{gc_triggered_count = State#state.gc_triggered_count + 1};
-                        false ->
-                            State
-                    end;
-
-                true ->
-                    State
-            end
+%% @private Force GC only when high pressure is rising.
+maybe_gc_on_rising_pressure(MemoryPressure, State) ->
+    case is_pressure_rising(State#state.pressure_history, State) of
+        true ->
+            error_logger:warning_msg(
+                "[resource_silo:L0] HIGH memory pressure (~.1f%) rising - forcing GC~n",
+                [MemoryPressure * 100]),
+            trigger_gc(),
+            State#state{gc_triggered_count = State#state.gc_triggered_count + 1};
+        false ->
+            State
     end.
 
 %% @private Trigger garbage collection.
@@ -461,15 +465,16 @@ trigger_gc() ->
     erlang:garbage_collect(),
 
     %% Then request GC on all processes (non-blocking)
-    spawn(fun() ->
-        lists:foreach(
-            fun(Pid) ->
-                catch erlang:garbage_collect(Pid)
-            end,
-            erlang:processes()
-        )
-    end),
+    spawn(fun gc_all_processes/0),
     ok.
+
+%% @private Request GC on every running process.
+gc_all_processes() ->
+    lists:foreach(fun gc_process/1, erlang:processes()).
+
+%% @private Request GC on a single process, ignoring failures.
+gc_process(Pid) ->
+    catch erlang:garbage_collect(Pid).
 
 %% @private Check if pressure is rising based on history.
 %% Uses L2-controlled pressure_change_threshold from state.
@@ -574,12 +579,17 @@ determine_action(Metrics, State) ->
     MemoryPressure = maps:get(memory_pressure, Metrics, 0.0),
     CpuPressure = maps:get(cpu_pressure, Metrics, 0.0),
 
-    if
-        MemoryPressure >= MemCritical -> pause;
-        MemoryPressure >= MemHigh -> throttle;
-        CpuPressure >= CpuHigh -> throttle;
-        true -> continue
-    end.
+    classify_action(MemoryPressure, CpuPressure, MemCritical, MemHigh, CpuHigh).
+
+%% @private Classify the recommended action from pressure thresholds.
+classify_action(MemoryPressure, _CpuPressure, MemCritical, _MemHigh, _CpuHigh)
+  when MemoryPressure >= MemCritical -> pause;
+classify_action(MemoryPressure, _CpuPressure, _MemCritical, MemHigh, _CpuHigh)
+  when MemoryPressure >= MemHigh -> throttle;
+classify_action(_MemoryPressure, CpuPressure, _MemCritical, _MemHigh, CpuHigh)
+  when CpuPressure >= CpuHigh -> throttle;
+classify_action(_MemoryPressure, _CpuPressure, _MemCritical, _MemHigh, _CpuHigh) ->
+    continue.
 
 %% @private Get reason string for action.
 -spec action_reason(continue | throttle | pause) -> binary().
@@ -658,18 +668,22 @@ maybe_query_l2_guidance(Metrics, #state{l2_enabled = true, l2_guidance = OldGuid
             %% meta_controller not running, use defaults
             State;
         Pid when is_pid(Pid) ->
-            try
-                %% Build resource stats for meta_controller
-                Stats = build_resource_stats(Metrics, State),
-                NewGuidance = meta_controller:get_l1_guidance(Pid, Stats),
-                %% Update state with L2-controlled thresholds
-                apply_l2_guidance(State, OldGuidance, NewGuidance)
-            catch
-                _:Reason ->
-                    error_logger:warning_msg(
-                        "[resource_silo] Failed to query L2 guidance: ~p~n", [Reason]),
-                    State
-            end
+            query_l2_and_apply(Pid, Metrics, State, OldGuidance)
+    end.
+
+%% @private Query meta_controller for guidance and apply it, defaulting on error.
+query_l2_and_apply(Pid, Metrics, State, OldGuidance) ->
+    try
+        %% Build resource stats for meta_controller
+        Stats = build_resource_stats(Metrics, State),
+        NewGuidance = meta_controller:get_l1_guidance(Pid, Stats),
+        %% Update state with L2-controlled thresholds
+        apply_l2_guidance(State, OldGuidance, NewGuidance)
+    catch
+        _:Reason ->
+            error_logger:warning_msg(
+                "[resource_silo] Failed to query L2 guidance: ~p~n", [Reason]),
+            State
     end.
 
 %% @private Build resource stats map for meta_controller.

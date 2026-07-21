@@ -343,34 +343,38 @@ create_initial_population(Config, NetworkFactory, Params) ->
 
     lists:map(
         fun(Index) ->
-            case UseNeat of
-                true ->
-                    %% NEAT mode: create minimal genome and derive network
-                    Genome = genome_factory:create_minimal(Config),
-                    Network = genome_factory:to_network(Genome),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        genome = Genome,
-                        generation_born = 1,
-                        birth_evaluation = 0,
-                        max_age = DefaultMaxAge
-                    };
-                false ->
-                    %% Legacy mode: create fixed-topology network
-                    Topology = Config#neuro_config.network_topology,
-                    Network = NetworkFactory:create_feedforward(Topology),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        generation_born = 1,
-                        birth_evaluation = 0,
-                        max_age = DefaultMaxAge
-                    }
-            end
+            create_initial_individual(Index, UseNeat, Config, NetworkFactory, DefaultMaxAge)
         end,
         lists:seq(1, PopSize)
     ).
+
+%% @private Create one initial individual (NEAT genome or fixed topology).
+create_initial_individual(Index, UseNeat, Config, NetworkFactory, DefaultMaxAge) ->
+    case UseNeat of
+        true ->
+            %% NEAT mode: create minimal genome and derive network
+            Genome = genome_factory:create_minimal(Config),
+            Network = genome_factory:to_network(Genome),
+            #individual{
+                id = {initial, Index},
+                network = Network,
+                genome = Genome,
+                generation_born = 1,
+                birth_evaluation = 0,
+                max_age = DefaultMaxAge
+            };
+        false ->
+            %% Legacy mode: create fixed-topology network
+            Topology = Config#neuro_config.network_topology,
+            Network = NetworkFactory:create_feedforward(Topology),
+            #individual{
+                id = {initial, Index},
+                network = Network,
+                generation_born = 1,
+                birth_evaluation = 0,
+                max_age = DefaultMaxAge
+            }
+    end.
 
 %% @private Create birth event for an individual.
 create_birth_event(Individual, Origin) ->
@@ -484,53 +488,40 @@ select_victims(Population, Ages, Params, Count) ->
 select_victims_by_method(_Pop, _Ages, _Method, _TSize, 0, Victims, Remaining) ->
     {lists:reverse(Victims), Remaining};
 select_victims_by_method(Population, Ages, Method, TournamentSize, Count, Victims, _) ->
-    Victim = case Method of
-        worst ->
-            %% Select individual with lowest fitness
-            lists:foldl(
-                fun(Ind, Worst) ->
-                    case Ind#individual.fitness < Worst#individual.fitness of
-                        true -> Ind;
-                        false -> Worst
-                    end
-                end,
-                hd(Population),
-                tl(Population)
-            );
-        oldest ->
-            %% Select oldest individual
-            lists:foldl(
-                fun(Ind, Oldest) ->
-                    IndAge = maps:get(Ind#individual.id, Ages, 0),
-                    OldestAge = maps:get(Oldest#individual.id, Ages, 0),
-                    case IndAge > OldestAge of
-                        true -> Ind;
-                        false -> Oldest
-                    end
-                end,
-                hd(Population),
-                tl(Population)
-            );
-        random ->
-            %% Select random individual
-            lists:nth(rand:uniform(length(Population)), Population);
-        tournament ->
-            %% Inverse tournament: winner has LOWEST fitness
-            Candidates = random_sample(Population, TournamentSize),
-            lists:foldl(
-                fun(Ind, Worst) ->
-                    case Ind#individual.fitness < Worst#individual.fitness of
-                        true -> Ind;
-                        false -> Worst
-                    end
-                end,
-                hd(Candidates),
-                tl(Candidates)
-            )
-    end,
-
+    Victim = select_one_victim(Method, Population, Ages, TournamentSize),
     Remaining = lists:delete(Victim, Population),
     select_victims_by_method(Remaining, Ages, Method, TournamentSize, Count - 1, [Victim | Victims], Remaining).
+
+%% @private Select a single victim according to the configured method.
+select_one_victim(worst, Population, _Ages, _TournamentSize) ->
+    %% Select individual with lowest fitness
+    lists:foldl(fun keep_lower_fitness/2, hd(Population), tl(Population));
+select_one_victim(oldest, Population, Ages, _TournamentSize) ->
+    %% Select oldest individual
+    Paired = [{maps:get(I#individual.id, Ages, 0), I} || I <- Population],
+    {_, Oldest} = lists:foldl(fun keep_older/2, hd(Paired), tl(Paired)),
+    Oldest;
+select_one_victim(random, Population, _Ages, _TournamentSize) ->
+    %% Select random individual
+    lists:nth(rand:uniform(length(Population)), Population);
+select_one_victim(tournament, Population, _Ages, TournamentSize) ->
+    %% Inverse tournament: winner has LOWEST fitness
+    Candidates = random_sample(Population, TournamentSize),
+    lists:foldl(fun keep_lower_fitness/2, hd(Candidates), tl(Candidates)).
+
+%% @private Fold comparator: keep whichever individual has the lower fitness.
+keep_lower_fitness(Ind, Worst) ->
+    case Ind#individual.fitness < Worst#individual.fitness of
+        true -> Ind;
+        false -> Worst
+    end.
+
+%% @private Fold comparator: keep whichever {Age, Individual} pair is older.
+keep_older({AgeA, IndA}, {AgeB, IndB}) ->
+    case AgeA > AgeB of
+        true -> {AgeA, IndA};
+        false -> {AgeB, IndB}
+    end.
 
 %% @private Create offspring with lifespan inheritance and mutation.
 %%
@@ -633,16 +624,14 @@ maybe_mutate_max_age(MaxAge, Params) ->
 %% @private Tournament selection (select best from random sample).
 tournament_select(Population, TournamentSize) ->
     Candidates = random_sample(Population, TournamentSize),
-    lists:foldl(
-        fun(Ind, Best) ->
-            case Ind#individual.fitness > Best#individual.fitness of
-                true -> Ind;
-                false -> Best
-            end
-        end,
-        hd(Candidates),
-        tl(Candidates)
-    ).
+    lists:foldl(fun keep_higher_fitness/2, hd(Candidates), tl(Candidates)).
+
+%% @private Fold comparator: keep whichever individual has the higher fitness.
+keep_higher_fitness(Ind, Best) ->
+    case Ind#individual.fitness > Best#individual.fitness of
+        true -> Ind;
+        false -> Best
+    end.
 
 %% @private Create death event.
 create_death_event(Individual, Reason) ->
@@ -669,10 +658,6 @@ increment_all_ages(Ages) ->
 cull_old_individuals(State) ->
     Population = State#ss_state.population,
     Ages = State#ss_state.ages,
-    Config = State#ss_state.config,
-    Params = State#ss_state.params,
-    NetworkFactory = State#ss_state.network_factory,
-    TotalEvaluations = State#ss_state.total_evaluations,
 
     %% Find individuals over their own max age
     %% Each individual is checked against their personal max_age field
@@ -690,54 +675,64 @@ cull_old_individuals(State) ->
         [] ->
             {[], [], State};
         _ ->
-            %% Create replacements with inherited max_age
-            {Offspring, BirthEvents} = create_offspring_with_lifespan(
-                Young, Config, Params, NetworkFactory, TotalEvaluations, length(Old)
-            ),
-
-            %% Create death events with age_limit reason
-            DeathEvents = [create_death_event(Ind, age_limit) || Ind <- Old],
-
-            %% Create aged_out lifecycle events for each culled individual
-            AgedOutEvents = [#individual_aged_out{
-                id = Ind#individual.id,
-                final_age = maps:get(Ind#individual.id, Ages, 0),
-                final_fitness = Ind#individual.fitness,
-                lifetime_stats = #{
-                    total_evaluations => maps:get(Ind#individual.id, Ages, 0),
-                    avg_fitness => Ind#individual.fitness,
-                    best_fitness => Ind#individual.fitness,
-                    offspring_count => 0,
-                    max_age => Ind#individual.max_age
-                },
-                timestamp = erlang:timestamp()
-            } || Ind <- Old],
-
-            %% Update ages
-            NewAges = lists:foldl(
-                fun(Ind, Acc) -> maps:remove(Ind#individual.id, Acc) end,
-                Ages,
-                Old
-            ),
-            FinalAges = lists:foldl(
-                fun(Ind, Acc) -> maps:put(Ind#individual.id, 0, Acc) end,
-                NewAges,
-                Offspring
-            ),
-
-            NewPopulation = Young ++ Offspring,
-
-            %% Rebuild population map
-            NewPopulationMap = build_population_map(NewPopulation),
-
-            NewState = State#ss_state{
-                population = NewPopulation,
-                population_map = NewPopulationMap,
-                ages = FinalAges
-            },
-
-            {[], DeathEvents ++ AgedOutEvents ++ BirthEvents, NewState}
+            replace_aged_out(Old, Young, Ages, State)
     end.
+
+%% @private Replace culled individuals with fresh offspring, emitting death,
+%% aged-out and birth lifecycle events.
+replace_aged_out(Old, Young, Ages, State) ->
+    Config = State#ss_state.config,
+    Params = State#ss_state.params,
+    NetworkFactory = State#ss_state.network_factory,
+    TotalEvaluations = State#ss_state.total_evaluations,
+
+    %% Create replacements with inherited max_age
+    {Offspring, BirthEvents} = create_offspring_with_lifespan(
+        Young, Config, Params, NetworkFactory, TotalEvaluations, length(Old)
+    ),
+
+    %% Create death events with age_limit reason
+    DeathEvents = [create_death_event(Ind, age_limit) || Ind <- Old],
+
+    %% Create aged_out lifecycle events for each culled individual
+    AgedOutEvents = [#individual_aged_out{
+        id = Ind#individual.id,
+        final_age = maps:get(Ind#individual.id, Ages, 0),
+        final_fitness = Ind#individual.fitness,
+        lifetime_stats = #{
+            total_evaluations => maps:get(Ind#individual.id, Ages, 0),
+            avg_fitness => Ind#individual.fitness,
+            best_fitness => Ind#individual.fitness,
+            offspring_count => 0,
+            max_age => Ind#individual.max_age
+        },
+        timestamp = erlang:timestamp()
+    } || Ind <- Old],
+
+    %% Update ages
+    NewAges = lists:foldl(
+        fun(Ind, Acc) -> maps:remove(Ind#individual.id, Acc) end,
+        Ages,
+        Old
+    ),
+    FinalAges = lists:foldl(
+        fun(Ind, Acc) -> maps:put(Ind#individual.id, 0, Acc) end,
+        NewAges,
+        Offspring
+    ),
+
+    NewPopulation = Young ++ Offspring,
+
+    %% Rebuild population map
+    NewPopulationMap = build_population_map(NewPopulation),
+
+    NewState = State#ss_state{
+        population = NewPopulation,
+        population_map = NewPopulationMap,
+        ages = FinalAges
+    },
+
+    {[], DeathEvents ++ AgedOutEvents ++ BirthEvents, NewState}.
 
 %%% ============================================================================
 %%% Internal Functions - Progress Checkpoints
@@ -815,15 +810,14 @@ build_population_map(Population) ->
 %% @private Update individual in list (used to keep list in sync with map).
 update_individual_in_list(UpdatedInd, Population) ->
     Id = UpdatedInd#individual.id,
-    lists:map(
-        fun(Ind) ->
-            case Ind#individual.id =:= Id of
-                true -> UpdatedInd;
-                false -> Ind
-            end
-        end,
-        Population
-    ).
+    lists:map(fun(Ind) -> replace_if_same_id(Ind, Id, UpdatedInd) end, Population).
+
+%% @private Replace Ind with UpdatedInd when their IDs match.
+replace_if_same_id(Ind, Id, UpdatedInd) ->
+    case Ind#individual.id =:= Id of
+        true -> UpdatedInd;
+        false -> Ind
+    end.
 
 %% @private Calculate fitness statistics.
 calculate_fitness_stats([]) ->

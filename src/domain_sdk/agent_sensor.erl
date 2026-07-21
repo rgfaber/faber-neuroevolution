@@ -193,12 +193,7 @@ validate(Module) ->
         fun() -> validate_input_count(Module) end
     ],
     Errors = lists:filtermap(
-        fun(Check) ->
-            case Check() of
-                ok -> false;
-                {error, Reason} -> {true, Reason}
-            end
-        end,
+        fun(Check) -> run_check(Check) end,
         Checks
     ),
     case Errors of
@@ -251,10 +246,7 @@ validate_values(Module, Values) when is_list(Values) ->
         false ->
             {error, {value_count_mismatch, #{expected => ExpectedCount, actual => ActualCount}}};
         true ->
-            case lists:all(fun is_number/1, Values) of
-                true -> ok;
-                false -> {error, {non_numeric_values, Values}}
-            end
+            validate_all_numeric(Values)
     end;
 validate_values(_Module, Values) ->
     {error, {values_not_list, Values}}.
@@ -262,6 +254,20 @@ validate_values(_Module, Values) ->
 %%% ============================================================================
 %%% Internal Functions
 %%% ============================================================================
+
+%% @private Run a single validation check, keeping only its error reason.
+run_check(Check) ->
+    case Check() of
+        ok -> false;
+        {error, Reason} -> {true, Reason}
+    end.
+
+%% @private Validate that all sensor values are numbers.
+validate_all_numeric(Values) ->
+    case lists:all(fun is_number/1, Values) of
+        true -> ok;
+        false -> {error, {non_numeric_values, Values}}
+    end.
 
 %% @private
 validate_exports(Module) ->

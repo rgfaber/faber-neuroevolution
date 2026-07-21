@@ -276,17 +276,21 @@ apply_gene_weights(Weights, GeneMap, FromCount, ToCount, LayerType) ->
     IndexedWeights = lists:zip(lists:seq(1, length(Weights)), Weights),
     lists:map(
         fun({Idx, DefaultW}) ->
-            %% Calculate from/to indices for this weight position
-            {FromIdx, ToIdx} = weight_index_to_ids(Idx, FromCount, ToCount),
-            %% Generate potential gene IDs (simplified: use layer type + index)
-            GeneKey = {LayerType, FromIdx, ToIdx},
-            case maps:get(GeneKey, GeneMap, undefined) of
-                undefined -> DefaultW;
-                GeneWeight -> GeneWeight
-            end
+            resolve_gene_weight(Idx, DefaultW, FromCount, ToCount, LayerType, GeneMap)
         end,
         IndexedWeights
     ).
+
+%% @private Resolve the weight at one index, preferring a matching gene weight.
+resolve_gene_weight(Idx, DefaultW, FromCount, ToCount, LayerType, GeneMap) ->
+    %% Calculate from/to indices for this weight position
+    {FromIdx, ToIdx} = weight_index_to_ids(Idx, FromCount, ToCount),
+    %% Generate potential gene IDs (simplified: use layer type + index)
+    GeneKey = {LayerType, FromIdx, ToIdx},
+    case maps:get(GeneKey, GeneMap, undefined) of
+        undefined -> DefaultW;
+        GeneWeight -> GeneWeight
+    end.
 
 %% @private Convert weight index to from/to node indices.
 weight_index_to_ids(Idx, FromCount, _ToCount) ->
@@ -348,10 +352,7 @@ add_node(Genome) ->
 
             %% Disable old connection
             UpdatedGenes = [
-                case G#connection_gene.innovation =:= Conn#connection_gene.innovation of
-                    true -> G#connection_gene{enabled = false};
-                    false -> G
-                end
+                disable_if_split_conn(G, Conn)
                 || G <- Genome#genome.connection_genes
             ],
 
@@ -375,6 +376,13 @@ add_node(Genome) ->
                 connection_genes = [InConn, OutConn | UpdatedGenes],
                 hidden_count = Genome#genome.hidden_count + 1
             }
+    end.
+
+%% @private Disable the gene being split, leave the rest unchanged.
+disable_if_split_conn(G, Conn) ->
+    case G#connection_gene.innovation =:= Conn#connection_gene.innovation of
+        true -> G#connection_gene{enabled = false};
+        false -> G
     end.
 
 %% Maybe add a new connection
@@ -442,17 +450,20 @@ toggle_random_connection(Genome) ->
     Genes = Genome#genome.connection_genes,
     case Genes of
         [] -> Genome;
-        _ ->
-            Idx = rand:uniform(length(Genes)),
-            UpdatedGenes = lists:map(
-                fun({I, G}) when I =:= Idx ->
-                    G#connection_gene{enabled = not G#connection_gene.enabled};
-                   ({_, G}) -> G
-                end,
-                lists:zip(lists:seq(1, length(Genes)), Genes)
-            ),
-            Genome#genome{connection_genes = UpdatedGenes}
+        _ -> toggle_a_gene(Genes, Genome)
     end.
+
+%% @private Toggle the enabled flag of one randomly chosen gene.
+toggle_a_gene(Genes, Genome) ->
+    Idx = rand:uniform(length(Genes)),
+    UpdatedGenes = lists:map(
+        fun({I, G}) when I =:= Idx ->
+            G#connection_gene{enabled = not G#connection_gene.enabled};
+           ({_, G}) -> G
+        end,
+        lists:zip(lists:seq(1, length(Genes)), Genes)
+    ),
+    Genome#genome{connection_genes = UpdatedGenes}.
 
 %% Mutate weights in the genome using NIF for performance
 mutate_weights(Genome, Config) ->

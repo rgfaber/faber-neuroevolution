@@ -302,21 +302,26 @@ continue_exploration(State) ->
     %% Move in current direction
     maps:fold(
         fun(Name, Dir, Acc) ->
-            case maps:get(Name, CurrentHyperparams, undefined) of
-                undefined -> Acc;
-                CurrentValue ->
-                    %% Get bounds for this parameter
-                    {Min, Max} = maps:get(Name, Bounds, {0.0, 1.0}),
-                    Range = Max - Min,
-                    %% Apply directional step
-                    Step = Dir * ExplorationRate * Range * 0.1,
-                    NewValue = max(Min, min(Max, CurrentValue + Step)),
-                    maps:put(Name, NewValue, Acc)
-            end
+            directional_step(Name, Dir, Acc, CurrentHyperparams, Bounds, ExplorationRate, 0.1)
         end,
         CurrentHyperparams,
         Direction
     ).
+
+%% @private Apply one bounded directional exploration step to a hyperparameter.
+%% StepFactor scales the step (e.g. 0.1 to continue, 0.05 for a smaller initial step).
+directional_step(Name, Dir, Acc, SourceHyperparams, Bounds, ExplorationRate, StepFactor) ->
+    case maps:get(Name, SourceHyperparams, undefined) of
+        undefined -> Acc;
+        CurrentValue ->
+            %% Get bounds for this parameter
+            {Min, Max} = maps:get(Name, Bounds, {0.0, 1.0}),
+            Range = Max - Min,
+            %% Apply directional step
+            Step = Dir * ExplorationRate * Range * StepFactor,
+            NewValue = max(Min, min(Max, CurrentValue + Step)),
+            maps:put(Name, NewValue, Acc)
+    end.
 
 %% @private Explore from best hyperparameters with new direction.
 explore_from_best(BestHyperparams, State) ->
@@ -324,18 +329,10 @@ explore_from_best(BestHyperparams, State) ->
     Direction = State#state.exploration_direction,
     Bounds = State#state.l1_bounds,
 
-    %% Start from best and apply new direction
+    %% Start from best and apply new direction (smaller initial step)
     maps:fold(
         fun(Name, Dir, Acc) ->
-            case maps:get(Name, BestHyperparams, undefined) of
-                undefined -> Acc;
-                BestValue ->
-                    {Min, Max} = maps:get(Name, Bounds, {0.0, 1.0}),
-                    Range = Max - Min,
-                    Step = Dir * ExplorationRate * Range * 0.05,  % Smaller initial step
-                    NewValue = max(Min, min(Max, BestValue + Step)),
-                    maps:put(Name, NewValue, Acc)
-            end
+            directional_step(Name, Dir, Acc, BestHyperparams, Bounds, ExplorationRate, 0.05)
         end,
         BestHyperparams,
         Direction
@@ -349,17 +346,20 @@ explore_from_best(BestHyperparams, State) ->
 initialize_exploration_direction(HyperparamNames) ->
     lists:foldl(
         fun(Name, Acc) ->
-            %% Random direction: -1, 0, or +1
-            Dir = case rand:uniform(3) of
-                1 -> -1.0;
-                2 -> 0.0;
-                3 -> 1.0
-            end,
+            Dir = random_direction(),
             maps:put(Name, Dir, Acc)
         end,
         #{},
         HyperparamNames
     ).
+
+%% @private Random exploration direction: -1, 0, or +1.
+random_direction() ->
+    case rand:uniform(3) of
+        1 -> -1.0;
+        2 -> 0.0;
+        3 -> 1.0
+    end.
 
 %% @private Randomize exploration direction.
 randomize_exploration_direction(HyperparamNames) ->

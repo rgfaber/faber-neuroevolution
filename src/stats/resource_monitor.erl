@@ -119,10 +119,13 @@ get_normalized_metrics() ->
 get_memory_limit() ->
     case os:getenv("MACULA_MEMORY_LIMIT") of
         false -> detect_memory_limit();
-        EnvValue ->
-            try list_to_integer(EnvValue)
-            catch _:_ -> detect_memory_limit()
-            end
+        EnvValue -> parse_env_memory_limit(EnvValue)
+    end.
+
+%% @private Parse the memory limit from an environment variable value.
+parse_env_memory_limit(EnvValue) ->
+    try list_to_integer(EnvValue)
+    catch _:_ -> detect_memory_limit()
     end.
 
 %% @doc Check if memory usage is at critical level (>90%).
@@ -147,19 +150,11 @@ check_health() ->
     CpuPressure = maps:get(cpu_pressure, Metrics),
     MsgPressure = maps:get(message_queue_pressure, Metrics),
 
-    Status = if
-        MemoryPressure > 0.9 -> critical;
-        MemoryPressure > 0.7 orelse CpuPressure > 0.9 -> warning;
-        MsgPressure > 0.8 -> degraded;
-        true -> healthy
-    end,
+    Status = compute_health_status(MemoryPressure, CpuPressure, MsgPressure),
 
     Warnings = lists:filtermap(
         fun({_Metric, Value, Threshold, Msg}) ->
-            case Value > Threshold of
-                true -> {true, Msg};
-                false -> false
-            end
+            filter_warning(Value, Threshold, Msg)
         end,
         [
             {memory, MemoryPressure, 0.7, <<"Memory usage high">>},
@@ -179,6 +174,26 @@ check_health() ->
 %%% Internal Functions
 %%% ============================================================================
 
+%% @private Derive the health status from the normalized pressure metrics.
+compute_health_status(MemoryPressure, _CpuPressure, _MsgPressure)
+    when MemoryPressure > 0.9 ->
+    critical;
+compute_health_status(MemoryPressure, CpuPressure, _MsgPressure)
+    when MemoryPressure > 0.7 orelse CpuPressure > 0.9 ->
+    warning;
+compute_health_status(_MemoryPressure, _CpuPressure, MsgPressure)
+    when MsgPressure > 0.8 ->
+    degraded;
+compute_health_status(_MemoryPressure, _CpuPressure, _MsgPressure) ->
+    healthy.
+
+%% @private Emit a warning message when a metric exceeds its threshold.
+filter_warning(Value, Threshold, Msg) ->
+    case Value > Threshold of
+        true -> {true, Msg};
+        false -> false
+    end.
+
 %% @private Get current memory usage from cgroups (for containers).
 %%
 %% This is more accurate than erlang:memory(total) in containers because
@@ -190,12 +205,16 @@ get_cgroup_memory_usage() ->
             parse_cgroup_value(Bin);
         _ ->
             %% Try cgroup v1
-            case file:read_file("/sys/fs/cgroup/memory/memory.usage_in_bytes") of
-                {ok, Bin} ->
-                    parse_cgroup_value(Bin);
-                _ ->
-                    error
-            end
+            get_cgroup_memory_usage_v1()
+    end.
+
+%% @private Get current memory usage from cgroup v1.
+get_cgroup_memory_usage_v1() ->
+    case file:read_file("/sys/fs/cgroup/memory/memory.usage_in_bytes") of
+        {ok, Bin} ->
+            parse_cgroup_value(Bin);
+        _ ->
+            error
     end.
 
 %% @private Parse a cgroup memory value.
@@ -212,21 +231,26 @@ detect_memory_limit() ->
     %% Try cgroup v2 first (container environments)
     case file:read_file("/sys/fs/cgroup/memory.max") of
         {ok, Bin} ->
-            case parse_cgroup_limit(Bin) of
-                max -> detect_system_memory();
-                Limit -> Limit
-            end;
+            resolve_cgroup_limit(Bin);
         _ ->
             %% Try cgroup v1
-            case file:read_file("/sys/fs/cgroup/memory/memory.limit_in_bytes") of
-                {ok, Bin} ->
-                    case parse_cgroup_limit(Bin) of
-                        max -> detect_system_memory();
-                        Limit -> Limit
-                    end;
-                _ ->
-                    detect_system_memory()
-            end
+            detect_memory_limit_v1()
+    end.
+
+%% @private Detect memory limit from cgroup v1 or system memory.
+detect_memory_limit_v1() ->
+    case file:read_file("/sys/fs/cgroup/memory/memory.limit_in_bytes") of
+        {ok, Bin} ->
+            resolve_cgroup_limit(Bin);
+        _ ->
+            detect_system_memory()
+    end.
+
+%% @private Resolve a parsed cgroup limit, falling back to system memory.
+resolve_cgroup_limit(Bin) ->
+    case parse_cgroup_limit(Bin) of
+        max -> detect_system_memory();
+        Limit -> Limit
     end.
 
 %% @private Parse cgroup limit value.
@@ -234,10 +258,13 @@ parse_cgroup_limit(Bin) ->
     Str = string:trim(binary_to_list(Bin)),
     case Str of
         "max" -> max;
-        _ ->
-            try list_to_integer(Str)
-            catch _:_ -> max
-            end
+        _ -> parse_cgroup_limit_int(Str)
+    end.
+
+%% @private Parse a cgroup limit integer, defaulting to max on failure.
+parse_cgroup_limit_int(Str) ->
+    try list_to_integer(Str)
+    catch _:_ -> max
     end.
 
 %% @private Detect system memory from /proc/meminfo.
@@ -256,14 +283,17 @@ parse_meminfo([]) ->
     8 * 1024 * 1024 * 1024;  % Default fallback
 parse_meminfo(["MemTotal:" ++ Rest | _]) ->
     case string:tokens(string:trim(Rest), " \t") of
-        [NumStr, "kB" | _] ->
-            try list_to_integer(NumStr) * 1024
-            catch _:_ -> 8 * 1024 * 1024 * 1024
-            end;
+        [NumStr, "kB" | _] -> parse_memtotal_kb(NumStr);
         _ -> 8 * 1024 * 1024 * 1024
     end;
 parse_meminfo([_ | Rest]) ->
     parse_meminfo(Rest).
+
+%% @private Convert a kB MemTotal string to bytes, defaulting on failure.
+parse_memtotal_kb(NumStr) ->
+    try list_to_integer(NumStr) * 1024
+    catch _:_ -> 8 * 1024 * 1024 * 1024
+    end.
 
 %% @private Get scheduler utilization.
 %%
@@ -319,12 +349,7 @@ get_sampled_message_queue_len() ->
 
     %% Sum message queue lengths
     Total = lists:foldl(
-        fun(Pid, Acc) ->
-            case erlang:process_info(Pid, message_queue_len) of
-                {message_queue_len, Len} -> Acc + Len;
-                undefined -> Acc
-            end
-        end,
+        fun(Pid, Acc) -> add_message_queue_len(Pid, Acc) end,
         0,
         Sampled
     ),
@@ -333,6 +358,13 @@ get_sampled_message_queue_len() ->
     case {SampleSize, length(AllProcs)} of
         {S, T} when S < T -> round(Total * T / S);
         _ -> Total
+    end.
+
+%% @private Add a process's message queue length to the accumulator.
+add_message_queue_len(Pid, Acc) ->
+    case erlang:process_info(Pid, message_queue_len) of
+        {message_queue_len, Len} -> Acc + Len;
+        undefined -> Acc
     end.
 
 %% @private Sample N random elements from list.

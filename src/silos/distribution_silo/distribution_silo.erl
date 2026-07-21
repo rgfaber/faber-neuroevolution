@@ -471,18 +471,19 @@ create_ets_tables(Realm) ->
 
 apply_bounds(Params, Bounds) ->
     maps:fold(
-        fun(Key, Value, Acc) ->
-            case maps:get(Key, Bounds, undefined) of
-                {Min, Max} ->
-                    BoundedValue = max(Min, min(Max, Value)),
-                    maps:put(Key, BoundedValue, Acc);
-                undefined ->
-                    maps:put(Key, Value, Acc)
-            end
-        end,
+        fun(Key, Value, Acc) -> apply_bound(Key, Value, Acc, Bounds) end,
         #{},
         Params
     ).
+
+apply_bound(Key, Value, Acc, Bounds) ->
+    case maps:get(Key, Bounds, undefined) of
+        {Min, Max} ->
+            BoundedValue = max(Min, min(Max, Value)),
+            maps:put(Key, BoundedValue, Acc);
+        undefined ->
+            maps:put(Key, Value, Acc)
+    end.
 
 truncate_history(History, MaxSize) ->
     lists:sublist(History, MaxSize).
@@ -517,14 +518,14 @@ compute_load_balance(Islands) ->
             Loads = [maps:get(load, Data, 0.0) ||
                     {_Id, Data, _Ts} <- Islands],
             TotalLoad = lists:sum(Loads),
-            case TotalLoad > 0.0 of
-                false -> 1.0;
-                true ->
-                    Variance = compute_variance(Loads),
-                    %% Lower variance = better balance
-                    max(0.0, 1.0 - Variance * 5)
-            end
+            load_balance_from_total(TotalLoad, Loads)
     end.
+
+load_balance_from_total(TotalLoad, _Loads) when TotalLoad =< 0.0 -> 1.0;
+load_balance_from_total(_TotalLoad, Loads) ->
+    Variance = compute_variance(Loads),
+    %% Lower variance = better balance
+    max(0.0, 1.0 - Variance * 5).
 
 compute_connectivity(Islands) ->
     case length(Islands) of

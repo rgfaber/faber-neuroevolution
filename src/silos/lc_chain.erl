@@ -409,37 +409,8 @@ propagate_ltc(Cortex, Inputs, OldStates, Tau) ->
     %% For each neuron, compute LTC update
     DeltaT = 1.0,  % One generation = one time step
     {NewStates, NeuronOutputs} = lists:foldl(
-        fun(NeuronId, {AccStates, AccOutputs}) ->
-            Neuron = genotype:dirty_read({neuron, NeuronId}),
-            OldState = maps:get(NeuronId, AccStates, 0.0),
-
-            %% Compute weighted input from all sources (sensors + other neurons)
-            NetInput = compute_weighted_input(Neuron, SensorActivations, AccOutputs),
-
-            %% LTC dynamics: dx/dt = -x/τ + f(net_input)
-            %% Use neuron's time_constant if LTC, otherwise use level tau
-            NeuronTau = case Neuron#neuron.neuron_type of
-                ltc -> Neuron#neuron.time_constant;
-                cfc -> Neuron#neuron.time_constant;
-                _ -> Tau
-            end,
-
-            Decay = -OldState / NeuronTau,
-            Activation = activation(Neuron#neuron.af, NetInput),
-            NewState = OldState + (Decay + Activation) * DeltaT,
-
-            %% Clamp state to bounds
-            StateBound = Neuron#neuron.state_bound,
-            ClampedState = max(-StateBound, min(StateBound, NewState)),
-
-            %% Output is the tanh of state (standard) or state itself (LTC)
-            Output = case Neuron#neuron.neuron_type of
-                standard -> math:tanh(ClampedState);
-                _ -> ClampedState
-            end,
-
-            {maps:put(NeuronId, ClampedState, AccStates),
-             maps:put(NeuronId, Output, AccOutputs)}
+        fun(NeuronId, Acc) ->
+            ltc_step(NeuronId, Acc, SensorActivations, Tau, DeltaT)
         end,
         {OldStates, #{}},
         SortedNeurons
@@ -449,6 +420,39 @@ propagate_ltc(Cortex, Inputs, OldStates, Tau) ->
     Outputs = [get_actuator_output(AId, NeuronOutputs) || AId <- ActuatorIds],
 
     {NewStates, Outputs}.
+
+%% @private Compute one LTC update step for a single neuron.
+ltc_step(NeuronId, {AccStates, AccOutputs}, SensorActivations, Tau, DeltaT) ->
+    Neuron = genotype:dirty_read({neuron, NeuronId}),
+    OldState = maps:get(NeuronId, AccStates, 0.0),
+
+    %% Compute weighted input from all sources (sensors + other neurons)
+    NetInput = compute_weighted_input(Neuron, SensorActivations, AccOutputs),
+
+    %% LTC dynamics: dx/dt = -x/τ + f(net_input)
+    %% Use neuron's time_constant if LTC, otherwise use level tau
+    NeuronTau = case Neuron#neuron.neuron_type of
+        ltc -> Neuron#neuron.time_constant;
+        cfc -> Neuron#neuron.time_constant;
+        _ -> Tau
+    end,
+
+    Decay = -OldState / NeuronTau,
+    Activation = activation(Neuron#neuron.af, NetInput),
+    NewState = OldState + (Decay + Activation) * DeltaT,
+
+    %% Clamp state to bounds
+    StateBound = Neuron#neuron.state_bound,
+    ClampedState = max(-StateBound, min(StateBound, NewState)),
+
+    %% Output is the tanh of state (standard) or state itself (LTC)
+    Output = case Neuron#neuron.neuron_type of
+        standard -> math:tanh(ClampedState);
+        _ -> ClampedState
+    end,
+
+    {maps:put(NeuronId, ClampedState, AccStates),
+     maps:put(NeuronId, Output, AccOutputs)}.
 
 %% @private Build sensor activation map from input vector.
 build_sensor_activations(SensorIds, Inputs) ->
@@ -492,10 +496,14 @@ get_source_activation(SourceId, SensorActivations, NeuronOutputs) ->
         bias -> 1.0;  % Bias is always 1.0
         _ ->
             %% Try sensor first, then neuron
-            case maps:get(SourceId, SensorActivations, undefined) of
-                undefined -> maps:get(SourceId, NeuronOutputs, 0.0);
-                Value -> Value
-            end
+            sensor_or_neuron_value(SourceId, SensorActivations, NeuronOutputs)
+    end.
+
+%% @private Resolve a source value: sensor activation first, then neuron output.
+sensor_or_neuron_value(SourceId, SensorActivations, NeuronOutputs) ->
+    case maps:get(SourceId, SensorActivations, undefined) of
+        undefined -> maps:get(SourceId, NeuronOutputs, 0.0);
+        Value -> Value
     end.
 
 %% @private Extract weight value from weight specs.

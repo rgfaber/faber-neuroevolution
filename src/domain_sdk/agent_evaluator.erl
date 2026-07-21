@@ -199,12 +199,7 @@ validate(Module) ->
         fun() -> validate_name(Module) end
     ],
     Errors = lists:filtermap(
-        fun(Check) ->
-            case Check() of
-                ok -> false;
-                {error, Reason} -> {true, Reason}
-            end
-        end,
+        fun(Check) -> run_check(Check) end,
         Checks
     ),
     case Errors of
@@ -246,14 +241,18 @@ get_info(Module) ->
 evaluate(Module, Metrics) ->
     case validate(Module) of
         ok ->
-            try
-                Fitness = Module:calculate_fitness(Metrics),
-                {ok, Fitness}
-            catch
-                _:Error -> {error, {calculation_failed, Error}}
-            end;
+            safe_calculate_fitness(Module, Metrics);
         {error, _} = Error ->
             Error
+    end.
+
+%% @private Calculate fitness, trapping evaluator crashes.
+safe_calculate_fitness(Module, Metrics) ->
+    try
+        Fitness = Module:calculate_fitness(Metrics),
+        {ok, Fitness}
+    catch
+        _:Error -> {error, {calculation_failed, Error}}
     end.
 
 %% Evaluates metrics and returns both fitness and component breakdown.
@@ -269,23 +268,38 @@ evaluate(Module, Metrics) ->
 evaluate_with_breakdown(Module, Metrics) ->
     case validate(Module) of
         ok ->
-            try
-                Fitness = Module:calculate_fitness(Metrics),
-                Components = case erlang:function_exported(Module, fitness_components, 1) of
-                    true -> Module:fitness_components(Metrics);
-                    false -> #{}
-                end,
-                {ok, Fitness, Components}
-            catch
-                _:Error -> {error, {calculation_failed, Error}}
-            end;
+            safe_calculate_with_breakdown(Module, Metrics);
         {error, _} = Error ->
             Error
+    end.
+
+%% @private Calculate fitness plus component breakdown, trapping crashes.
+safe_calculate_with_breakdown(Module, Metrics) ->
+    try
+        Fitness = Module:calculate_fitness(Metrics),
+        Components = component_breakdown(Module, Metrics),
+        {ok, Fitness, Components}
+    catch
+        _:Error -> {error, {calculation_failed, Error}}
+    end.
+
+%% @private Component breakdown if the evaluator supports it, else empty.
+component_breakdown(Module, Metrics) ->
+    case erlang:function_exported(Module, fitness_components, 1) of
+        true -> Module:fitness_components(Metrics);
+        false -> #{}
     end.
 
 %%% ============================================================================
 %%% Internal Functions
 %%% ============================================================================
+
+%% @private Run a single validation check, keeping only its error reason.
+run_check(Check) ->
+    case Check() of
+        ok -> false;
+        {error, Reason} -> {true, Reason}
+    end.
 
 %% @private
 validate_exports(Module) ->

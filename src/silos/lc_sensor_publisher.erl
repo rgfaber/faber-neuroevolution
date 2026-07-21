@@ -243,22 +243,30 @@ try_publish_silo(SiloType, State, Now, Force) ->
             %% Silo not running
             State;
         Pid ->
-            try
-                case gen_server:call(Pid, get_state, 1000) of
-                    #{sensors := Sensors} when is_map(Sensors) ->
-                        maybe_publish(SiloType, Sensors, State, Now, Force);
-                    StateMap when is_map(StateMap) ->
-                        %% Some silos return sensors directly
-                        Sensors = extract_sensors(SiloType, StateMap),
-                        maybe_publish(SiloType, Sensors, State, Now, Force);
-                    _ ->
-                        State
-                end
-            catch
-                _:_ ->
-                    %% Silo busy or errored, skip this cycle
-                    State
-            end
+            publish_from_running_silo(SiloType, Pid, State, Now, Force)
+    end.
+
+%% @private Fetch silo state and publish, guarding against a busy/errored silo.
+publish_from_running_silo(SiloType, Pid, State, Now, Force) ->
+    try
+        publish_silo_state(SiloType, Pid, State, Now, Force)
+    catch
+        _:_ ->
+            %% Silo busy or errored, skip this cycle
+            State
+    end.
+
+%% @private Read the silo's reported state and publish sensors from it.
+publish_silo_state(SiloType, Pid, State, Now, Force) ->
+    case gen_server:call(Pid, get_state, 1000) of
+        #{sensors := Sensors} when is_map(Sensors) ->
+            maybe_publish(SiloType, Sensors, State, Now, Force);
+        StateMap when is_map(StateMap) ->
+            %% Some silos return sensors directly
+            Sensors = extract_sensors(SiloType, StateMap),
+            maybe_publish(SiloType, Sensors, State, Now, Force);
+        _ ->
+            State
     end.
 
 %% @private Extract sensors from silo state map.
@@ -267,17 +275,21 @@ extract_sensors(SiloType, StateMap) ->
     case maps:get(sensors, StateMap, undefined) of
         undefined ->
             %% Call collect_sensors on the module
-            Module = silo_module(SiloType),
-            case erlang:function_exported(Module, collect_sensors, 1) of
-                true ->
-                    %% This requires internal state, which we don't have
-                    %% Fall back to extracting known keys from StateMap
-                    extract_known_sensors(SiloType, StateMap);
-                false ->
-                    extract_known_sensors(SiloType, StateMap)
-            end;
+            extract_or_collect_sensors(SiloType, StateMap);
         Sensors when is_map(Sensors) ->
             Sensors
+    end.
+
+%% @private Extract sensors, checking whether the module exposes collect_sensors/1.
+extract_or_collect_sensors(SiloType, StateMap) ->
+    Module = silo_module(SiloType),
+    case erlang:function_exported(Module, collect_sensors, 1) of
+        true ->
+            %% This requires internal state, which we don't have
+            %% Fall back to extracting known keys from StateMap
+            extract_known_sensors(SiloType, StateMap);
+        false ->
+            extract_known_sensors(SiloType, StateMap)
     end.
 
 %% @private Extract known sensor keys from state map for each silo type.
@@ -398,17 +410,17 @@ sensors_changed(_New, Old) when map_size(Old) == 0 ->
     true;
 sensors_changed(New, Old) ->
     maps:fold(
-        fun(Key, Value, Acc) ->
-            case Acc of
-                true -> true;
-                false ->
-                    OldValue = maps:get(Key, Old, undefined),
-                    value_changed(Value, OldValue)
-            end
-        end,
+        fun(Key, Value, Acc) -> fold_sensor_changed(Key, Value, Acc, Old) end,
         false,
         New
     ).
+
+%% @private Fold step: short-circuit once any sensor has changed.
+fold_sensor_changed(_Key, _Value, true, _Old) ->
+    true;
+fold_sensor_changed(Key, Value, false, Old) ->
+    OldValue = maps:get(Key, Old, undefined),
+    value_changed(Value, OldValue).
 
 %% @private Check if a value changed significantly.
 value_changed(V, V) -> false;

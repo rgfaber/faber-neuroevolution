@@ -170,28 +170,7 @@ evaluate_batch_parallel(Population, EvaluatorModule, Options) ->
     %% This is the key for multi-core parallelism in Erlang
     Tasks = lists:map(
         fun({Individual, Index}) ->
-            %% Use spawn_opt with scheduler hint to distribute across cores
-            %% The scheduler hint cycles through all schedulers
-            SchedulerHint = (Index rem NumSchedulers) + 1,
-            Self = self(),
-            Ref = make_ref(),
-            Pid = spawn_opt(
-                fun() ->
-                    Result = try
-                        EvaluatorModule:evaluate(Individual, Options)
-                    catch
-                        Class:Reason:Stacktrace ->
-                            error_logger:error_msg(
-                                "[neuroevolution_evaluator] Batch eval failed: ~p:~p~n~p~n",
-                                [Class, Reason, Stacktrace]
-                            ),
-                            {error, {evaluation_failed, Class, Reason}}
-                    end,
-                    Self ! {eval_batch_result, Ref, Result}
-                end,
-                [{scheduler, SchedulerHint}, link]
-            ),
-            {Ref, Pid, Individual}
+            spawn_evaluation_task(Individual, Index, NumSchedulers, EvaluatorModule, Options)
         end,
         lists:zip(Population, lists:seq(0, length(Population) - 1))
     ),
@@ -199,19 +178,42 @@ evaluate_batch_parallel(Population, EvaluatorModule, Options) ->
     %% Collect all results with timeout
     collect_batch_results(Tasks, [], Timeout).
 
+%% @private Spawn a scheduler-pinned evaluation for a single individual.
+%% Uses spawn_opt with a scheduler hint to distribute across cores; the
+%% scheduler hint cycles through all schedulers for multi-core parallelism.
+spawn_evaluation_task(Individual, Index, NumSchedulers, EvaluatorModule, Options) ->
+    SchedulerHint = (Index rem NumSchedulers) + 1,
+    Self = self(),
+    Ref = make_ref(),
+    Pid = spawn_opt(
+        fun() ->
+            Result = run_batch_evaluation(EvaluatorModule, Individual, Options),
+            Self ! {eval_batch_result, Ref, Result}
+        end,
+        [{scheduler, SchedulerHint}, link]
+    ),
+    {Ref, Pid, Individual}.
+
+%% @private Run the evaluator for one individual, catching and logging failures.
+run_batch_evaluation(EvaluatorModule, Individual, Options) ->
+    try
+        EvaluatorModule:evaluate(Individual, Options)
+    catch
+        Class:Reason:Stacktrace ->
+            error_logger:error_msg(
+                "[neuroevolution_evaluator] Batch eval failed: ~p:~p~n~p~n",
+                [Class, Reason, Stacktrace]
+            ),
+            {error, {evaluation_failed, Class, Reason}}
+    end.
+
 %% @private Collect results from parallel batch evaluation
 collect_batch_results([], Acc, _Timeout) ->
     lists:reverse(Acc);
 collect_batch_results(Tasks, Acc, Timeout) ->
     receive
         {eval_batch_result, Ref, Result} ->
-            case lists:keytake(Ref, 1, Tasks) of
-                {value, {Ref, _Pid, _Individual}, RemainingTasks} ->
-                    collect_batch_results(RemainingTasks, [Result | Acc], Timeout);
-                false ->
-                    %% Stale result, ignore
-                    collect_batch_results(Tasks, Acc, Timeout)
-            end
+            take_batch_result(Ref, Result, Tasks, Acc, Timeout)
     after Timeout ->
         %% Timeout - kill remaining workers and return what we have
         NumPending = length(Tasks),
@@ -229,6 +231,16 @@ collect_batch_results(Tasks, Acc, Timeout) ->
         %% Return error for timed-out individuals
         TimeoutResults = [{error, timeout} || _ <- Tasks],
         lists:reverse(Acc) ++ TimeoutResults
+    end.
+
+%% @private Match a received batch result to its task and continue collecting.
+take_batch_result(Ref, Result, Tasks, Acc, Timeout) ->
+    case lists:keytake(Ref, 1, Tasks) of
+        {value, {Ref, _Pid, _Individual}, RemainingTasks} ->
+            collect_batch_results(RemainingTasks, [Result | Acc], Timeout);
+        false ->
+            %% Stale result, ignore
+            collect_batch_results(Tasks, Acc, Timeout)
     end.
 
 %% @doc Evaluate a batch distributed across all connected BEAM nodes.
@@ -279,27 +291,36 @@ evaluate_batch_distributed(Population, EvaluatorModule, Options) ->
             Results = evaluate_batch_parallel(Population, EvaluatorModule, Options),
             extract_individuals(Results);
         _ ->
-            %% Split population across nodes
-            Batches = split_into_batches(Population, NumNodes),
-
-            %% Spawn async tasks for each node's batch
-            Parent = self(),
-            Tasks = lists:zipwith(
-                fun(Batch, Node) ->
-                    Ref = make_ref(),
-                    spawn_link(fun() ->
-                        Result = evaluate_on_node(Batch, EvaluatorModule, Options, Node, Timeout),
-                        Parent ! {distributed_eval_result, Ref, Result}
-                    end),
-                    {Ref, Node, length(Batch)}
-                end,
-                Batches,
-                AllNodes
-            ),
-
-            %% Collect results
-            collect_distributed_results(Tasks, [], Timeout)
+            distribute_batches(Population, NumNodes, AllNodes, EvaluatorModule, Options, Timeout)
     end.
+
+%% @private Split the population across nodes, dispatch one task per node and
+%% collect the results.
+distribute_batches(Population, NumNodes, AllNodes, EvaluatorModule, Options, Timeout) ->
+    %% Split population across nodes
+    Batches = split_into_batches(Population, NumNodes),
+
+    %% Spawn async tasks for each node's batch
+    Parent = self(),
+    Tasks = lists:zipwith(
+        fun(Batch, Node) ->
+            spawn_node_batch(Batch, Node, Parent, EvaluatorModule, Options, Timeout)
+        end,
+        Batches,
+        AllNodes
+    ),
+
+    %% Collect results
+    collect_distributed_results(Tasks, [], Timeout).
+
+%% @private Spawn a linked worker that evaluates one node's batch and reports back.
+spawn_node_batch(Batch, Node, Parent, EvaluatorModule, Options, Timeout) ->
+    Ref = make_ref(),
+    spawn_link(fun() ->
+        Result = evaluate_on_node(Batch, EvaluatorModule, Options, Node, Timeout),
+        Parent ! {distributed_eval_result, Ref, Result}
+    end),
+    {Ref, Node, length(Batch)}.
 
 %% @doc Get list of connected worker nodes.
 -spec get_worker_nodes() -> [node()].
@@ -317,33 +338,38 @@ evaluate_on_node(Batch, EvaluatorModule, Options, Node, Timeout) ->
             extract_individuals(Results);
         false ->
             %% Remote evaluation via erpc
-            try
-                erpc:call(
-                    Node,
-                    ?MODULE,
-                    evaluate_batch_parallel,
-                    [Batch, EvaluatorModule, Options],
-                    Timeout
-                )
-            of
-                Results when is_list(Results) ->
-                    extract_individuals(Results)
-            catch
-                error:{erpc, noconnection} ->
-                    error_logger:warning_msg(
-                        "[neuroevolution_evaluator] Node ~p disconnected, retrying locally~n",
-                        [Node]
-                    ),
-                    LocalResults = evaluate_batch_parallel(Batch, EvaluatorModule, Options),
-                    extract_individuals(LocalResults);
-                Class:Reason:Stacktrace ->
-                    error_logger:error_msg(
-                        "[neuroevolution_evaluator] erpc failed on ~p: ~p:~p~n~p~n",
-                        [Node, Class, Reason, Stacktrace]
-                    ),
-                    %% Return original individuals on error
-                    Batch
-            end
+            evaluate_on_remote_node(Batch, EvaluatorModule, Options, Node, Timeout)
+    end.
+
+%% @private Evaluate a batch on a remote node via erpc, falling back to local
+%% evaluation on disconnection and returning the original batch on other errors.
+evaluate_on_remote_node(Batch, EvaluatorModule, Options, Node, Timeout) ->
+    try
+        erpc:call(
+            Node,
+            ?MODULE,
+            evaluate_batch_parallel,
+            [Batch, EvaluatorModule, Options],
+            Timeout
+        )
+    of
+        Results when is_list(Results) ->
+            extract_individuals(Results)
+    catch
+        error:{erpc, noconnection} ->
+            error_logger:warning_msg(
+                "[neuroevolution_evaluator] Node ~p disconnected, retrying locally~n",
+                [Node]
+            ),
+            LocalResults = evaluate_batch_parallel(Batch, EvaluatorModule, Options),
+            extract_individuals(LocalResults);
+        Class:Reason:Stacktrace ->
+            error_logger:error_msg(
+                "[neuroevolution_evaluator] erpc failed on ~p: ~p:~p~n~p~n",
+                [Node, Class, Reason, Stacktrace]
+            ),
+            %% Return original individuals on error
+            Batch
     end.
 
 %% @private Extract individuals from results, handling errors
@@ -389,13 +415,7 @@ collect_distributed_results([], Acc, _Timeout) ->
 collect_distributed_results(Tasks, Acc, Timeout) ->
     receive
         {distributed_eval_result, Ref, Results} ->
-            case lists:keytake(Ref, 1, Tasks) of
-                {value, {Ref, _Node, _Count}, RemainingTasks} ->
-                    collect_distributed_results(RemainingTasks, [Results | Acc], Timeout);
-                false ->
-                    %% Stale result, ignore
-                    collect_distributed_results(Tasks, Acc, Timeout)
-            end
+            take_distributed_result(Ref, Results, Tasks, Acc, Timeout)
     after Timeout ->
         NumPending = length(Tasks),
         error_logger:warning_msg(
@@ -404,4 +424,14 @@ collect_distributed_results(Tasks, Acc, Timeout) ->
         ),
         %% Return what we have so far
         lists:flatten(lists:reverse(Acc))
+    end.
+
+%% @private Match a received distributed result to its task and continue collecting.
+take_distributed_result(Ref, Results, Tasks, Acc, Timeout) ->
+    case lists:keytake(Ref, 1, Tasks) of
+        {value, {Ref, _Node, _Count}, RemainingTasks} ->
+            collect_distributed_results(RemainingTasks, [Results | Acc], Timeout);
+        false ->
+            %% Stale result, ignore
+            collect_distributed_results(Tasks, Acc, Timeout)
     end.

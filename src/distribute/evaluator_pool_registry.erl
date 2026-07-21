@@ -148,12 +148,7 @@ handle_call({get_available_evaluator, Options}, _From, State) ->
 
     %% Get all evaluators with available capacity
     Available = ets:foldl(
-        fun(Node, Acc) ->
-            case Node#evaluator_node.active < Node#evaluator_node.capacity of
-                true -> [Node | Acc];
-                false -> Acc
-            end
-        end,
+        fun(Node, Acc) -> accumulate_available(Node, Acc) end,
         [],
         Evaluators
     ),
@@ -241,12 +236,7 @@ handle_info(cleanup_stale, State) ->
 
     %% Find and remove stale evaluators
     Stale = ets:foldl(
-        fun(Node, Acc) ->
-            case Node#evaluator_node.last_heartbeat < Threshold of
-                true -> [Node#evaluator_node.node_id | Acc];
-                false -> Acc
-            end
-        end,
+        fun(Node, Acc) -> accumulate_stale(Node, Acc, Threshold) end,
         [],
         Evaluators
     ),
@@ -287,23 +277,40 @@ select_evaluator(Available, LocalNodeId, PreferLocal) ->
         {#evaluator_node{} = Node, R} when R < PreferLocal ->
             {ok, Node};
         _ ->
-            %% Select based on load and latency score
-            Scored = lists:map(
-                fun(Node) ->
-                    %% Lower score is better
-                    LoadRatio = Node#evaluator_node.active / Node#evaluator_node.capacity,
-                    LatencyScore = Node#evaluator_node.latency_ms / 100,
-                    ErrorPenalty = Node#evaluator_node.error_count * 0.5,
-                    Score = LoadRatio + LatencyScore + ErrorPenalty,
-                    {Score, Node}
-                end,
-                Available
-            ),
-
-            %% Sort by score and pick best
-            [{_Score, Best} | _] = lists:sort(fun({S1, _}, {S2, _}) -> S1 =< S2 end, Scored),
-            {ok, Best}
+            select_by_score(Available)
     end.
+
+%% @private Keep evaluator nodes that still have spare capacity.
+accumulate_available(#evaluator_node{active = Active, capacity = Capacity} = Node, Acc)
+        when Active < Capacity ->
+    [Node | Acc];
+accumulate_available(_Node, Acc) ->
+    Acc.
+
+%% @private Collect node ids whose heartbeat is older than the threshold.
+accumulate_stale(#evaluator_node{last_heartbeat = LastHeartbeat, node_id = NodeId}, Acc, Threshold)
+        when LastHeartbeat < Threshold ->
+    [NodeId | Acc];
+accumulate_stale(_Node, Acc, _Threshold) ->
+    Acc.
+
+%% @private Select the evaluator with the best (lowest) load/latency score.
+select_by_score(Available) ->
+    %% Select based on load and latency score
+    Scored = lists:map(
+        fun(Node) ->
+            %% Lower score is better
+            LoadRatio = Node#evaluator_node.active / Node#evaluator_node.capacity,
+            LatencyScore = Node#evaluator_node.latency_ms / 100,
+            ErrorPenalty = Node#evaluator_node.error_count * 0.5,
+            Score = LoadRatio + LatencyScore + ErrorPenalty,
+            {Score, Node}
+        end,
+        Available
+    ),
+    %% Sort by score and pick best
+    [{_Score, Best} | _] = lists:sort(fun({S1, _}, {S2, _}) -> S1 =< S2 end, Scored),
+    {ok, Best}.
 
 generate_node_id() ->
     Bytes = crypto:strong_rand_bytes(8),

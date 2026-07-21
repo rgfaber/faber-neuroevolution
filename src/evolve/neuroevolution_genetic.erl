@@ -53,16 +53,14 @@
     Weights2 :: [float()],
     ChildWeights :: [float()].
 crossover_uniform(Weights1, Weights2) ->
-    lists:zipwith(
-        fun(W1, W2) ->
-            case rand:uniform() < 0.5 of
-                true -> W1;
-                false -> W2
-            end
-        end,
-        Weights1,
-        Weights2
-    ).
+    lists:zipwith(fun pick_parent_weight/2, Weights1, Weights2).
+
+%% @private Randomly select one of two parent weights with equal probability.
+pick_parent_weight(W1, W2) ->
+    case rand:uniform() < 0.5 of
+        true -> W1;
+        false -> W2
+    end.
 
 %% @doc Mutate weights with given rate and strength.
 %%
@@ -81,18 +79,20 @@ crossover_uniform(Weights1, Weights2) ->
     MutatedWeights :: [float()].
 mutate_weights(Weights, MutationRate, MutationStrength) ->
     lists:map(
-        fun(W) ->
-            case rand:uniform() < MutationRate of
-                true ->
-                    %% Perturb: add random value in [-Strength, +Strength]
-                    Delta = (rand:uniform() - 0.5) * 2 * MutationStrength,
-                    W + Delta;
-                false ->
-                    W
-            end
-        end,
+        fun(W) -> maybe_perturb_weight(W, MutationRate, MutationStrength) end,
         Weights
     ).
+
+%% @private Perturb a single weight with the given rate and strength.
+maybe_perturb_weight(W, MutationRate, MutationStrength) ->
+    case rand:uniform() < MutationRate of
+        true ->
+            %% Perturb: add random value in [-Strength, +Strength]
+            Delta = (rand:uniform() - 0.5) * 2 * MutationStrength,
+            W + Delta;
+        false ->
+            W
+    end.
 
 %% @doc Mutate weights with layer-specific rates.
 %%
@@ -236,11 +236,12 @@ should_use_neat(Parent1, Parent2, Config) ->
 determine_fitter_parent(Parent1, Parent2) ->
     F1 = Parent1#individual.fitness,
     F2 = Parent2#individual.fitness,
-    if
-        F1 > F2 -> 1;
-        F2 > F1 -> 2;
-        true -> equal
-    end.
+    fitter_parent(F1, F2).
+
+%% @private Compare two fitness values; 1 if first fitter, 2 if second, equal otherwise.
+fitter_parent(F1, F2) when F1 > F2 -> 1;
+fitter_parent(F1, F2) when F2 > F1 -> 2;
+fitter_parent(_F1, _F2) -> equal.
 
 %% @private Get mutation config, with defaults if not specified.
 get_mutation_config(Config) ->

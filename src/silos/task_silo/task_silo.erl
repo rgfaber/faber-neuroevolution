@@ -486,34 +486,17 @@ update_velocity_state(BestFitness, TotalEvaluations, VelocityState) ->
             Checkpoints = lists:sublist([NewCheckpoint | OldCheckpoints], WindowSize + 1),
 
             %% Calculate velocity from previous checkpoint
-            Velocity = case OldCheckpoints of
-                [{PrevEvaluations, PrevFitness} | _] when TotalEvaluations > PrevEvaluations ->
-                    DeltaFitness = BestFitness - PrevFitness,
-                    DeltaEvaluations = TotalEvaluations - PrevEvaluations,
-                    %% Velocity = fitness improvement per 1000 evaluations
-                    (DeltaFitness / DeltaEvaluations) * 1000;
-                _ ->
-                    0.0
-            end,
+            Velocity = compute_velocity(OldCheckpoints, BestFitness, TotalEvaluations),
 
             %% Update rolling window of velocities
             NewWindow = lists:sublist([Velocity | OldWindow], WindowSize),
 
             %% Calculate average velocity
-            AvgVelocity = case NewWindow of
-                [] -> 0.0;
-                Velocities -> lists:sum(Velocities) / length(Velocities)
-            end,
+            AvgVelocity = average_velocity(NewWindow),
 
             %% Calculate stagnation severity: 0.0 = healthy, 1.0 = critical
             %% severity = clamp((threshold - avg_velocity) / threshold, 0.0, 1.0)
-            Severity = case VelocityThreshold > 0 of
-                true ->
-                    RawSeverity = (VelocityThreshold - AvgVelocity) / VelocityThreshold,
-                    max(0.0, min(1.0, RawSeverity));
-                false ->
-                    0.0
-            end,
+            Severity = compute_severity(VelocityThreshold, AvgVelocity),
 
             VelocityState#velocity_state{
                 fitness_checkpoints = Checkpoints,
@@ -523,6 +506,28 @@ update_velocity_state(BestFitness, TotalEvaluations, VelocityState) ->
                 last_total_evaluations = TotalEvaluations
             }
     end.
+
+%% @private Velocity = fitness improvement per 1000 evaluations from previous checkpoint.
+compute_velocity([{PrevEvaluations, PrevFitness} | _], BestFitness, TotalEvaluations)
+        when TotalEvaluations > PrevEvaluations ->
+    DeltaFitness = BestFitness - PrevFitness,
+    DeltaEvaluations = TotalEvaluations - PrevEvaluations,
+    (DeltaFitness / DeltaEvaluations) * 1000;
+compute_velocity(_OldCheckpoints, _BestFitness, _TotalEvaluations) ->
+    0.0.
+
+%% @private Average of a rolling velocity window.
+average_velocity([]) ->
+    0.0;
+average_velocity(Velocities) ->
+    lists:sum(Velocities) / length(Velocities).
+
+%% @private Stagnation severity clamped to 0.0-1.0.
+compute_severity(VelocityThreshold, AvgVelocity) when VelocityThreshold > 0 ->
+    RawSeverity = (VelocityThreshold - AvgVelocity) / VelocityThreshold,
+    max(0.0, min(1.0, RawSeverity));
+compute_severity(_VelocityThreshold, _AvgVelocity) ->
+    0.0.
 
 %% @private Compute L1 tactical boosts from stagnation severity.
 %%
@@ -538,19 +543,23 @@ compute_l1_boosts_from_severity(StagnationSeverity, ImprovementHistory, L2Guidan
     ExplorationBoost = StagnationSeverity * ExplorationStep,
 
     %% Exploitation boost: increases when consistently improving
-    ExploitationBoost = case length(ImprovementHistory) >= 3 of
-        true ->
-            RecentImprovements = lists:sublist(ImprovementHistory, 3),
-            AvgImprovement = lists:sum(RecentImprovements) / 3,
-            case AvgImprovement > 0.01 of
-                true -> min(1.0, AvgImprovement * 10);
-                false -> 0.0
-            end;
-        false ->
-            0.0
-    end,
+    ExploitationBoost = compute_exploitation_boost(ImprovementHistory),
 
     {ExplorationBoost, ExploitationBoost}.
+
+%% @private Exploitation boost increases when consistently improving.
+compute_exploitation_boost(ImprovementHistory) when length(ImprovementHistory) >= 3 ->
+    RecentImprovements = lists:sublist(ImprovementHistory, 3),
+    AvgImprovement = lists:sum(RecentImprovements) / 3,
+    boost_from_improvement(AvgImprovement);
+compute_exploitation_boost(_ImprovementHistory) ->
+    0.0.
+
+%% @private Positive average improvement yields a bounded exploitation boost.
+boost_from_improvement(AvgImprovement) when AvgImprovement > 0.01 ->
+    min(1.0, AvgImprovement * 10);
+boost_from_improvement(_AvgImprovement) ->
+    0.0.
 
 %%% ============================================================================
 %%% Internal Functions - Recommendations
@@ -569,21 +578,25 @@ compute_recommendations(#state{l0_tweann_enabled = true} = State) ->
             error_logger:warning_msg("[task_silo] L0 TWEANN enabled but lc_silo_chain not found, using rule-based~n"),
             compute_recommendations_rule_based(State);
         Pid when is_pid(Pid) ->
-            try
-                TweannParams = lc_silo_chain:get_recommendations(Pid, SensorInputs),
-                %% Merge with L0 defaults for any missing params and apply bounds
-                L0Defaults = task_l0_defaults:get_defaults(),
-                MergedParams = maps:merge(L0Defaults, TweannParams),
-                task_l0_defaults:apply_bounds(MergedParams)
-            catch
-                _:Reason ->
-                    error_logger:warning_msg("[task_silo] TWEANN query failed: ~p, using rule-based~n", [Reason]),
-                    compute_recommendations_rule_based(State)
-            end
+            query_tweann_recommendations(Pid, SensorInputs, State)
     end;
 compute_recommendations(State) ->
     %% Rule-based mode (L1 adjustments)
     compute_recommendations_rule_based(State).
+
+%% @private Query lc_silo_chain for TWEANN recommendations, falling back to rule-based on error.
+query_tweann_recommendations(Pid, SensorInputs, State) ->
+    try
+        TweannParams = lc_silo_chain:get_recommendations(Pid, SensorInputs),
+        %% Merge with L0 defaults for any missing params and apply bounds
+        L0Defaults = task_l0_defaults:get_defaults(),
+        MergedParams = maps:merge(L0Defaults, TweannParams),
+        task_l0_defaults:apply_bounds(MergedParams)
+    catch
+        _:Reason ->
+            error_logger:warning_msg("[task_silo] TWEANN query failed: ~p, using rule-based~n", [Reason]),
+            compute_recommendations_rule_based(State)
+    end.
 
 %% @private Rule-based recommendations using L1 tactical adjustments.
 compute_recommendations_rule_based(State) ->
@@ -903,24 +916,29 @@ maybe_query_l2_guidance(Stats, #state{l2_enabled = true, l2_guidance = OldGuidan
             error_logger:warning_msg("[task_silo] L2 enabled but meta_controller not found, using defaults~n"),
             State;
         Pid when is_pid(Pid) ->
-            try
-                NewGuidance = meta_controller:get_l1_guidance(Pid, Stats),
-                %% Log significant changes
-                case significant_guidance_change(OldGuidance, NewGuidance) of
-                    true ->
-                        error_logger:info_msg("[task_silo] L2 guidance updated: aggression=~.2f, exploration_step=~.2f~n",
-                            [NewGuidance#l2_guidance.aggression_factor,
-                             NewGuidance#l2_guidance.exploration_step]);
-                    false ->
-                        ok
-                end,
-                State#state{l2_guidance = NewGuidance}
-            catch
-                _:Reason ->
-                    error_logger:warning_msg("[task_silo] Failed to query L2 guidance: ~p~n", [Reason]),
-                    State
-            end
+            apply_l2_guidance(Pid, Stats, OldGuidance, State)
     end.
+
+%% @private Query meta_controller and fold new L2 guidance into state.
+apply_l2_guidance(Pid, Stats, OldGuidance, State) ->
+    try
+        NewGuidance = meta_controller:get_l1_guidance(Pid, Stats),
+        %% Log significant changes
+        log_guidance_change(significant_guidance_change(OldGuidance, NewGuidance), NewGuidance),
+        State#state{l2_guidance = NewGuidance}
+    catch
+        _:Reason ->
+            error_logger:warning_msg("[task_silo] Failed to query L2 guidance: ~p~n", [Reason]),
+            State
+    end.
+
+%% @private Log a significant L2 guidance change.
+log_guidance_change(true, NewGuidance) ->
+    error_logger:info_msg("[task_silo] L2 guidance updated: aggression=~.2f, exploration_step=~.2f~n",
+        [NewGuidance#l2_guidance.aggression_factor,
+         NewGuidance#l2_guidance.exploration_step]);
+log_guidance_change(false, _NewGuidance) ->
+    ok.
 
 %% @private Check if L2 guidance changed significantly (for logging).
 significant_guidance_change(Old, New) ->
@@ -962,15 +980,16 @@ maybe_start_lc_silo_chain(true, Config) ->
                 noise_std => maps:get(lc_noise_std, Config, 0.1),
                 noise_decay => maps:get(lc_noise_decay, Config, 0.999)
             },
-            case lc_silo_chain:start_link(lc_task_silo_chain, ChainConfig) of
-                {ok, _Pid} ->
-                    error_logger:info_msg("[task_silo] Started lc_silo_chain for 3-level TWEANN mode~n");
-                {error, Reason} ->
-                    error_logger:error_msg("[task_silo] Failed to start lc_silo_chain: ~p~n", [Reason])
-            end;
+            log_lc_silo_chain_start(lc_silo_chain:start_link(lc_task_silo_chain, ChainConfig));
         _Pid ->
             error_logger:info_msg("[task_silo] lc_silo_chain already running~n")
     end.
+
+%% @private Log the outcome of starting lc_silo_chain.
+log_lc_silo_chain_start({ok, _Pid}) ->
+    error_logger:info_msg("[task_silo] Started lc_silo_chain for 3-level TWEANN mode~n");
+log_lc_silo_chain_start({error, Reason}) ->
+    error_logger:error_msg("[task_silo] Failed to start lc_silo_chain: ~p~n", [Reason]).
 
 %% @private Report reward to lc_silo_chain for online learning.
 %%

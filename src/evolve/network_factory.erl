@@ -92,19 +92,17 @@ crossover(Parent1, Parent2) ->
     Weights2 = network_evaluator:get_weights(Parent2),
 
     %% Uniform crossover: randomly select each weight from either parent
-    ChildWeights = lists:zipwith(
-        fun(W1, W2) ->
-            case rand:uniform() < 0.5 of
-                true -> W1;
-                false -> W2
-            end
-        end,
-        Weights1,
-        Weights2
-    ),
+    ChildWeights = lists:zipwith(fun pick_parent_weight/2, Weights1, Weights2),
 
     %% Create child network with crossed weights
     network_evaluator:set_weights(Parent1, ChildWeights).
+
+%% @private Randomly select one of two parent weights with equal probability.
+pick_parent_weight(W1, W2) ->
+    case rand:uniform() < 0.5 of
+        true -> W1;
+        false -> W2
+    end.
 
 %% @doc Mutate a CfC network's weights and neuron parameters.
 %%
@@ -149,15 +147,14 @@ mutate_single_neuron_meta(#{neuron_type := Type, tau := Tau,
     NewBound = clamp(Bound + rand:normal() * Strength * 0.3, 0.1, 5.0),
     %% Neuron type toggle: ~5% chance
     NewType = case rand:uniform() < 0.05 of
-        true ->
-            case Type of
-                standard -> cfc;
-                cfc -> standard
-            end;
-        false ->
-            Type
+        true -> toggle_neuron_type(Type);
+        false -> Type
     end,
     Meta#{neuron_type := NewType, tau := NewTau, state_bound := NewBound}.
+
+%% @private Toggle a neuron type between standard and cfc.
+toggle_neuron_type(standard) -> cfc;
+toggle_neuron_type(cfc) -> standard.
 
 %% @private Clamp value to range.
 clamp(Val, Min, _Max) when Val < Min -> Min;

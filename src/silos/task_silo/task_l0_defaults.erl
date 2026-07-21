@@ -113,15 +113,17 @@ clamp(Param, Value) ->
 apply_bounds(Params) when is_map(Params) ->
     Bounds = get_bounds(),
     maps:map(
-        fun(Key, Value) ->
-            case maps:get(Key, Bounds, undefined) of
-                undefined -> Value;
-                {Min, Max} when is_number(Value) -> max(Min, min(Max, Value));
-                _ -> Value
-            end
-        end,
+        fun(Key, Value) -> clamp_to_bounds(Key, Value, Bounds) end,
         Params
     ).
+
+%% @private Clamp a single parameter to its configured bounds.
+clamp_to_bounds(Key, Value, Bounds) ->
+    case maps:get(Key, Bounds, undefined) of
+        undefined -> Value;
+        {Min, Max} when is_number(Value) -> max(Min, min(Max, Value));
+        _ -> Value
+    end.
 
 %% @doc Merge provided parameters with defaults.
 %%

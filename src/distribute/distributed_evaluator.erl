@@ -202,10 +202,7 @@ handle_info({evaluation_failed, RequestId, Reason}, State) ->
             {noreply, update_stats(evaluation_failed, State)};
         [#pending_eval{retries_left = N} = Eval] ->
             %% Retry
-            spawn_link(fun() ->
-                retry_evaluation(Eval#pending_eval{retries_left = N - 1}, State)
-            end),
-            {noreply, update_stats(evaluation_retried, State)};
+            retry_failed_evaluation(Eval, N, State);
         [] ->
             {noreply, State}
     end;
@@ -236,35 +233,39 @@ do_evaluate_with_retry(Individual, EvaluatorModule, Options, PreferLocal, Timeou
     %% Get available evaluator
     case evaluator_pool_registry:get_available_evaluator(#{prefer_local => PreferLocal}) of
         {ok, Evaluator} ->
-            NodeId = element(2, Evaluator),  % node_id field
-            evaluator_pool_registry:report_evaluation_started(NodeId),
-
-            StartTime = erlang:system_time(millisecond),
-
-            Result = macula_mesh:request_evaluation(NodeId, Individual, EvaluatorModule, Options#{
-                timeout_ms => TimeoutMs
-            }),
-
-            EndTime = erlang:system_time(millisecond),
-            LatencyMs = EndTime - StartTime,
-
-            case Result of
-                {ok, {ok, Fitness}} ->
-                    evaluator_pool_registry:report_evaluation_completed(NodeId, LatencyMs),
-                    {ok, Fitness};
-                {ok, {error, Reason}} ->
-                    evaluator_pool_registry:report_evaluation_completed(NodeId, LatencyMs),
-                    {error, Reason};
-                {error, timeout} ->
-                    %% Retry on timeout
-                    do_evaluate_with_retry(Individual, EvaluatorModule, Options, PreferLocal, TimeoutMs, RetriesLeft - 1);
-                {error, _OtherReason} ->
-                    %% Retry on other errors
-                    do_evaluate_with_retry(Individual, EvaluatorModule, Options, PreferLocal, TimeoutMs, RetriesLeft - 1)
-            end;
+            evaluate_on_node(Evaluator, Individual, EvaluatorModule, Options, PreferLocal, TimeoutMs, RetriesLeft);
         {error, no_evaluators} ->
             %% No evaluators available, try local evaluation
             evaluate_locally(Individual, EvaluatorModule, Options)
+    end.
+
+%% @private Perform an evaluation on the selected remote node, retrying on failure.
+evaluate_on_node(Evaluator, Individual, EvaluatorModule, Options, PreferLocal, TimeoutMs, RetriesLeft) ->
+    NodeId = element(2, Evaluator),  % node_id field
+    evaluator_pool_registry:report_evaluation_started(NodeId),
+
+    StartTime = erlang:system_time(millisecond),
+
+    Result = macula_mesh:request_evaluation(NodeId, Individual, EvaluatorModule, Options#{
+        timeout_ms => TimeoutMs
+    }),
+
+    EndTime = erlang:system_time(millisecond),
+    LatencyMs = EndTime - StartTime,
+
+    case Result of
+        {ok, {ok, Fitness}} ->
+            evaluator_pool_registry:report_evaluation_completed(NodeId, LatencyMs),
+            {ok, Fitness};
+        {ok, {error, Reason}} ->
+            evaluator_pool_registry:report_evaluation_completed(NodeId, LatencyMs),
+            {error, Reason};
+        {error, timeout} ->
+            %% Retry on timeout
+            do_evaluate_with_retry(Individual, EvaluatorModule, Options, PreferLocal, TimeoutMs, RetriesLeft - 1);
+        {error, _OtherReason} ->
+            %% Retry on other errors
+            do_evaluate_with_retry(Individual, EvaluatorModule, Options, PreferLocal, TimeoutMs, RetriesLeft - 1)
     end.
 
 do_evaluate_batch(Individuals, EvaluatorModule, Options, MaxParallel, State) ->
@@ -290,6 +291,13 @@ evaluate_locally(Individual, EvaluatorModule, Options) ->
         Class:Reason:_Stacktrace ->
             {error, {Class, Reason}}
     end.
+
+%% @private Spawn an asynchronous retry with a decremented retry counter.
+retry_failed_evaluation(Eval, N, State) ->
+    spawn_link(fun() ->
+        retry_evaluation(Eval#pending_eval{retries_left = N - 1}, State)
+    end),
+    {noreply, update_stats(evaluation_retried, State)}.
 
 retry_evaluation(#pending_eval{individual = Individual, evaluator_module = Module, options = Options} = Eval, State) ->
     Result = do_evaluate(Individual, Module, Options, State),
@@ -322,23 +330,27 @@ pmap_limited(Fun, Items, MaxParallel) ->
 
     %% Send work items
     IndexedItems = lists:zip(lists:seq(1, length(Items)), Items),
-    lists:foreach(fun({Idx, Item}) ->
-        receive
-            {ready, Worker} ->
-                Worker ! {work, Idx, Item}
-        end
-    end, IndexedItems),
+    lists:foreach(fun({Idx, Item}) -> dispatch_work_item(Idx, Item) end, IndexedItems),
 
     %% Signal workers to stop
-    lists:foreach(fun(Worker) ->
-        receive
-            {ready, Worker} ->
-                Worker ! stop
-        end
-    end, Workers),
+    lists:foreach(fun(Worker) -> stop_worker(Worker) end, Workers),
 
     %% Collect results
     collect_pmap_results(Ref, length(Items), #{}).
+
+%% @private Wait for a ready worker and hand it a work item.
+dispatch_work_item(Idx, Item) ->
+    receive
+        {ready, Worker} ->
+            Worker ! {work, Idx, Item}
+    end.
+
+%% @private Wait for a worker to report ready, then tell it to stop.
+stop_worker(Worker) ->
+    receive
+        {ready, Worker} ->
+            Worker ! stop
+    end.
 
 pmap_worker(Parent, Ref, Fun) ->
     Parent ! {ready, self()},

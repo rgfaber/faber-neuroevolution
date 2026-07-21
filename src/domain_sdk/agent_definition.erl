@@ -167,12 +167,7 @@ validate(Module) ->
         fun() -> validate_topology(Module) end
     ],
     Errors = lists:filtermap(
-        fun(Check) ->
-            case Check() of
-                ok -> false;
-                {error, Reason} -> {true, Reason}
-            end
-        end,
+        fun(Check) -> run_check(Check) end,
         Checks
     ),
     case Errors of
@@ -217,6 +212,13 @@ get_info(Module) ->
 %%% Internal Functions
 %%% ============================================================================
 
+%% @private Run a single validation check, keeping only its error reason.
+run_check(Check) ->
+    case Check() of
+        ok -> false;
+        {error, Reason} -> {true, Reason}
+    end.
+
 %% @private
 validate_exports(Module) ->
     RequiredExports = [{name, 0}, {version, 0}, {network_topology, 0}],
@@ -245,11 +247,7 @@ validate_name(Module) ->
 validate_version(Module) ->
     try Module:version() of
         Version when is_binary(Version), byte_size(Version) > 0 ->
-            %% Basic semantic version validation (X.Y.Z pattern)
-            case re:run(Version, <<"^[0-9]+\\.[0-9]+\\.[0-9]+">>) of
-                {match, _} -> ok;
-                nomatch -> {error, {invalid_version_format, Version}}
-            end;
+            validate_version_format(Version);
         Version when is_binary(Version) ->
             {error, {invalid_version, empty_binary}};
         Other ->
@@ -259,6 +257,13 @@ validate_version(Module) ->
             {error, {version_callback_failed, Reason}}
     end.
 
+%% @private Basic semantic version validation (X.Y.Z pattern).
+validate_version_format(Version) ->
+    case re:run(Version, <<"^[0-9]+\\.[0-9]+\\.[0-9]+">>) of
+        {match, _} -> ok;
+        nomatch -> {error, {invalid_version_format, Version}}
+    end.
+
 %% @private
 validate_topology(Module) ->
     try Module:network_topology() of
@@ -266,14 +271,21 @@ validate_topology(Module) ->
           when is_integer(Inputs), Inputs > 0,
                is_list(HiddenLayers),
                is_integer(Outputs), Outputs > 0 ->
-            %% Validate hidden layers are all positive integers
-            case lists:all(fun(H) -> is_integer(H) andalso H > 0 end, HiddenLayers) of
-                true -> ok;
-                false -> {error, {invalid_hidden_layers, HiddenLayers}}
-            end;
+            validate_hidden_layers(HiddenLayers);
         Other ->
             {error, {invalid_topology, Other}}
     catch
         _:Reason ->
             {error, {topology_callback_failed, Reason}}
     end.
+
+%% @private Validate hidden layers are all positive integers.
+validate_hidden_layers(HiddenLayers) ->
+    case lists:all(fun is_positive_integer/1, HiddenLayers) of
+        true -> ok;
+        false -> {error, {invalid_hidden_layers, HiddenLayers}}
+    end.
+
+%% @private
+is_positive_integer(H) ->
+    is_integer(H) andalso H > 0.

@@ -542,17 +542,17 @@ maybe_publish_sensors_event(State) ->
 %% @private Check if any sensor changed by more than threshold.
 sensors_changed_significantly(Current, Last) ->
     maps:fold(
-        fun(Key, Value, Acc) ->
-            case Acc of
-                true -> true;
-                false ->
-                    OldValue = maps:get(Key, Last, 0.0),
-                    abs(Value - OldValue) > ?CHANGE_THRESHOLD
-            end
-        end,
+        fun(Key, Value, Acc) -> sensor_changed(Key, Value, Acc, Last) end,
         false,
         Current
     ).
+
+%% @private Fold helper: report whether any sensor crossed the threshold.
+sensor_changed(_Key, _Value, true, _Last) ->
+    true;
+sensor_changed(Key, Value, false, Last) ->
+    OldValue = maps:get(Key, Last, 0.0),
+    abs(Value - OldValue) > ?CHANGE_THRESHOLD.
 
 %% @private Publish task_sensors_updated event.
 publish_sensors_event(Realm, Sensors) ->

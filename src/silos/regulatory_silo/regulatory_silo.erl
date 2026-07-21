@@ -412,9 +412,7 @@ handle_cast({update_expression, IndividualId, GeneExpressionMap}, State) ->
 
     %% Compute expression level
     ActiveCount = maps:fold(
-        fun(_Gene, Expressed, Acc) ->
-            case Expressed of true -> Acc + 1; false -> Acc end
-        end,
+        fun count_expressed/3,
         0,
         GeneExpressionMap
     ),
@@ -571,6 +569,10 @@ compute_variance(Values) ->
 
 safe_ratio(_Num, Denom) when Denom == 0.0; Denom == 0 -> 0.0;
 safe_ratio(Num, Denom) -> Num / Denom.
+
+%% @private Fold helper: count genes that are expressed.
+count_expressed(_Gene, true, Acc) -> Acc + 1;
+count_expressed(_Gene, false, Acc) -> Acc.
 
 %%% ============================================================================
 %%% Internal Functions - History Management

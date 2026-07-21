@@ -495,18 +495,19 @@ create_ets_tables(Realm) ->
 
 apply_bounds(Params, Bounds) ->
     maps:fold(
-        fun(Key, Value, Acc) ->
-            case maps:get(Key, Bounds, undefined) of
-                {Min, Max} ->
-                    BoundedValue = max(Min, min(Max, Value)),
-                    maps:put(Key, BoundedValue, Acc);
-                undefined ->
-                    maps:put(Key, Value, Acc)
-            end
-        end,
+        fun(Key, Value, Acc) -> apply_bound(Key, Value, Acc, Bounds) end,
         #{},
         Params
     ).
+
+apply_bound(Key, Value, Acc, Bounds) ->
+    case maps:get(Key, Bounds, undefined) of
+        {Min, Max} ->
+            BoundedValue = max(Min, min(Max, Value)),
+            maps:put(Key, BoundedValue, Acc);
+        undefined ->
+            maps:put(Key, Value, Acc)
+    end.
 
 truncate_history(History, MaxSize) ->
     lists:sublist(History, MaxSize).
@@ -560,14 +561,14 @@ compute_language_stability(Signals) ->
             %% Signals with consistent usage are stable
             UsageCounts = [maps:get(usage_count, Data, 0) ||
                           {_Id, Data, _Ts} <- Signals],
-            case lists:sum(UsageCounts) of
-                0 -> 0.5;
-                Total ->
-                    %% Higher average usage = more stable
-                    AvgUsage = Total / N,
-                    min(1.0, AvgUsage / 10)
-            end
+            language_stability_from_usage(lists:sum(UsageCounts), N)
     end.
+
+language_stability_from_usage(0, _N) -> 0.5;
+language_stability_from_usage(Total, N) ->
+    %% Higher average usage = more stable
+    AvgUsage = Total / N,
+    min(1.0, AvgUsage / 10).
 
 compute_dialect_count(Signals) ->
     Dialects = lists:usort([maps:get(dialect, Data, default) ||

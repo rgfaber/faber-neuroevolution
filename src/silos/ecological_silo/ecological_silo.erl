@@ -494,18 +494,19 @@ create_ets_tables(Realm) ->
 
 apply_bounds(Params, Bounds) ->
     maps:fold(
-        fun(Key, Value, Acc) ->
-            case maps:get(Key, Bounds, undefined) of
-                {Min, Max} ->
-                    BoundedValue = max(Min, min(Max, Value)),
-                    maps:put(Key, BoundedValue, Acc);
-                undefined ->
-                    maps:put(Key, Value, Acc)
-            end
-        end,
+        fun(Key, Value, Acc) -> apply_bound(Key, Value, Acc, Bounds) end,
         #{},
         Params
     ).
+
+apply_bound(Key, Value, Acc, Bounds) ->
+    case maps:get(Key, Bounds, undefined) of
+        {Min, Max} ->
+            BoundedValue = max(Min, min(Max, Value)),
+            maps:put(Key, BoundedValue, Acc);
+        undefined ->
+            maps:put(Key, Value, Acc)
+    end.
 
 compute_niche_overlap(Niches) ->
     case length(Niches) of
@@ -515,14 +516,14 @@ compute_niche_overlap(Niches) ->
             Occupancies = [length(maps:get(occupants, Data, [])) ||
                           {_Id, Data, _Ts} <- Niches],
             TotalOccupancy = lists:sum(Occupancies),
-            case TotalOccupancy of
-                0 -> 0.0;
-                _ ->
-                    %% More niches with similar occupancy = more overlap potential
-                    Variance = compute_variance(Occupancies),
-                    max(0.0, 1.0 - Variance / 10.0)
-            end
+            niche_overlap_from_occupancy(TotalOccupancy, Occupancies)
     end.
+
+niche_overlap_from_occupancy(0, _Occupancies) -> 0.0;
+niche_overlap_from_occupancy(_TotalOccupancy, Occupancies) ->
+    %% More niches with similar occupancy = more overlap potential
+    Variance = compute_variance(Occupancies),
+    max(0.0, 1.0 - Variance / 10.0).
 
 compute_total_occupancy(Niches) ->
     lists:sum([length(maps:get(occupants, Data, [])) ||
@@ -580,19 +581,20 @@ compute_biodiversity_index(Niches) ->
             Occupancies = [length(maps:get(occupants, Data, [])) ||
                           {_Id, Data, _Ts} <- Niches],
             Total = lists:sum(Occupancies),
-            case Total of
-                0 -> 0.0;
-                _ ->
-                    Proportions = [O / Total || O <- Occupancies, O > 0],
-                    Entropy = -lists:sum([P * math:log(P) || P <- Proportions]),
-                    %% Normalize by max entropy
-                    MaxEntropy = math:log(N),
-                    case MaxEntropy > 0.0 of
-                        false -> 0.0;
-                        true -> min(1.0, Entropy / MaxEntropy)
-                    end
-            end
+            biodiversity_from_occupancy(Total, Occupancies, N)
     end.
+
+biodiversity_from_occupancy(0, _Occupancies, _N) -> 0.0;
+biodiversity_from_occupancy(Total, Occupancies, N) ->
+    Proportions = [O / Total || O <- Occupancies, O > 0],
+    Entropy = -lists:sum([P * math:log(P) || P <- Proportions]),
+    %% Normalize by max entropy
+    MaxEntropy = math:log(N),
+    normalize_entropy(Entropy, MaxEntropy).
+
+normalize_entropy(_Entropy, MaxEntropy) when MaxEntropy =< 0.0 -> 0.0;
+normalize_entropy(Entropy, MaxEntropy) ->
+    min(1.0, Entropy / MaxEntropy).
 
 compute_variance([]) -> 0.0;
 compute_variance(Values) ->

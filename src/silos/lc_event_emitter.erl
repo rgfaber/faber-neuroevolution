@@ -101,12 +101,16 @@ get_backend_state() ->
         false ->
             undefined;
         true ->
-            case persistent_term:get(?STATE_KEY, undefined) of
-                undefined ->
-                    init_backend_state();
-                State ->
-                    State
-            end
+            cached_or_init_backend_state()
+    end.
+
+%% @private Return the cached backend state, initializing it if absent.
+cached_or_init_backend_state() ->
+    case persistent_term:get(?STATE_KEY, undefined) of
+        undefined ->
+            init_backend_state();
+        State ->
+            State
     end.
 
 %%% ============================================================================
@@ -120,10 +124,14 @@ check_backend_available() ->
             false;
         _ ->
             %% Module exists, try to ensure it's loaded
-            case code:ensure_loaded(?BACKEND_MODULE) of
-                {module, ?BACKEND_MODULE} -> true;
-                {error, _} -> false
-            end
+            ensure_backend_loaded()
+    end.
+
+%% @private Ensure the backend module is loaded.
+ensure_backend_loaded() ->
+    case code:ensure_loaded(?BACKEND_MODULE) of
+        {module, ?BACKEND_MODULE} -> true;
+        {error, _} -> false
     end.
 
 %% @private Initialize the backend state and cache it.

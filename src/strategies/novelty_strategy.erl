@@ -141,51 +141,56 @@ handle_evaluation_result(IndividualId, FitnessResult, State) ->
     PopMap = State#novelty_state.population_map,
     case maps:find(IndividualId, PopMap) of
         {ok, Individual} ->
-            %% Update individual with fitness and behavior
-            NewMetrics = case Behavior of
-                undefined -> Individual#individual.metrics;
-                _ -> maps:put(behavior, Behavior, Individual#individual.metrics)
-            end,
-            UpdatedInd = Individual#individual{fitness = Fitness, metrics = NewMetrics},
-
-            %% Update both map and list
-            NewPopMap = maps:put(IndividualId, UpdatedInd, PopMap),
-            UpdatedPop = update_individual_in_list(UpdatedInd, State#novelty_state.population),
-
-            %% Track evaluation progress
-            NewEvaluatedCount = State#novelty_state.evaluated_count + 1,
-
-            %% Create individual_evaluated event
-            EvalEvent = #individual_evaluated{
-                id = IndividualId,
-                fitness = Fitness,
-                metrics = Metrics,
-                timestamp = erlang:timestamp(),
-                metadata = #{generation => State#novelty_state.generation}
-            },
-
-            %% Check if all individuals have been evaluated
-            PopSize = State#novelty_state.population_size,
-            case NewEvaluatedCount >= PopSize of
-                true ->
-                    %% All evaluated - compute novelty and breed
-                    handle_cohort_complete(State#novelty_state{
-                        population = UpdatedPop,
-                        population_map = NewPopMap,
-                        evaluated_count = NewEvaluatedCount
-                    }, [EvalEvent]);
-                false ->
-                    %% Still evaluating
-                    NewState = State#novelty_state{
-                        population = UpdatedPop,
-                        population_map = NewPopMap,
-                        evaluated_count = NewEvaluatedCount
-                    },
-                    {[], [EvalEvent], NewState}
-            end;
+            handle_found_individual(IndividualId, Individual, Fitness, Metrics,
+                                    Behavior, PopMap, State);
         error ->
             %% Individual not found (shouldn't happen)
             {[], [], State}
+    end.
+
+%% @private Process an evaluation result for a located individual.
+handle_found_individual(IndividualId, Individual, Fitness, Metrics, Behavior, PopMap, State) ->
+    %% Update individual with fitness and behavior
+    NewMetrics = case Behavior of
+        undefined -> Individual#individual.metrics;
+        _ -> maps:put(behavior, Behavior, Individual#individual.metrics)
+    end,
+    UpdatedInd = Individual#individual{fitness = Fitness, metrics = NewMetrics},
+
+    %% Update both map and list
+    NewPopMap = maps:put(IndividualId, UpdatedInd, PopMap),
+    UpdatedPop = update_individual_in_list(UpdatedInd, State#novelty_state.population),
+
+    %% Track evaluation progress
+    NewEvaluatedCount = State#novelty_state.evaluated_count + 1,
+
+    %% Create individual_evaluated event
+    EvalEvent = #individual_evaluated{
+        id = IndividualId,
+        fitness = Fitness,
+        metrics = Metrics,
+        timestamp = erlang:timestamp(),
+        metadata = #{generation => State#novelty_state.generation}
+    },
+
+    %% Check if all individuals have been evaluated
+    PopSize = State#novelty_state.population_size,
+    case NewEvaluatedCount >= PopSize of
+        true ->
+            %% All evaluated - compute novelty and breed
+            handle_cohort_complete(State#novelty_state{
+                population = UpdatedPop,
+                population_map = NewPopMap,
+                evaluated_count = NewEvaluatedCount
+            }, [EvalEvent]);
+        false ->
+            %% Still evaluating
+            NewState = State#novelty_state{
+                population = UpdatedPop,
+                population_map = NewPopMap,
+                evaluated_count = NewEvaluatedCount
+            },
+            {[], [EvalEvent], NewState}
     end.
 
 %% @doc Periodic tick - not heavily used in novelty strategy.
@@ -373,15 +378,14 @@ handle_cohort_complete(State, AccEvents) ->
 
 %% @private Extract behavior descriptors from population.
 extract_behaviors(Population) ->
-    lists:filtermap(
-        fun(Ind) ->
-            case maps:get(behavior, Ind#individual.metrics, undefined) of
-                undefined -> false;
-                Behavior -> {true, {Ind#individual.id, Behavior}}
-            end
-        end,
-        Population
-    ).
+    lists:filtermap(fun extract_behavior_entry/1, Population).
+
+%% @private Extract a {id, behavior} entry from an individual, if present.
+extract_behavior_entry(Ind) ->
+    case maps:get(behavior, Ind#individual.metrics, undefined) of
+        undefined -> false;
+        Behavior -> {true, {Ind#individual.id, Behavior}}
+    end.
 
 %% @private Compute novelty scores for all individuals.
 %%
@@ -396,28 +400,32 @@ compute_novelty_scores(Population, PopBehaviors, Archive, Params) ->
 
     lists:map(
         fun(Ind) ->
-            Behavior = maps:get(behavior, Ind#individual.metrics, undefined),
-            Novelty = case Behavior of
-                undefined ->
-                    %% No behavior descriptor - assign zero novelty
-                    0.0;
-                _ ->
-                    %% Use NIF-accelerated K-NN novelty computation
-                    %% tweann_nif handles fallback internally if NIF not loaded
-                    try
-                        tweann_nif:knn_novelty(Behavior, PopBehaviorVecs, ArchiveBehaviorVecs, K)
-                    catch
-                        _:_ ->
-                            %% Dimension mismatch or other error — degrade gracefully
-                            0.0
-                    end
-            end,
-            %% Store novelty in metrics
-            NewMetrics = maps:put(novelty, Novelty, Ind#individual.metrics),
-            Ind#individual{metrics = NewMetrics}
+            score_individual_novelty(Ind, PopBehaviorVecs, ArchiveBehaviorVecs, K)
         end,
         Population
     ).
+
+%% @private Compute and store the novelty score for a single individual.
+score_individual_novelty(Ind, PopBehaviorVecs, ArchiveBehaviorVecs, K) ->
+    Behavior = maps:get(behavior, Ind#individual.metrics, undefined),
+    Novelty = novelty_for(Behavior, PopBehaviorVecs, ArchiveBehaviorVecs, K),
+    %% Store novelty in metrics
+    NewMetrics = maps:put(novelty, Novelty, Ind#individual.metrics),
+    Ind#individual{metrics = NewMetrics}.
+
+%% @private Novelty of a behavior descriptor via NIF-accelerated K-NN.
+%% tweann_nif handles fallback internally if NIF not loaded.
+novelty_for(undefined, _PopBehaviorVecs, _ArchiveBehaviorVecs, _K) ->
+    %% No behavior descriptor - assign zero novelty
+    0.0;
+novelty_for(Behavior, PopBehaviorVecs, ArchiveBehaviorVecs, K) ->
+    try
+        tweann_nif:knn_novelty(Behavior, PopBehaviorVecs, ArchiveBehaviorVecs, K)
+    catch
+        _:_ ->
+            %% Dimension mismatch or other error — degrade gracefully
+            0.0
+    end.
 
 %% @private Update the archive with novel individuals.
 update_archive(ScoredPop, Archive, Params) ->
@@ -427,21 +435,7 @@ update_archive(ScoredPop, Archive, Params) ->
 
     %% Filter individuals that pass threshold and probability check
     NewEntries = lists:filtermap(
-        fun(Ind) ->
-            Novelty = get_novelty_score(Ind),
-            Behavior = maps:get(behavior, Ind#individual.metrics, undefined),
-            case Behavior of
-                undefined ->
-                    false;
-                _ ->
-                    PassThreshold = Novelty >= Threshold,
-                    PassProb = rand:uniform() < ArchiveProb,
-                    case PassThreshold andalso PassProb of
-                        true -> {true, {Ind#individual.id, Behavior}};
-                        false -> false
-                    end
-            end
-        end,
+        fun(Ind) -> maybe_archive_entry(Ind, Threshold, ArchiveProb) end,
         ScoredPop
     ),
 
@@ -455,6 +449,22 @@ update_archive(ScoredPop, Archive, Params) ->
     end,
 
     {TrimmedArchive, length(NewEntries)}.
+
+%% @private Decide whether an individual becomes a new archive entry.
+maybe_archive_entry(Ind, Threshold, ArchiveProb) ->
+    Behavior = maps:get(behavior, Ind#individual.metrics, undefined),
+    maybe_archive_entry(Behavior, Ind, Threshold, ArchiveProb).
+
+maybe_archive_entry(undefined, _Ind, _Threshold, _ArchiveProb) ->
+    false;
+maybe_archive_entry(Behavior, Ind, Threshold, ArchiveProb) ->
+    Novelty = get_novelty_score(Ind),
+    PassThreshold = Novelty >= Threshold,
+    PassProb = rand:uniform() < ArchiveProb,
+    case PassThreshold andalso PassProb of
+        true -> {true, {Ind#individual.id, Behavior}};
+        false -> false
+    end.
 
 %% @private Sort population by selection score.
 %% Pure novelty or hybrid (novelty + fitness).
@@ -506,31 +516,30 @@ create_initial_population(Config, NetworkFactory) ->
     UseNeat = Config#neuro_config.topology_mutation_config =/= undefined,
 
     lists:map(
-        fun(Index) ->
-            case UseNeat of
-                true ->
-                    %% NEAT mode: create minimal genome and derive network
-                    Genome = genome_factory:create_minimal(Config),
-                    Network = genome_factory:to_network(Genome),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        genome = Genome,
-                        generation_born = 1
-                    };
-                false ->
-                    %% Legacy mode: create fixed-topology network
-                    Topology = Config#neuro_config.network_topology,
-                    Network = NetworkFactory:create_feedforward(Topology),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        generation_born = 1
-                    }
-            end
-        end,
+        fun(Index) -> create_initial_individual(Index, UseNeat, Config, NetworkFactory) end,
         lists:seq(1, PopSize)
     ).
+
+%% @private Create a single initial individual (NEAT or legacy topology).
+create_initial_individual(Index, true, Config, _NetworkFactory) ->
+    %% NEAT mode: create minimal genome and derive network
+    Genome = genome_factory:create_minimal(Config),
+    Network = genome_factory:to_network(Genome),
+    #individual{
+        id = {initial, Index},
+        network = Network,
+        genome = Genome,
+        generation_born = 1
+    };
+create_initial_individual(Index, false, Config, NetworkFactory) ->
+    %% Legacy mode: create fixed-topology network
+    Topology = Config#neuro_config.network_topology,
+    Network = NetworkFactory:create_feedforward(Topology),
+    #individual{
+        id = {initial, Index},
+        network = Network,
+        generation_born = 1
+    }.
 
 %% @private Build population map for O(1) lookup.
 build_population_map(Population) ->
@@ -544,14 +553,16 @@ build_population_map(Population) ->
 update_individual_in_list(UpdatedInd, Population) ->
     Id = UpdatedInd#individual.id,
     lists:map(
-        fun(Ind) ->
-            case Ind#individual.id =:= Id of
-                true -> UpdatedInd;
-                false -> Ind
-            end
-        end,
+        fun(Ind) -> replace_if_match(Ind, Id, UpdatedInd) end,
         Population
     ).
+
+%% @private Replace an individual with the updated one when ids match.
+replace_if_match(Ind, Id, UpdatedInd) ->
+    case Ind#individual.id =:= Id of
+        true -> UpdatedInd;
+        false -> Ind
+    end.
 
 %% @private Reset individual for next generation.
 reset_individual(Ind) ->
@@ -630,15 +641,17 @@ select_parents([Single]) ->
 tournament_select(Population, TournamentSize) ->
     Candidates = random_sample(Population, TournamentSize),
     lists:foldl(
-        fun(Ind, Best) ->
-            case get_novelty_score(Ind) > get_novelty_score(Best) of
-                true -> Ind;
-                false -> Best
-            end
-        end,
+        fun(Ind, Best) -> more_novel(Ind, Best) end,
         hd(Candidates),
         tl(Candidates)
     ).
+
+%% @private Return whichever individual has the higher novelty score.
+more_novel(Ind, Best) ->
+    case get_novelty_score(Ind) > get_novelty_score(Best) of
+        true -> Ind;
+        false -> Best
+    end.
 
 %% @private Random sample from list.
 random_sample(List, N) when N >= length(List) -> List;

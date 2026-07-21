@@ -615,10 +615,7 @@ compute_complexity_entropy(Values) ->
     Buckets = 10,
     MaxVal = max(1.0, lists:max(Values)),
     BinCounts = lists:foldl(
-        fun(V, Acc) ->
-            Bin = min(Buckets, max(1, trunc((V / MaxVal) * Buckets) + 1)),
-            maps:update_with(Bin, fun(C) -> C + 1 end, 1, Acc)
-        end,
+        fun(V, Acc) -> add_complexity_bin(V, Acc, MaxVal, Buckets) end,
         #{},
         Values
     ),
@@ -633,6 +630,11 @@ compute_complexity_entropy(Values) ->
         true -> Entropy / MaxEntropy;
         false -> 0.0
     end.
+
+%% @private Accumulate one value into its complexity bin.
+add_complexity_bin(V, Acc, MaxVal, Buckets) ->
+    Bin = min(Buckets, max(1, trunc((V / MaxVal) * Buckets) + 1)),
+    maps:update_with(Bin, fun(C) -> C + 1 end, 1, Acc).
 
 %% @private Safe log (avoid log(0)).
 safe_log(X) when X > 0 -> math:log(X);
@@ -1024,6 +1026,12 @@ pad_outputs(Outputs, MinLen) ->
 scale_output(Value, Min, Max) ->
     Min + Value * (Max - Min).
 
+%% @private Estimate aggression factor from mutation rate relative to base.
+estimate_aggression(MR, BaseMR) when MR > BaseMR ->
+    min(2.0, (MR / BaseMR - 1.0));
+estimate_aggression(_MR, _BaseMR) ->
+    0.5.
+
 %% @private Convert current state to L1 guidance (for monitoring).
 state_to_l1_guidance(State) ->
     %% If we have current params, derive guidance from them
@@ -1041,10 +1049,7 @@ state_to_l1_guidance(State) ->
             %% (This is approximate - we map back from hyperparams to meta-params)
             MR = maps:get(mutation_rate, Params, 0.10),
             BaseMR = 0.10,
-            EstAggression = if
-                MR > BaseMR -> min(2.0, (MR / BaseMR - 1.0));
-                true -> 0.5
-            end,
+            EstAggression = estimate_aggression(MR, BaseMR),
 
             %% Use defaults with estimated aggression
             Defaults = ?L2_GUIDANCE_DEFAULTS,

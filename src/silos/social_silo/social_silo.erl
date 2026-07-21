@@ -655,19 +655,20 @@ compute_local_clustering_for_neighbors(Neighbors, GraphTable) ->
 
 count_edges_between_neighbors(Neighbors, GraphTable) ->
     lists:foldl(
-        fun(N1, Acc) ->
-            case lc_ets_utils:lookup(GraphTable, N1) of
-                {ok, Data} ->
-                    N1Neighbors = maps:get(neighbors, Data, []),
-                    CommonCount = length([N || N <- N1Neighbors, lists:member(N, Neighbors), N =/= N1]),
-                    Acc + CommonCount;
-                not_found ->
-                    Acc
-            end
-        end,
+        fun(N1, Acc) -> add_common_edges(N1, Acc, Neighbors, GraphTable) end,
         0,
         Neighbors
     ) div 2.  %% Each edge counted twice
+
+add_common_edges(N1, Acc, Neighbors, GraphTable) ->
+    case lc_ets_utils:lookup(GraphTable, N1) of
+        {ok, Data} ->
+            N1Neighbors = maps:get(neighbors, Data, []),
+            CommonCount = length([N || N <- N1Neighbors, lists:member(N, Neighbors), N =/= N1]),
+            Acc + CommonCount;
+        not_found ->
+            Acc
+    end.
 
 %%% ============================================================================
 %%% Internal Functions - Metrics
@@ -713,15 +714,16 @@ compute_reciprocity_from_interactions(Interactions) ->
 count_reciprocated(Pairs) ->
     UniqueForward = lists:usort(Pairs),
     lists:foldl(
-        fun({A, B}, Acc) ->
-            case lists:member({B, A}, UniqueForward) of
-                true -> Acc + 1;
-                false -> Acc
-            end
-        end,
+        fun(Pair, Acc) -> add_reciprocated(Pair, Acc, UniqueForward) end,
         0,
         UniqueForward
     ) div 2.
+
+add_reciprocated({A, B}, Acc, UniqueForward) ->
+    case lists:member({B, A}, UniqueForward) of
+        true -> Acc + 1;
+        false -> Acc
+    end.
 
 compute_dominance_hierarchy(Reputations) ->
     %% Gini coefficient of reputations

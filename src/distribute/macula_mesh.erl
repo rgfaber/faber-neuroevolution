@@ -164,26 +164,10 @@ handle_call({request_evaluation, NodeId, Individual, EvaluatorModule, Options}, 
     case {MeshAvailable, NodeId =:= LocalNodeId} of
         {_, true} ->
             %% Local evaluation
-            spawn_link(fun() ->
-                Result = evaluate_locally(Individual, EvaluatorModule, Options),
-                gen_server:reply(From, Result)
-            end),
-            {noreply, State};
+            handle_local_evaluation(From, Individual, EvaluatorModule, Options, State);
         {true, false} ->
             %% Remote evaluation via macula RPC
-            RequestId = generate_request_id(),
-            Callback = maps:get(callback, Options, undefined),
-
-            spawn_link(fun() ->
-                Result = request_remote_evaluation(NodeId, Individual, EvaluatorModule, Options, Realm),
-                case Callback of
-                    undefined -> gen_server:reply(From, Result);
-                    Fun when is_function(Fun) -> Fun(Result);
-                    Pid when is_pid(Pid) -> Pid ! {evaluation_result, RequestId, Result}
-                end
-            end),
-
-            {reply, {ok, RequestId}, State};
+            handle_remote_evaluation(From, NodeId, Individual, EvaluatorModule, Options, Realm, State);
         {false, false} ->
             %% Mesh not available, can't reach remote node
             {reply, {error, mesh_not_available}, State}
@@ -300,15 +284,16 @@ start_macula_peer(State, Config) ->
             SeedNodes = maps:get(seed_nodes, Config, []),
             TlsMode = maps:get(tls_mode, Config, development),
 
-            case start_peer(Realm, NodeId, SeedNodes, TlsMode) of
-                {ok, PeerPid} ->
-                    State#state{peer_pid = PeerPid};
-                {error, _Reason} ->
-                    State#state{mesh_available = false}
-            end;
+            apply_peer_start(start_peer(Realm, NodeId, SeedNodes, TlsMode), State);
         false ->
             State
     end.
+
+%% @private Fold the result of starting a macula peer into state.
+apply_peer_start({ok, PeerPid}, State) ->
+    State#state{peer_pid = PeerPid};
+apply_peer_start({error, _Reason}, State) ->
+    State#state{mesh_available = false}.
 
 %% Conditional compilation for macula integration
 -ifdef(MACULA_MESH_ENABLED).
@@ -439,12 +424,38 @@ generate_request_id() ->
 get_local_node_id() ->
     case whereis(?SERVER) of
         undefined -> <<"unknown">>;
-        _Pid ->
-            case get_state() of
-                #{node_id := NodeId} -> NodeId;
-                _ -> <<"unknown">>
-            end
+        _Pid -> node_id_from_state(get_state())
     end.
+
+%% @private Extract node_id from state map, defaulting to <<"unknown">>.
+node_id_from_state(#{node_id := NodeId}) -> NodeId;
+node_id_from_state(_) -> <<"unknown">>.
+
+%% @private Run a local evaluation asynchronously and reply to the caller.
+handle_local_evaluation(From, Individual, EvaluatorModule, Options, State) ->
+    spawn_link(fun() ->
+        Result = evaluate_locally(Individual, EvaluatorModule, Options),
+        gen_server:reply(From, Result)
+    end),
+    {noreply, State}.
+
+%% @private Run a remote evaluation asynchronously and deliver the result.
+handle_remote_evaluation(From, NodeId, Individual, EvaluatorModule, Options, Realm, State) ->
+    RequestId = generate_request_id(),
+    Callback = maps:get(callback, Options, undefined),
+    spawn_link(fun() ->
+        Result = request_remote_evaluation(NodeId, Individual, EvaluatorModule, Options, Realm),
+        deliver_evaluation_result(Callback, From, RequestId, Result)
+    end),
+    {reply, {ok, RequestId}, State}.
+
+%% @private Deliver an evaluation result via reply, callback fun, or message.
+deliver_evaluation_result(undefined, From, _RequestId, Result) ->
+    gen_server:reply(From, Result);
+deliver_evaluation_result(Fun, _From, _RequestId, Result) when is_function(Fun) ->
+    Fun(Result);
+deliver_evaluation_result(Pid, _From, RequestId, Result) when is_pid(Pid) ->
+    Pid ! {evaluation_result, RequestId, Result}.
 
 evaluator_to_map(EvaluatorRecord) ->
     %% Convert evaluator record to map

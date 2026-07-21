@@ -272,29 +272,37 @@ do_train(Bridge, EnvConfig, Options) ->
     Config = build_neuro_config(Bridge, EnvConfig, Options),
     case neuroevolution_server:start_link(Config) of
         {ok, Pid} ->
-            try
-                %% start_training/1 replies {ok, started} or
-                %% {ok, already_running}; it does not reply a bare ok.
-                {ok, _} = neuroevolution_server:start_training(Pid),
-                case await_training_complete(Pid, Timeout) of
-                    ok ->
-                        {ok, Stats} = neuroevolution_server:get_stats(Pid),
-                        case best_network(Pid) of
-                            {ok, Network} -> {ok, Network, Stats};
-                            {error, Reason} -> {error, Reason}
-                        end;
-                    {error, Reason} ->
-                        {error, Reason}
-                end
-            catch
-                Class:CaughtReason:Stack ->
-                    {error, {training_failed, Class, CaughtReason, Stack}}
-            after
-                stop_server(Pid)
-            end;
+            run_training(Pid, Timeout);
         {error, Reason} ->
             {error, {start_failed, Reason}}
     end.
+
+%% @private Run the asynchronous training loop and clean up the server.
+run_training(Pid, Timeout) ->
+    try
+        %% start_training/1 replies {ok, started} or
+        %% {ok, already_running}; it does not reply a bare ok.
+        {ok, _} = neuroevolution_server:start_training(Pid),
+        handle_training_result(await_training_complete(Pid, Timeout), Pid)
+    catch
+        Class:CaughtReason:Stack ->
+            {error, {training_failed, Class, CaughtReason, Stack}}
+    after
+        stop_server(Pid)
+    end.
+
+%% @private Turn the awaited training outcome into a train/2,3 result.
+handle_training_result(ok, Pid) ->
+    {ok, Stats} = neuroevolution_server:get_stats(Pid),
+    handle_best_network(best_network(Pid), Stats);
+handle_training_result({error, Reason}, _Pid) ->
+    {error, Reason}.
+
+%% @private Attach the training stats to the champion network.
+handle_best_network({ok, Network}, Stats) ->
+    {ok, Network, Stats};
+handle_best_network({error, Reason}, _Stats) ->
+    {error, Reason}.
 
 %% @private
 %% @doc One evaluation for a deterministic environment, otherwise the
@@ -305,16 +313,24 @@ default_evaluations_per_individual(Bridge) ->
         undefined ->
             10;
         EnvModule ->
-            _ = code:ensure_loaded(EnvModule),
-            case erlang:function_exported(EnvModule, is_deterministic, 0) of
-                true ->
-                    case EnvModule:is_deterministic() of
-                        true  -> 1;
-                        false -> 10
-                    end;
-                false ->
-                    10
-            end
+            evaluations_for_env(EnvModule)
+    end.
+
+%% @private Evaluations for a specific environment module.
+evaluations_for_env(EnvModule) ->
+    _ = code:ensure_loaded(EnvModule),
+    case erlang:function_exported(EnvModule, is_deterministic, 0) of
+        true ->
+            evaluations_for_determinism(EnvModule);
+        false ->
+            10
+    end.
+
+%% @private One evaluation for a deterministic environment, otherwise 10.
+evaluations_for_determinism(EnvModule) ->
+    case EnvModule:is_deterministic() of
+        true  -> 1;
+        false -> 10
     end.
 
 %% @private Event handler callback (neuroevolution_server calls
@@ -422,28 +438,28 @@ build_neuro_config(Bridge, EnvConfig, Options) ->
 %% @private
 to_fitness_fn_impl(Bridge, EnvConfig, 1) ->
     %% Single episode evaluation
-    fun(Network) ->
-        case agent_bridge:run_episode(Bridge, Network, EnvConfig) of
-            {ok, Fitness, _Metrics} -> Fitness;
-            {ok, _Metrics} -> 0.0;  %% No evaluator case (shouldn't happen in training)
-            {error, _} -> 0.0
-        end
-    end;
+    fun(Network) -> episode_fitness(Bridge, Network, EnvConfig) end;
 to_fitness_fn_impl(Bridge, EnvConfig, Episodes) when Episodes > 1 ->
     %% Multi-episode evaluation (average fitness)
     fun(Network) ->
-        Fitnesses = lists:map(
-            fun(_) ->
-                case agent_bridge:run_episode(Bridge, Network, EnvConfig) of
-                    {ok, Fitness, _Metrics} -> Fitness;
-                    {ok, _Metrics} -> 0.0;
-                    {error, _} -> 0.0
-                end
-            end,
-            lists:seq(1, Episodes)
-        ),
-        lists:sum(Fitnesses) / length(Fitnesses)
+        average_episode_fitness(Bridge, Network, EnvConfig, Episodes)
     end.
+
+%% @private Fitness of a single episode; 0.0 on no-evaluator or error.
+episode_fitness(Bridge, Network, EnvConfig) ->
+    case agent_bridge:run_episode(Bridge, Network, EnvConfig) of
+        {ok, Fitness, _Metrics} -> Fitness;
+        {ok, _Metrics} -> 0.0;  %% No evaluator case (shouldn't happen in training)
+        {error, _} -> 0.0
+    end.
+
+%% @private Average fitness across Episodes evaluations.
+average_episode_fitness(Bridge, Network, EnvConfig, Episodes) ->
+    Fitnesses = lists:map(
+        fun(_) -> episode_fitness(Bridge, Network, EnvConfig) end,
+        lists:seq(1, Episodes)
+    ),
+    lists:sum(Fitnesses) / length(Fitnesses).
 
 %% @private
 process_multi_episode_results(Results) ->

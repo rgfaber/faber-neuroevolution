@@ -268,33 +268,37 @@ update_species_fitness(Species, Population) ->
 
     lists:map(
         fun(S) ->
-            %% Get fitness of all members
-            MemberFitnesses = [
-                (maps:get(MemberId, IndMap, #individual{fitness = 0.0}))#individual.fitness
-                || MemberId <- S#species.members
-            ],
-
-            BestFitness = case MemberFitnesses of
-                [] -> 0.0;
-                _ -> lists:max(MemberFitnesses)
-            end,
-
-            %% Check for improvement
-            Improved = BestFitness > S#species.best_fitness_ever,
-            NewStagnant = case Improved of
-                true -> 0;
-                false -> S#species.stagnant_generations + 1
-            end,
-
-            S#species{
-                best_fitness = BestFitness,
-                best_fitness_ever = max(BestFitness, S#species.best_fitness_ever),
-                stagnant_generations = NewStagnant,
-                age = S#species.age + 1
-            }
+            update_one_species_fitness(S, IndMap)
         end,
         Species
     ).
+
+%% @private Recompute one species' fitness statistics from the population map.
+update_one_species_fitness(S, IndMap) ->
+    %% Get fitness of all members
+    MemberFitnesses = [
+        (maps:get(MemberId, IndMap, #individual{fitness = 0.0}))#individual.fitness
+        || MemberId <- S#species.members
+    ],
+
+    BestFitness = case MemberFitnesses of
+        [] -> 0.0;
+        _ -> lists:max(MemberFitnesses)
+    end,
+
+    %% Check for improvement
+    Improved = BestFitness > S#species.best_fitness_ever,
+    NewStagnant = case Improved of
+        true -> 0;
+        false -> S#species.stagnant_generations + 1
+    end,
+
+    S#species{
+        best_fitness = BestFitness,
+        best_fitness_ever = max(BestFitness, S#species.best_fitness_ever),
+        stagnant_generations = NewStagnant,
+        age = S#species.age + 1
+    }.
 
 %% @doc Calculate offspring quota for each species based on relative fitness.
 %%
@@ -347,14 +351,14 @@ adjust_compatibility_threshold(CurrentThreshold, Config, ActualSpeciesCount) ->
     Target = Config#speciation_config.target_species,
     Rate = Config#speciation_config.threshold_adjustment_rate,
 
-    if
-        ActualSpeciesCount > Target ->
+    case {ActualSpeciesCount > Target, ActualSpeciesCount < Target} of
+        {true, _} ->
             %% Too many species - increase threshold to merge
             CurrentThreshold + Rate;
-        ActualSpeciesCount < Target ->
+        {_, true} ->
             %% Too few species - decrease threshold to split
             max(0.1, CurrentThreshold - Rate);
-        true ->
+        {false, false} ->
             CurrentThreshold
     end.
 
@@ -377,34 +381,42 @@ eliminate_stagnant_species(Species, Config, Generation) ->
             %% Stagnation elimination disabled
             {Species, []};
         _ ->
-            %% Keep at least one species (the best one)
-            BestSpecies = lists:max([S#species.best_fitness_ever || S <- Species]),
+            eliminate_by_stagnation(Species, MaxStagnation, Generation)
+    end.
 
-            lists:foldl(
-                fun(S, {Remaining, Events}) ->
-                    IsStagnant = S#species.stagnant_generations >= MaxStagnation,
-                    IsBest = S#species.best_fitness_ever =:= BestSpecies,
+%% @private Fold the population, retiring stagnant species (keeping the best).
+eliminate_by_stagnation(Species, MaxStagnation, Generation) ->
+    %% Keep at least one species (the best one)
+    BestSpecies = lists:max([S#species.best_fitness_ever || S <- Species]),
 
-                    case IsStagnant andalso not IsBest of
-                        true ->
-                            Event = #species_event{
-                                generation = Generation,
-                                species_id = S#species.id,
-                                event_type = species_extinct,
-                                details = #{
-                                    reason => stagnation,
-                                    stagnant_generations => S#species.stagnant_generations,
-                                    best_fitness_ever => S#species.best_fitness_ever
-                                }
-                            },
-                            {Remaining, [Event | Events]};
-                        false ->
-                            {[S | Remaining], Events}
-                    end
-                end,
-                {[], []},
-                Species
-            )
+    lists:foldl(
+        fun(S, Acc) ->
+            maybe_eliminate_species(S, Acc, MaxStagnation, BestSpecies, Generation)
+        end,
+        {[], []},
+        Species
+    ).
+
+%% @private Fold one species into the survivors/extinction-events accumulator.
+maybe_eliminate_species(S, {Remaining, Events}, MaxStagnation, BestSpecies, Generation) ->
+    IsStagnant = S#species.stagnant_generations >= MaxStagnation,
+    IsBest = S#species.best_fitness_ever =:= BestSpecies,
+
+    case IsStagnant andalso not IsBest of
+        true ->
+            Event = #species_event{
+                generation = Generation,
+                species_id = S#species.id,
+                event_type = species_extinct,
+                details = #{
+                    reason => stagnation,
+                    stagnant_generations => S#species.stagnant_generations,
+                    best_fitness_ever => S#species.best_fitness_ever
+                }
+            },
+            {Remaining, [Event | Events]};
+        false ->
+            {[S | Remaining], Events}
     end.
 
 %%% ============================================================================
@@ -455,16 +467,20 @@ breed_species(Species, AllSpecies, Config, NumOffspring) ->
         _ ->
             %% Multiple members - breed pairs
             [
-                case rand:uniform() < InterspeciesRate of
-                    true ->
-                        %% Interspecies mating
-                        select_interspecies_pair(Members, AllSpecies);
-                    false ->
-                        %% Within species mating
-                        select_parents_from_list(Members)
-                end
+                breed_one_pair(Members, AllSpecies, InterspeciesRate)
                 || _ <- lists:seq(1, NumOffspring)
             ]
+    end.
+
+%% @private Choose one breeding pair, occasionally mating across species.
+breed_one_pair(Members, AllSpecies, InterspeciesRate) ->
+    case rand:uniform() < InterspeciesRate of
+        true ->
+            %% Interspecies mating
+            select_interspecies_pair(Members, AllSpecies);
+        false ->
+            %% Within species mating
+            select_parents_from_list(Members)
     end.
 
 %%% ============================================================================
@@ -482,10 +498,11 @@ get_species_by_id(Id, Species) ->
 %% @doc Get the species ID for an individual.
 -spec get_individual_species(individual_id(), [species()]) -> {ok, species_id()} | not_found.
 get_individual_species(IndId, Species) ->
-    case lists:filter(
+    Matching = lists:filter(
         fun(S) -> lists:member(IndId, S#species.members) end,
         Species
-    ) of
+    ),
+    case Matching of
         [S | _] -> {ok, S#species.id};
         [] -> not_found
     end.
@@ -548,18 +565,22 @@ create_species(Individual, SpeciesId, Generation) ->
 add_to_species(Individual, TargetSpecies, AllSpecies) ->
     lists:map(
         fun(S) ->
-            case S#species.id =:= TargetSpecies#species.id of
-                true ->
-                    S#species{
-                        members = [Individual#individual.id | S#species.members],
-                        best_fitness = max(S#species.best_fitness, Individual#individual.fitness)
-                    };
-                false ->
-                    S
-            end
+            add_member_if_target(S, Individual, TargetSpecies)
         end,
         AllSpecies
     ).
+
+%% @private Add the individual to S when S is the target species.
+add_member_if_target(S, Individual, TargetSpecies) ->
+    case S#species.id =:= TargetSpecies#species.id of
+        true ->
+            S#species{
+                members = [Individual#individual.id | S#species.members],
+                best_fitness = max(S#species.best_fitness, Individual#individual.fitness)
+            };
+        false ->
+            S
+    end.
 
 %% @private Remove species with no members.
 remove_empty_species(Species) ->
@@ -664,12 +685,16 @@ select_interspecies_pair(LocalMembers, AllSpecies) ->
             P2 = select_different(P1, LocalMembers, 3),
             {P1, P2};
         _ ->
-            RandomSpecies = lists:nth(rand:uniform(length(OtherSpecies)), OtherSpecies),
-            case RandomSpecies#species.members of
-                [] ->
-                    {P1, P1};
-                OtherMembers ->
-                    P2 = lists:nth(rand:uniform(length(OtherMembers)), OtherMembers),
-                    {P1, P2}
-            end
+            breed_with_other_species(P1, OtherSpecies)
+    end.
+
+%% @private Pick a mate from a randomly chosen other species.
+breed_with_other_species(P1, OtherSpecies) ->
+    RandomSpecies = lists:nth(rand:uniform(length(OtherSpecies)), OtherSpecies),
+    case RandomSpecies#species.members of
+        [] ->
+            {P1, P1};
+        OtherMembers ->
+            P2 = lists:nth(rand:uniform(length(OtherMembers)), OtherMembers),
+            {P1, P2}
     end.

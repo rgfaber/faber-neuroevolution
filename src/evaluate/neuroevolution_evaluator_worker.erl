@@ -222,21 +222,27 @@ spawn_evaluation(Request, State) ->
     Ref = make_ref(),
 
     spawn_link(fun() ->
-        try
-            run_evaluation(Request, State),
-            ParentPid ! {evaluation_complete, Ref}
-        catch
-            Class:Reason:Stacktrace ->
-                error_logger:error_msg(
-                    "[evaluator_worker] Evaluation crashed: ~p:~p~n~p~n",
-                    [Class, Reason, Stacktrace]
-                ),
-                %% Still notify parent of completion
-                ParentPid ! {evaluation_complete, Ref},
-                %% Publish error result
-                publish_error_result(Request, {crashed, Class, Reason}, State)
-        end
+        run_evaluation_guarded(Request, State, ParentPid, Ref)
     end).
+
+%% @private
+%% Run one evaluation, notifying the parent on completion and publishing an
+%% error result if the evaluation crashes.
+run_evaluation_guarded(Request, State, ParentPid, Ref) ->
+    try
+        run_evaluation(Request, State),
+        ParentPid ! {evaluation_complete, Ref}
+    catch
+        Class:Reason:Stacktrace ->
+            error_logger:error_msg(
+                "[evaluator_worker] Evaluation crashed: ~p:~p~n~p~n",
+                [Class, Reason, Stacktrace]
+            ),
+            %% Still notify parent of completion
+            ParentPid ! {evaluation_complete, Ref},
+            %% Publish error result
+            publish_error_result(Request, {crashed, Class, Reason}, State)
+    end.
 
 %% @private
 %% Run the actual evaluation and publish results

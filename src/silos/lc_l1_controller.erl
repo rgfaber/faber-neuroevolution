@@ -375,32 +375,14 @@ compute_deltas_for_silo(task, Trends, L1Hyperparams, _State) ->
     TopologyAggression = maps:get(topology_aggression, L1Hyperparams, 1.5),
 
     %% Compute exploration boost based on stagnation
-    ExplorationBoost = case Stagnation > 0.5 of
-        true -> ExplorationStep * AggressionFactor;
-        false -> case RewardTrend > 0.01 of
-            true -> -ExplorationStep * 0.5;  % Exploit when improving
-            false -> 0.0
-        end
-    end,
+    ExplorationBoost = exploration_boost(Stagnation, RewardTrend, ExplorationStep, AggressionFactor),
 
     %% Archive adjustments:
     %% - When stagnating: lower threshold (more diverse archive), increase diversity weight
     %% - When improving: higher threshold (more selective), fitness-weighted sampling
-    ArchiveThresholdDelta = case Stagnation > 0.5 of
-        true -> -0.05 * AggressionFactor;   % Lower threshold = more entries
-        false -> case RewardTrend > 0.01 of
-            true -> 0.03;                    % Higher threshold = selective
-            false -> 0.0
-        end
-    end,
+    ArchiveThresholdDelta = archive_threshold_delta(Stagnation, RewardTrend, AggressionFactor),
 
-    ArchiveDiversityDelta = case Stagnation > 0.5 of
-        true -> 0.1 * AggressionFactor;     % More diversity when stagnating
-        false -> case RewardTrend > 0.01 of
-            true -> -0.05;                   % Less diversity when improving
-            false -> 0.0
-        end
-    end,
+    ArchiveDiversityDelta = archive_diversity_delta(Stagnation, RewardTrend, AggressionFactor),
 
     #{
         %% Mutation rate adjustments
@@ -449,22 +431,56 @@ compute_deltas_for_silo(distribution, Trends, L1Hyperparams, _State) ->
 compute_deltas_for_silo(_Unknown, _Trends, _L1Hyperparams, _State) ->
     #{}.
 
+%% @private Exploration boost: aggressive when stagnating, exploit when improving.
+exploration_boost(Stagnation, _RewardTrend, ExplorationStep, AggressionFactor)
+  when Stagnation > 0.5 ->
+    ExplorationStep * AggressionFactor;
+exploration_boost(_Stagnation, RewardTrend, ExplorationStep, _AggressionFactor)
+  when RewardTrend > 0.01 ->
+    -ExplorationStep * 0.5;  % Exploit when improving
+exploration_boost(_Stagnation, _RewardTrend, _ExplorationStep, _AggressionFactor) ->
+    0.0.
+
+%% @private Archive threshold delta: lower (more entries) when stagnating, higher when improving.
+archive_threshold_delta(Stagnation, _RewardTrend, AggressionFactor)
+  when Stagnation > 0.5 ->
+    -0.05 * AggressionFactor;   % Lower threshold = more entries
+archive_threshold_delta(_Stagnation, RewardTrend, _AggressionFactor)
+  when RewardTrend > 0.01 ->
+    0.03;                        % Higher threshold = selective
+archive_threshold_delta(_Stagnation, _RewardTrend, _AggressionFactor) ->
+    0.0.
+
+%% @private Archive diversity delta: more diversity when stagnating, less when improving.
+archive_diversity_delta(Stagnation, _RewardTrend, AggressionFactor)
+  when Stagnation > 0.5 ->
+    0.1 * AggressionFactor;      % More diversity when stagnating
+archive_diversity_delta(_Stagnation, RewardTrend, _AggressionFactor)
+  when RewardTrend > 0.01 ->
+    -0.05;                       % Less diversity when improving
+archive_diversity_delta(_Stagnation, _RewardTrend, _AggressionFactor) ->
+    0.0.
+
 %% @private Apply bounded deltas with adaptation rate.
 apply_bounded_deltas(CurrentHyperparams, Deltas, Bounds, AdaptationRate) ->
     maps:fold(
         fun(Name, Delta, Acc) ->
-            case maps:get(Name, Acc, undefined) of
-                undefined -> Acc;
-                CurrentValue ->
-                    ScaledDelta = Delta * AdaptationRate,
-                    NewValue = CurrentValue + ScaledDelta,
-                    BoundedValue = apply_bounds(Name, NewValue, Bounds),
-                    maps:put(Name, BoundedValue, Acc)
-            end
+            apply_bounded_delta(Name, Delta, Acc, Bounds, AdaptationRate)
         end,
         CurrentHyperparams,
         Deltas
     ).
+
+%% @private Apply a single bounded, adaptation-scaled delta to one hyperparameter.
+apply_bounded_delta(Name, Delta, Acc, Bounds, AdaptationRate) ->
+    case maps:get(Name, Acc, undefined) of
+        undefined -> Acc;
+        CurrentValue ->
+            ScaledDelta = Delta * AdaptationRate,
+            NewValue = CurrentValue + ScaledDelta,
+            BoundedValue = apply_bounds(Name, NewValue, Bounds),
+            maps:put(Name, BoundedValue, Acc)
+    end.
 
 %% @private Apply bounds to a hyperparameter value.
 apply_bounds(Name, Value, Bounds) ->

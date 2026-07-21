@@ -180,77 +180,74 @@ handle_evaluation_result(IndividualId, FitnessResult, State) ->
     BatchMap = State#me_state.batch_map,
     case maps:find(IndividualId, BatchMap) of
         {ok, Individual} ->
-            %% Update individual with fitness and behavior
-            NewMetrics = case Behavior of
-                undefined -> Individual#individual.metrics;
-                _ -> maps:put(behavior, Behavior, Individual#individual.metrics)
-            end,
-            UpdatedInd = Individual#individual{fitness = Fitness, metrics = NewMetrics},
-
-            %% Update both map and list
-            NewBatchMap = maps:put(IndividualId, UpdatedInd, BatchMap),
-            UpdatedBatch = update_individual_in_list(UpdatedInd, State#me_state.batch),
-
-            %% Create evaluation event
-            EvalEvent = #individual_evaluated{
-                id = IndividualId,
-                fitness = Fitness,
-                metrics = Metrics,
-                timestamp = erlang:timestamp(),
-                metadata = #{iteration => State#me_state.iteration}
-            },
-
-            %% Try to place in grid
-            {UpdatedGrid, CellEvents, Replaced} = try_place_in_grid(UpdatedInd, State),
-
-            %% Update cells filled count
-            NewCellsFilled = case Replaced of
-                new_cell -> State#me_state.cells_filled + 1;
-                _ -> State#me_state.cells_filled
-            end,
-
-            %% Update QD score
-            NewQDScore = calculate_qd_score(UpdatedGrid),
-            NewBestFitness = max(State#me_state.best_fitness, Fitness),
-
-            %% Track evaluation progress (per-individual evaluations)
-            Config = State#me_state.config,
-            EvalsPerIndividual = Config#neuro_config.evaluations_per_individual,
-            NewEvaluatedCount = State#me_state.evaluated_count + 1,
-            NewTotalEvals = State#me_state.total_evaluations + EvalsPerIndividual,
-
-            %% Check if batch is complete
-            BatchSize = State#me_state.batch_size,
-            case NewEvaluatedCount >= BatchSize of
-                true ->
-                    %% Generate new batch from elites
-                    handle_batch_complete(State#me_state{
-                        batch = UpdatedBatch,
-                        batch_map = NewBatchMap,
-                        grid = UpdatedGrid,
-                        evaluated_count = NewEvaluatedCount,
-                        total_evaluations = NewTotalEvals,
-                        cells_filled = NewCellsFilled,
-                        best_fitness = NewBestFitness,
-                        qd_score = NewQDScore
-                    }, [EvalEvent | CellEvents]);
-                false ->
-                    %% Still evaluating
-                    NewState = State#me_state{
-                        batch = UpdatedBatch,
-                        batch_map = NewBatchMap,
-                        grid = UpdatedGrid,
-                        evaluated_count = NewEvaluatedCount,
-                        total_evaluations = NewTotalEvals,
-                        cells_filled = NewCellsFilled,
-                        best_fitness = NewBestFitness,
-                        qd_score = NewQDScore
-                    },
-                    {[], [EvalEvent | CellEvents], NewState}
-            end;
+            record_evaluation(IndividualId, Fitness, Metrics, Behavior, Individual, State);
         error ->
             %% Individual not found (shouldn't happen)
             {[], [], State}
+    end.
+
+%% @private Merge behavior into an individual's metrics, if present.
+merge_behavior(undefined, Metrics) -> Metrics;
+merge_behavior(Behavior, Metrics) -> maps:put(behavior, Behavior, Metrics).
+
+%% @private Increment cells-filled count only when a new cell was filled.
+bump_cells_filled(new_cell, CellsFilled) -> CellsFilled + 1;
+bump_cells_filled(_Replaced, CellsFilled) -> CellsFilled.
+
+%% @private Record one evaluation result, place it in the grid, and advance the batch.
+record_evaluation(IndividualId, Fitness, Metrics, Behavior, Individual, State) ->
+    %% Update individual with fitness and behavior
+    NewMetrics = merge_behavior(Behavior, Individual#individual.metrics),
+    UpdatedInd = Individual#individual{fitness = Fitness, metrics = NewMetrics},
+
+    %% Update both map and list
+    NewBatchMap = maps:put(IndividualId, UpdatedInd, State#me_state.batch_map),
+    UpdatedBatch = update_individual_in_list(UpdatedInd, State#me_state.batch),
+
+    %% Create evaluation event
+    EvalEvent = #individual_evaluated{
+        id = IndividualId,
+        fitness = Fitness,
+        metrics = Metrics,
+        timestamp = erlang:timestamp(),
+        metadata = #{iteration => State#me_state.iteration}
+    },
+
+    %% Try to place in grid
+    {UpdatedGrid, CellEvents, Replaced} = try_place_in_grid(UpdatedInd, State),
+
+    %% Update cells filled count
+    NewCellsFilled = bump_cells_filled(Replaced, State#me_state.cells_filled),
+
+    %% Update QD score
+    NewQDScore = calculate_qd_score(UpdatedGrid),
+    NewBestFitness = max(State#me_state.best_fitness, Fitness),
+
+    %% Track evaluation progress (per-individual evaluations)
+    Config = State#me_state.config,
+    EvalsPerIndividual = Config#neuro_config.evaluations_per_individual,
+    NewEvaluatedCount = State#me_state.evaluated_count + 1,
+    NewTotalEvals = State#me_state.total_evaluations + EvalsPerIndividual,
+
+    %% Check if batch is complete
+    BatchSize = State#me_state.batch_size,
+    UpdatedState = State#me_state{
+        batch = UpdatedBatch,
+        batch_map = NewBatchMap,
+        grid = UpdatedGrid,
+        evaluated_count = NewEvaluatedCount,
+        total_evaluations = NewTotalEvals,
+        cells_filled = NewCellsFilled,
+        best_fitness = NewBestFitness,
+        qd_score = NewQDScore
+    },
+    case NewEvaluatedCount >= BatchSize of
+        true ->
+            %% Generate new batch from elites
+            handle_batch_complete(UpdatedState, [EvalEvent | CellEvents]);
+        false ->
+            %% Still evaluating
+            {[], [EvalEvent | CellEvents], UpdatedState}
     end.
 
 %% @doc Periodic tick - not heavily used.
@@ -357,29 +354,33 @@ try_place_in_grid(Individual, State) ->
             %% No behavior - can't place in grid
             {State#me_state.grid, [], rejected};
         _ ->
-            CellIndex = behavior_to_cell(Behavior, State),
-            Grid = State#me_state.grid,
-            Fitness = Individual#individual.fitness,
+            place_in_cell(Behavior, Individual, State)
+    end.
 
-            case maps:get(CellIndex, Grid, undefined) of
-                undefined ->
-                    %% Empty cell - place individual
-                    NewGrid = maps:put(CellIndex, Individual, Grid),
-                    BirthEvent = create_elite_event(Individual, CellIndex),
-                    {NewGrid, [BirthEvent], new_cell};
+%% @private Place an individual into its behavior cell, replacing a weaker elite if present.
+place_in_cell(Behavior, Individual, State) ->
+    CellIndex = behavior_to_cell(Behavior, State),
+    Grid = State#me_state.grid,
+    Fitness = Individual#individual.fitness,
 
-                Existing when Fitness > Existing#individual.fitness ->
-                    %% Better than existing - replace
-                    NewGrid = maps:put(CellIndex, Individual, Grid),
-                    DeathEvent = create_death_event(Existing, replaced_by_better),
-                    ReplaceEvent = create_elite_event(Individual, CellIndex),
-                    {NewGrid, [DeathEvent, ReplaceEvent], replaced};
+    case maps:get(CellIndex, Grid, undefined) of
+        undefined ->
+            %% Empty cell - place individual
+            NewGrid = maps:put(CellIndex, Individual, Grid),
+            BirthEvent = create_elite_event(Individual, CellIndex),
+            {NewGrid, [BirthEvent], new_cell};
 
-                _Existing ->
-                    %% Not better - reject
-                    DeathEvent = create_death_event(Individual, lower_fitness),
-                    {Grid, [DeathEvent], rejected}
-            end
+        Existing when Fitness > Existing#individual.fitness ->
+            %% Better than existing - replace
+            NewGrid = maps:put(CellIndex, Individual, Grid),
+            DeathEvent = create_death_event(Existing, replaced_by_better),
+            ReplaceEvent = create_elite_event(Individual, CellIndex),
+            {NewGrid, [DeathEvent, ReplaceEvent], replaced};
+
+        _Existing ->
+            %% Not better - reject
+            DeathEvent = create_death_event(Individual, lower_fitness),
+            {Grid, [DeathEvent], rejected}
     end.
 
 %% @private Convert behavior vector to cell index.
@@ -457,22 +458,26 @@ generate_batch_from_elites(Elites, Config, Params, NetworkFactory, BatchSize) ->
 
     lists:foldl(
         fun(_, {AccBatch, AccEvents}) ->
-            {Ind, Event} = case rand:uniform() < RandomProb of
-                true ->
-                    %% Generate random individual
-                    RandomInd = create_random_individual(Config, NetworkFactory),
-                    {RandomInd, create_birth_event(RandomInd, initial)};
-                false ->
-                    %% Select elite and mutate
-                    Parent = random_elite(Elites),
-                    Offspring = mutate_individual(Parent, Config, Params, NetworkFactory),
-                    {Offspring, create_birth_event(Offspring, mutation, [Parent#individual.id])}
-            end,
+            {Ind, Event} = make_batch_member(RandomProb, Elites, Config, Params, NetworkFactory),
             {[Ind | AccBatch], [Event | AccEvents]}
         end,
         {[], []},
         lists:seq(1, BatchSize)
     ).
+
+%% @private Produce one batch member: a random individual or a mutated elite.
+make_batch_member(RandomProb, Elites, Config, Params, NetworkFactory) ->
+    case rand:uniform() < RandomProb of
+        true ->
+            %% Generate random individual
+            RandomInd = create_random_individual(Config, NetworkFactory),
+            {RandomInd, create_birth_event(RandomInd, initial)};
+        false ->
+            %% Select elite and mutate
+            Parent = random_elite(Elites),
+            Offspring = mutate_individual(Parent, Config, Params, NetworkFactory),
+            {Offspring, create_birth_event(Offspring, mutation, [Parent#individual.id])}
+    end.
 
 %% @private Select a random elite.
 random_elite(Elites) ->
@@ -487,14 +492,7 @@ mutate_individual(Parent, Config, Params, NetworkFactory) ->
     case Parent#individual.genome of
         Genome when Genome =/= undefined ->
             %% NEAT mode: use genome_factory for mutation
-            MutConfig = case Config#neuro_config.topology_mutation_config of
-                undefined ->
-                    #mutation_config{
-                        weight_mutation_rate = Params#map_elites_params.mutation_rate,
-                        weight_perturb_strength = Params#map_elites_params.mutation_strength
-                    };
-                MC -> MC
-            end,
+            MutConfig = mutation_config_or_default(Config, Params),
             MutatedGenome = genome_factory:mutate(Genome, MutConfig),
             MutatedNetwork = genome_factory:to_network(MutatedGenome),
             #individual{
@@ -518,6 +516,17 @@ mutate_individual(Parent, Config, Params, NetworkFactory) ->
                 generation_born = 0,
                 is_offspring = true
             }
+    end.
+
+%% @private Return the configured topology mutation config, or a MAP-Elites default.
+mutation_config_or_default(Config, Params) ->
+    case Config#neuro_config.topology_mutation_config of
+        undefined ->
+            #mutation_config{
+                weight_mutation_rate = Params#map_elites_params.mutation_rate,
+                weight_perturb_strength = Params#map_elites_params.mutation_strength
+            };
+        MC -> MC
     end.
 
 %% @private Create a random individual.
@@ -556,31 +565,33 @@ create_initial_batch(Config, NetworkFactory, BatchSize) ->
     UseNeat = Config#neuro_config.topology_mutation_config =/= undefined,
 
     lists:map(
-        fun(Index) ->
-            case UseNeat of
-                true ->
-                    %% NEAT mode: create minimal genome and derive network
-                    Genome = genome_factory:create_minimal(Config),
-                    Network = genome_factory:to_network(Genome),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        genome = Genome,
-                        generation_born = 1
-                    };
-                false ->
-                    %% Legacy mode: create fixed-topology network
-                    Topology = Config#neuro_config.network_topology,
-                    Network = NetworkFactory:create_feedforward(Topology),
-                    #individual{
-                        id = {initial, Index},
-                        network = Network,
-                        generation_born = 1
-                    }
-            end
-        end,
+        fun(Index) -> create_initial_individual(Index, UseNeat, Config, NetworkFactory) end,
         lists:seq(1, BatchSize)
     ).
+
+%% @private Create one initial batch individual (NEAT genome or fixed topology).
+create_initial_individual(Index, UseNeat, Config, NetworkFactory) ->
+    case UseNeat of
+        true ->
+            %% NEAT mode: create minimal genome and derive network
+            Genome = genome_factory:create_minimal(Config),
+            Network = genome_factory:to_network(Genome),
+            #individual{
+                id = {initial, Index},
+                network = Network,
+                genome = Genome,
+                generation_born = 1
+            };
+        false ->
+            %% Legacy mode: create fixed-topology network
+            Topology = Config#neuro_config.network_topology,
+            Network = NetworkFactory:create_feedforward(Topology),
+            #individual{
+                id = {initial, Index},
+                network = Network,
+                generation_born = 1
+            }
+    end.
 
 %%% ============================================================================
 %%% Internal Functions - Population Management
@@ -597,15 +608,14 @@ build_batch_map(Batch) ->
 %% @private Update individual in list (used to keep list in sync with map).
 update_individual_in_list(UpdatedInd, Batch) ->
     Id = UpdatedInd#individual.id,
-    lists:map(
-        fun(Ind) ->
-            case Ind#individual.id =:= Id of
-                true -> UpdatedInd;
-                false -> Ind
-            end
-        end,
-        Batch
-    ).
+    lists:map(fun(Ind) -> replace_if_same_id(Ind, Id, UpdatedInd) end, Batch).
+
+%% @private Replace Ind with UpdatedInd when their IDs match.
+replace_if_same_id(Ind, Id, UpdatedInd) ->
+    case Ind#individual.id =:= Id of
+        true -> UpdatedInd;
+        false -> Ind
+    end.
 
 %%% ============================================================================
 %%% Internal Functions - Events

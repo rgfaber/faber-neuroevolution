@@ -74,18 +74,22 @@ route_signal({Category, Name, Value}) when is_atom(Category), is_atom(Name), is_
             ClampedValue = max(0.0, min(1.0, Value)),
 
             %% Route via lc_cross_silo with 'domain' as source
-            case whereis(lc_cross_silo) of
-                undefined ->
-                    %% LC not running, skip
-                    ok;
-                _Pid ->
-                    lc_cross_silo:emit(domain, DestSilo, SignalName, ClampedValue)
-            end,
+            route_to_cross_silo(DestSilo, SignalName, ClampedValue),
             ok
     end;
 route_signal(InvalidSignal) ->
     logger:warning("[signal_router] Invalid signal format: ~p", [InvalidSignal]),
     ok.
+
+%% @private Route a clamped signal to lc_cross_silo when it is running.
+route_to_cross_silo(DestSilo, SignalName, ClampedValue) ->
+    case whereis(lc_cross_silo) of
+        undefined ->
+            %% LC not running, skip
+            ok;
+        _Pid ->
+            lc_cross_silo:emit(domain, DestSilo, SignalName, ClampedValue)
+    end.
 
 %% @doc Register the domain module implementing domain_signals behaviour.
 %%
@@ -116,17 +120,21 @@ get_domain_module() ->
 emit_from_domain(DomainState, Metrics) ->
     case get_domain_module() of
         {ok, Module} ->
-            try
-                Signals = Module:emit_signals(DomainState, Metrics),
-                route(Signals)
-            catch
-                Error:Reason ->
-                    logger:warning("[signal_router] Error emitting signals: ~p:~p", [Error, Reason]),
-                    {error, {emit_failed, Error, Reason}}
-            end;
+            emit_and_route(Module, DomainState, Metrics);
         {error, not_registered} ->
             %% No domain module registered, silently skip
             ok
+    end.
+
+%% @private Emit signals from the domain module and route them.
+emit_and_route(Module, DomainState, Metrics) ->
+    try
+        Signals = Module:emit_signals(DomainState, Metrics),
+        route(Signals)
+    catch
+        Error:Reason ->
+            logger:warning("[signal_router] Error emitting signals: ~p:~p", [Error, Reason]),
+            {error, {emit_failed, Error, Reason}}
     end.
 
 %%% ============================================================================

@@ -114,10 +114,7 @@ new(Options) ->
         %% Register each species
         SpeciesMap = lists:foldl(
             fun(Module, Acc) ->
-                case validate_and_register(Module, Environment, PopSizes) of
-                    {ok, Id, Entry} -> maps:put(Id, Entry, Acc);
-                    {error, Reason} -> throw({species_error, Module, Reason})
-                end
+                register_species(validate_and_register(Module, Environment, PopSizes), Module, Acc)
             end,
             #{},
             SpeciesModules
@@ -207,12 +204,15 @@ get_config(Registry, SpeciesId) ->
 get_bridge(Registry, SpeciesId) ->
     case get_species(Registry, SpeciesId) of
         {ok, Entry} ->
-            case maps:get(bridge, Entry, undefined) of
-                undefined -> create_bridge(Registry, SpeciesId);
-                Bridge -> {ok, Bridge}
-            end;
+            bridge_or_create(maps:get(bridge, Entry, undefined), Registry, SpeciesId);
         Error -> Error
     end.
+
+%% @private Return an existing bridge or create one when absent.
+bridge_or_create(undefined, Registry, SpeciesId) ->
+    create_bridge(Registry, SpeciesId);
+bridge_or_create(Bridge, _Registry, _SpeciesId) ->
+    {ok, Bridge}.
 
 %% @doc Creates a new bridge for a species.
 -spec create_bridge(Registry, SpeciesId) -> {ok, Bridge} | {error, Reason} when
@@ -305,6 +305,12 @@ total_population(Registry) ->
 %%% ============================================================================
 %%% Internal Functions
 %%% ============================================================================
+
+%% @private Fold a validated species into the accumulator, throwing on error.
+register_species({ok, Id, Entry}, _Module, Acc) ->
+    maps:put(Id, Entry, Acc);
+register_species({error, Reason}, Module, _Acc) ->
+    throw({species_error, Module, Reason}).
 
 %% @private
 validate_and_register(Module, _Environment, _PopSizes) ->

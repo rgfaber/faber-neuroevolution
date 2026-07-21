@@ -371,16 +371,17 @@ build_topology(Params) ->
 
         custom ->
             %% Use custom connections
-            Connections = Params#island_params.custom_connections,
-            lists:foldl(
-                fun({From, To}, Acc) ->
-                    Existing = maps:get(From, Acc, []),
-                    maps:put(From, [To | Existing], Acc)
-                end,
-                #{},
-                Connections
-            )
+            build_custom_topology(Params#island_params.custom_connections)
     end.
+
+%% @private Build a topology map from an explicit connection list.
+build_custom_topology(Connections) ->
+    lists:foldl(fun add_connection/2, #{}, Connections).
+
+%% @private Accumulate one {From, To} connection into a topology map.
+add_connection({From, To}, Acc) ->
+    Existing = maps:get(From, Acc, []),
+    maps:put(From, [To | Existing], Acc).
 
 %%% ============================================================================
 %%% Internal Functions - Migration
@@ -418,43 +419,47 @@ perform_migration(SourceIslandId, State) ->
             {[], [], NewState};
 
         _ ->
-            %% Pick destination (random for random topology, first for others)
-            DestIslandId = case Params#island_params.topology of
-                random -> lists:nth(rand:uniform(length(Destinations)), Destinations);
-                _ -> hd(Destinations)
-            end,
+            migrate_to_destinations(Destinations, SourceIslandId, Params, State)
+    end.
 
-            %% Select migrants from source
-            MigrationCount = Params#island_params.migration_count,
-            {Migrants, NewSourceState} = select_migrants(SourceIslandId, MigrationCount, State),
+%% @private Perform migration when the source island has destinations.
+migrate_to_destinations(Destinations, SourceIslandId, Params, State) ->
+    %% Pick destination (random for random topology, first for others)
+    DestIslandId = case Params#island_params.topology of
+        random -> lists:nth(rand:uniform(length(Destinations)), Destinations);
+        _ -> hd(Destinations)
+    end,
 
-            case Migrants of
-                [] ->
-                    {[], [], State};
-                _ ->
-                    %% Insert migrants into destination
-                    {NewDestState, InsertEvents} = insert_migrants(DestIslandId, Migrants, NewSourceState),
+    %% Select migrants from source
+    MigrationCount = Params#island_params.migration_count,
+    {Migrants, NewSourceState} = select_migrants(SourceIslandId, MigrationCount, State),
 
-                    %% Create migration events
-                    MigrationEvents = [
-                        #island_migration{
-                            individual_id = Ind#individual.id,
-                            from_island = SourceIslandId,
-                            to_island = DestIslandId,
-                            fitness = Ind#individual.fitness,
-                            timestamp = erlang:timestamp()
-                        } || Ind <- Migrants
-                    ],
+    case Migrants of
+        [] ->
+            {[], [], State};
+        _ ->
+            %% Insert migrants into destination
+            {NewDestState, InsertEvents} = insert_migrants(DestIslandId, Migrants, NewSourceState),
 
-                    %% Reset source island's migration counter
-                    SourceIsland = maps:get(SourceIslandId, NewDestState#island_state.islands),
-                    FinalSourceIsland = SourceIsland#island{evaluations_since_migration = 0},
-                    FinalState = NewDestState#island_state{
-                        islands = maps:put(SourceIslandId, FinalSourceIsland, NewDestState#island_state.islands)
-                    },
+            %% Create migration events
+            MigrationEvents = [
+                #island_migration{
+                    individual_id = Ind#individual.id,
+                    from_island = SourceIslandId,
+                    to_island = DestIslandId,
+                    fitness = Ind#individual.fitness,
+                    timestamp = erlang:timestamp()
+                } || Ind <- Migrants
+            ],
 
-                    {[], MigrationEvents ++ InsertEvents, FinalState}
-            end
+            %% Reset source island's migration counter
+            SourceIsland = maps:get(SourceIslandId, NewDestState#island_state.islands),
+            FinalSourceIsland = SourceIsland#island{evaluations_since_migration = 0},
+            FinalState = NewDestState#island_state{
+                islands = maps:put(SourceIslandId, FinalSourceIsland, NewDestState#island_state.islands)
+            },
+
+            {[], MigrationEvents ++ InsertEvents, FinalState}
     end.
 
 %% @private Select migrants from an island.
@@ -474,10 +479,7 @@ select_migrants(IslandId, Count, State) ->
     SelectedSummaries = case SelectionMethod of
         best ->
             %% Sort by fitness, take top N
-            Sorted = lists:sort(
-                fun(A, B) -> maps:get(fitness, A) >= maps:get(fitness, B) end,
-                Individuals
-            ),
+            Sorted = lists:sort(fun by_fitness_desc/2, Individuals),
             lists:sublist(Sorted, min(Count, length(Sorted)));
 
         random ->
@@ -487,10 +489,7 @@ select_migrants(IslandId, Count, State) ->
         diverse ->
             %% Select individuals with diverse fitness values
             %% Simple implementation: sort by fitness, take evenly spaced
-            Sorted = lists:sort(
-                fun(A, B) -> maps:get(fitness, A) >= maps:get(fitness, B) end,
-                Individuals
-            ),
+            Sorted = lists:sort(fun by_fitness_desc/2, Individuals),
             select_diverse(Sorted, Count)
     end,
 
@@ -498,6 +497,10 @@ select_migrants(IslandId, Count, State) ->
     Migrants = [summary_to_individual(S) || S <- SelectedSummaries],
 
     {Migrants, State}.
+
+%% @private Compare two summaries by fitness, descending.
+by_fitness_desc(A, B) ->
+    maps:get(fitness, A) >= maps:get(fitness, B).
 
 %% @private Insert migrants into destination island.
 insert_migrants(DestIslandId, Migrants, State) ->
@@ -546,42 +549,43 @@ summary_to_individual(Summary) ->
 
 %% @private Find which island owns an individual.
 find_island_for_individual(IndividualId, State) ->
-    Result = maps:fold(
+    maps:fold(
         fun(IslandId, Island, Acc) ->
-            case Acc of
-                {ok, _, _} -> Acc;  % Already found
-                not_found ->
-                    SubModule = Island#island.strategy_module,
-                    Snapshot = SubModule:get_population_snapshot(Island#island.strategy_state),
-                    Individuals = maps:get(individuals, Snapshot),
-                    case lists:any(fun(Ind) -> maps:get(id, Ind) =:= IndividualId end, Individuals) of
-                        true -> {ok, IslandId, Island};
-                        false -> not_found
-                    end
-            end
+            find_island_fold(IslandId, Island, Acc, IndividualId)
         end,
         not_found,
         State#island_state.islands
-    ),
-    Result.
+    ).
+
+%% @private Fold step: keep the first island that owns the individual.
+find_island_fold(_IslandId, _Island, {ok, _, _} = Acc, _IndividualId) ->
+    Acc;  % Already found
+find_island_fold(IslandId, Island, not_found, IndividualId) ->
+    SubModule = Island#island.strategy_module,
+    Snapshot = SubModule:get_population_snapshot(Island#island.strategy_state),
+    Individuals = maps:get(individuals, Snapshot),
+    case island_contains_individual(Individuals, IndividualId) of
+        true -> {ok, IslandId, Island};
+        false -> not_found
+    end.
+
+%% @private Whether a snapshot's individuals contain the given id.
+island_contains_individual(Individuals, IndividualId) ->
+    lists:any(fun(Ind) -> maps:get(id, Ind) =:= IndividualId end, Individuals).
 
 %% @private Tag events with island_id in metadata.
 tag_events_with_island(Events, IslandId) ->
-    lists:map(
-        fun(Event) ->
-            case Event of
-                #individual_born{metadata = M} ->
-                    Event#individual_born{metadata = M#{island_id => IslandId}};
-                #individual_died{metadata = M} ->
-                    Event#individual_died{metadata = M#{island_id => IslandId}};
-                #individual_evaluated{metadata = M} ->
-                    Event#individual_evaluated{metadata = M#{island_id => IslandId}};
-                _ ->
-                    Event
-            end
-        end,
-        Events
-    ).
+    lists:map(fun(Event) -> tag_event_with_island(Event, IslandId) end, Events).
+
+%% @private Tag a single event with island_id in its metadata.
+tag_event_with_island(#individual_born{metadata = M} = Event, IslandId) ->
+    Event#individual_born{metadata = M#{island_id => IslandId}};
+tag_event_with_island(#individual_died{metadata = M} = Event, IslandId) ->
+    Event#individual_died{metadata = M#{island_id => IslandId}};
+tag_event_with_island(#individual_evaluated{metadata = M} = Event, IslandId) ->
+    Event#individual_evaluated{metadata = M#{island_id => IslandId}};
+tag_event_with_island(Event, _IslandId) ->
+    Event.
 
 %% @private Calculate variance.
 calculate_variance([]) -> 0.0;

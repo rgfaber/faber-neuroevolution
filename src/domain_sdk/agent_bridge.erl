@@ -268,18 +268,23 @@ sense(Bridge, AgentState, EnvState) ->
     Actions :: [map()].
 act(Bridge, Outputs, AgentState, EnvState) ->
     Actuators = maps:get(actuators, Bridge),
-    OutputList = if is_list(Outputs) -> Outputs; true -> tuple_to_list(Outputs) end,
+    OutputList = ensure_list(Outputs),
     lists:filtermap(
         fun({Module, Offset, Count}) ->
             %% Slice outputs for this actuator
             SlicedOutputs = lists:sublist(OutputList, Offset + 1, Count),
-            case Module:act(SlicedOutputs, AgentState, EnvState) of
-                {ok, Action} -> {true, Action};
-                {error, _} -> false
-            end
+            actuator_result(Module:act(SlicedOutputs, AgentState, EnvState))
         end,
         Actuators
     ).
+
+%% @private Coerce a possibly-tuple output vector to a list.
+ensure_list(Outputs) when is_list(Outputs) -> Outputs;
+ensure_list(Outputs) -> tuple_to_list(Outputs).
+
+%% @private Map an actuator result into a filtermap outcome.
+actuator_result({ok, Action}) -> {true, Action};
+actuator_result({error, _}) -> false.
 
 %% @doc Executes one complete sense→think→act cycle.
 %%
@@ -353,20 +358,21 @@ run_episode(Bridge, Network, EnvConfig, SpeciesId) ->
         {ok, EnvState0} ->
             %% Spawn agent (use spawn_agent/3 for multispecies, /2 for standard)
             SpawnResult = spawn_agent_for_env(EnvModule, SpeciesId, EnvState0),
-            case SpawnResult of
-                {ok, AgentState0, EnvState1} ->
-                    %% Run episode loop
-                    {FinalAgent, FinalEnv} = episode_loop(Bridge, Network, AgentState0, EnvState1, EnvModule),
-                    %% Extract metrics
-                    Metrics = EnvModule:extract_metrics(FinalAgent, FinalEnv),
-                    %% Calculate fitness if evaluator present
-                    maybe_calculate_fitness(Evaluator, Metrics);
-                {error, Reason} ->
-                    {error, {spawn_failed, Reason}}
-            end;
+            run_spawned_episode(SpawnResult, Bridge, Network, EnvModule, Evaluator);
         {error, Reason} ->
             {error, {init_failed, Reason}}
     end.
+
+%% @private Run the episode loop once the agent is spawned.
+run_spawned_episode({ok, AgentState0, EnvState1}, Bridge, Network, EnvModule, Evaluator) ->
+    %% Run episode loop
+    {FinalAgent, FinalEnv} = episode_loop(Bridge, Network, AgentState0, EnvState1, EnvModule),
+    %% Extract metrics
+    Metrics = EnvModule:extract_metrics(FinalAgent, FinalEnv),
+    %% Calculate fitness if evaluator present
+    maybe_calculate_fitness(Evaluator, Metrics);
+run_spawned_episode({error, Reason}, _Bridge, _Network, _EnvModule, _Evaluator) ->
+    {error, {spawn_failed, Reason}}.
 
 %% @private
 %% Spawn agent using the appropriate arity based on environment type
@@ -399,11 +405,15 @@ validate_environment(Module) ->
         ok -> ok;
         {error, _MultiErr} ->
             %% Fall back to standard agent_environment (has spawn_agent/2)
-            case agent_environment:validate(Module) of
-                ok -> ok;
-                {error, Reasons} ->
-                    throw({invalid_module, Module, agent_environment, Reasons})
-            end
+            validate_standard_environment(Module)
+    end.
+
+%% @private Validate a standard agent_environment module.
+validate_standard_environment(Module) ->
+    case agent_environment:validate(Module) of
+        ok -> ok;
+        {error, Reasons} ->
+            throw({invalid_module, Module, agent_environment, Reasons})
     end.
 
 %% @private

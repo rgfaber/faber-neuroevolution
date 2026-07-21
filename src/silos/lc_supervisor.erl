@@ -117,24 +117,36 @@ enable_silo(SiloType, Config) ->
         {error, _} = Err ->
             Err;
         ModuleName ->
-            case is_silo_enabled(SiloType) of
-                true ->
-                    {error, already_enabled};
-                false ->
-                    %% Check dependencies
-                    case check_dependencies(SiloType) of
-                        ok ->
-                            %% Validate config
-                            case validate_silo_config(SiloType, Config) of
-                                ok ->
-                                    do_enable_silo(SiloType, ModuleName, Config);
-                                {error, _} = ValidationErr ->
-                                    ValidationErr
-                            end;
-                        {error, _} = DepErr ->
-                            DepErr
-                    end
-            end
+            maybe_enable_silo(SiloType, ModuleName, Config)
+    end.
+
+%% @private Enable the silo unless it is already running.
+maybe_enable_silo(SiloType, ModuleName, Config) ->
+    case is_silo_enabled(SiloType) of
+        true ->
+            {error, already_enabled};
+        false ->
+            %% Check dependencies
+            enable_silo_with_deps(SiloType, ModuleName, Config)
+    end.
+
+%% @private Enable the silo once its dependencies are satisfied.
+enable_silo_with_deps(SiloType, ModuleName, Config) ->
+    case check_dependencies(SiloType) of
+        ok ->
+            %% Validate config
+            enable_silo_after_validation(SiloType, ModuleName, Config);
+        {error, _} = DepErr ->
+            DepErr
+    end.
+
+%% @private Enable the silo once its config passes validation.
+enable_silo_after_validation(SiloType, ModuleName, Config) ->
+    case validate_silo_config(SiloType, Config) of
+        ok ->
+            do_enable_silo(SiloType, ModuleName, Config);
+        {error, _} = ValidationErr ->
+            ValidationErr
     end.
 
 %% @private
@@ -173,25 +185,33 @@ disable_silo(SiloType) ->
             Err;
         ModuleName ->
             %% Check if other silos depend on this one
-            case check_dependents(SiloType) of
-                ok ->
-                    case supervisor:terminate_child(?SERVER, ModuleName) of
-                        ok ->
-                            %% Remove config from ETS
-                            delete_silo_config(SiloType),
-                            %% Notify sensor publisher to stop polling this silo
-                            catch lc_sensor_publisher:disable_silo(SiloType),
-                            %% Publish silo deactivation event
-                            publish_silo_event(SiloType, disabled),
-                            supervisor:delete_child(?SERVER, ModuleName);
-                        {error, not_found} ->
-                            {error, not_enabled};
-                        {error, Reason} ->
-                            {error, Reason}
-                    end;
-                {error, _} = DepErr ->
-                    DepErr
-            end
+            maybe_disable_silo(SiloType, ModuleName)
+    end.
+
+%% @private Disable the silo unless other enabled silos depend on it.
+maybe_disable_silo(SiloType, ModuleName) ->
+    case check_dependents(SiloType) of
+        ok ->
+            terminate_silo_child(SiloType, ModuleName);
+        {error, _} = DepErr ->
+            DepErr
+    end.
+
+%% @private Terminate and remove the silo child, cleaning up its config.
+terminate_silo_child(SiloType, ModuleName) ->
+    case supervisor:terminate_child(?SERVER, ModuleName) of
+        ok ->
+            %% Remove config from ETS
+            delete_silo_config(SiloType),
+            %% Notify sensor publisher to stop polling this silo
+            catch lc_sensor_publisher:disable_silo(SiloType),
+            %% Publish silo deactivation event
+            publish_silo_event(SiloType, disabled),
+            supervisor:delete_child(?SERVER, ModuleName);
+        {error, not_found} ->
+            {error, not_enabled};
+        {error, Reason} ->
+            {error, Reason}
     end.
 
 %% @doc Check if a silo is currently enabled.
@@ -201,9 +221,14 @@ is_silo_enabled(SiloType) ->
         {error, _} ->
             false;
         ModuleName ->
-            Children = supervisor:which_children(?SERVER),
-            lists:any(fun({Id, _, _, _}) -> Id =:= ModuleName end, Children)
+            is_module_a_child(ModuleName)
     end.
+
+%% @private Check whether a module id is a current supervisor child.
+-spec is_module_a_child(atom()) -> boolean().
+is_module_a_child(ModuleName) ->
+    Children = supervisor:which_children(?SERVER),
+    lists:any(fun({Id, _, _, _}) -> Id =:= ModuleName end, Children).
 
 %% @doc List all currently enabled silos.
 -spec list_enabled_silos() -> [atom()].
@@ -212,14 +237,17 @@ list_enabled_silos() ->
     ChildIds = [Id || {Id, _, _, _} <- Children],
     AllSilos = all_silo_types(),
     lists:filter(
-        fun(SiloType) ->
-            case silo_module(SiloType) of
-                {error, _} -> false;
-                ModuleName -> lists:member(ModuleName, ChildIds)
-            end
-        end,
+        fun(SiloType) -> is_silo_child(SiloType, ChildIds) end,
         AllSilos
     ).
+
+%% @private Check whether a silo type's module is among the given child ids.
+-spec is_silo_child(atom(), [atom()]) -> boolean().
+is_silo_child(SiloType, ChildIds) ->
+    case silo_module(SiloType) of
+        {error, _} -> false;
+        ModuleName -> lists:member(ModuleName, ChildIds)
+    end.
 
 %% @doc List all available silo types.
 -spec list_available_silos() -> [atom()].
@@ -236,15 +264,25 @@ get_silo_config(SiloType) ->
         {error, _} = Err ->
             Err;
         _ModuleName ->
-            case is_silo_enabled(SiloType) of
-                false ->
-                    {error, not_enabled};
-                true ->
-                    case ets:lookup(?SILO_CONFIG_TABLE, SiloType) of
-                        [{SiloType, Config}] -> {ok, Config};
-                        [] -> {ok, #{}}  %% Core silos started without explicit config
-                    end
-            end
+            lookup_enabled_silo_config(SiloType)
+    end.
+
+%% @private Look up a silo's stored config, only when it is enabled.
+-spec lookup_enabled_silo_config(atom()) -> {ok, map()} | {error, not_enabled}.
+lookup_enabled_silo_config(SiloType) ->
+    case is_silo_enabled(SiloType) of
+        false ->
+            {error, not_enabled};
+        true ->
+            lookup_silo_config(SiloType)
+    end.
+
+%% @private Read the silo's config from ETS, defaulting to empty for core silos.
+-spec lookup_silo_config(atom()) -> {ok, map()}.
+lookup_silo_config(SiloType) ->
+    case ets:lookup(?SILO_CONFIG_TABLE, SiloType) of
+        [{SiloType, Config}] -> {ok, Config};
+        [] -> {ok, #{}}  %% Core silos started without explicit config
     end.
 
 %% @doc Reconfigure a running silo with new configuration.
@@ -259,18 +297,26 @@ reconfigure_silo(SiloType, NewConfig) ->
         false ->
             {error, not_enabled};
         true ->
-            case validate_silo_config(SiloType, NewConfig) of
-                ok ->
-                    %% Disable and re-enable with new config
-                    case disable_silo(SiloType) of
-                        ok ->
-                            enable_silo(SiloType, NewConfig);
-                        {error, _} = Err ->
-                            Err
-                    end;
-                {error, _} = ValidationErr ->
-                    ValidationErr
-            end
+            validate_and_reconfigure_silo(SiloType, NewConfig)
+    end.
+
+%% @private Reconfigure the silo once the new config passes validation.
+validate_and_reconfigure_silo(SiloType, NewConfig) ->
+    case validate_silo_config(SiloType, NewConfig) of
+        ok ->
+            %% Disable and re-enable with new config
+            reenable_silo(SiloType, NewConfig);
+        {error, _} = ValidationErr ->
+            ValidationErr
+    end.
+
+%% @private Disable then re-enable the silo with the new config.
+reenable_silo(SiloType, NewConfig) ->
+    case disable_silo(SiloType) of
+        ok ->
+            enable_silo(SiloType, NewConfig);
+        {error, _} = Err ->
+            Err
     end.
 
 %% @doc Validate configuration for a silo type.
@@ -565,39 +611,44 @@ build_extension_silo_specs(Config) ->
 
     %% Build specs for enabled silos
     lists:filtermap(
-        fun({SiloType, EnableKey, ModuleName, _Module}) ->
-            Enabled = maps:get(EnableKey, Config, false),
-            case Enabled of
-                true ->
-                    case code:which(ModuleName) of
-                        non_existing ->
-                            error_logger:warning_msg(
-                                "[lc_supervisor] ~p enabled but ~p module not found~n",
-                                [SiloType, ModuleName]
-                            ),
-                            false;
-                        _ ->
-                            SiloConfig = maps:get(
-                                list_to_atom(atom_to_list(SiloType) ++ "_silo"),
-                                Config,
-                                #{}
-                            ),
-                            Spec = #{
-                                id => ModuleName,
-                                start => {ModuleName, start_link, [SiloConfig]},
-                                restart => permanent,
-                                shutdown => 5000,
-                                type => worker,
-                                modules => [ModuleName]
-                            },
-                            {true, Spec}
-                    end;
-                false ->
-                    false
-            end
-        end,
+        fun(SiloEntry) -> maybe_build_silo_spec(SiloEntry, Config) end,
         ExtensionSilos
     ).
+
+%% @private Build the child spec for a silo entry when it is enabled.
+maybe_build_silo_spec({SiloType, EnableKey, ModuleName, _Module}, Config) ->
+    case maps:get(EnableKey, Config, false) of
+        true ->
+            build_silo_spec_if_available(SiloType, ModuleName, Config);
+        false ->
+            false
+    end.
+
+%% @private Build the child spec when the silo module is loadable.
+build_silo_spec_if_available(SiloType, ModuleName, Config) ->
+    case code:which(ModuleName) of
+        non_existing ->
+            error_logger:warning_msg(
+                "[lc_supervisor] ~p enabled but ~p module not found~n",
+                [SiloType, ModuleName]
+            ),
+            false;
+        _ ->
+            SiloConfig = maps:get(
+                list_to_atom(atom_to_list(SiloType) ++ "_silo"),
+                Config,
+                #{}
+            ),
+            Spec = #{
+                id => ModuleName,
+                start => {ModuleName, start_link, [SiloConfig]},
+                restart => permanent,
+                shutdown => 5000,
+                type => worker,
+                modules => [ModuleName]
+            },
+            {true, Spec}
+    end.
 
 %% @doc Count enabled extension silos in configuration.
 -spec count_enabled_extensions(map()) -> non_neg_integer().
@@ -615,15 +666,18 @@ count_enabled_extensions(Config) ->
         enable_communication_silo
     ],
     lists:foldl(
-        fun(Key, Count) ->
-            case maps:get(Key, Config, false) of
-                true -> Count + 1;
-                false -> Count
-            end
-        end,
+        fun(Key, Count) -> count_if_enabled(Key, Count, Config) end,
         0,
         EnableKeys
     ).
+
+%% @private Increment the count when the given enable key is set.
+-spec count_if_enabled(atom(), non_neg_integer(), map()) -> non_neg_integer().
+count_if_enabled(Key, Count, Config) ->
+    case maps:get(Key, Config, false) of
+        true -> Count + 1;
+        false -> Count
+    end.
 
 %% @private Publish silo activation/deactivation event to event bus.
 %% This allows the UI (via EventBridge) to update silo status in real-time.
@@ -760,10 +814,15 @@ delete_silo_config(SiloType) ->
 -spec check_dependencies(atom()) -> ok | {error, {missing_dependency, atom()}}.
 check_dependencies(SiloType) ->
     Dependencies = silo_dependencies(SiloType),
-    case lists:filter(fun(Dep) -> not is_silo_enabled(Dep) end, Dependencies) of
+    case lists:filter(fun is_silo_disabled/1, Dependencies) of
         [] -> ok;
         [Missing | _] -> {error, {missing_dependency, Missing}}
     end.
+
+%% @private Predicate: true when a silo is not currently enabled.
+-spec is_silo_disabled(atom()) -> boolean().
+is_silo_disabled(Dep) ->
+    not is_silo_enabled(Dep).
 
 %% @private Check that no enabled silos depend on this silo.
 -spec check_dependents(atom()) -> ok | {error, {has_dependents, [atom()]}}.

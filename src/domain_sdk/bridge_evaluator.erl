@@ -113,15 +113,19 @@ is_solved(Bridge, Metrics) ->
         undefined ->
             false;
         Evaluator ->
-            %% ensure_loaded first: erlang:function_exported/3 answers false
-            %% for a module that simply has not been loaded yet, which would
-            %% silently skip the callback on the first evaluation and lose the
-            %% earliest solve.
-            _ = code:ensure_loaded(Evaluator),
-            case erlang:function_exported(Evaluator, is_solved, 1) of
-                true  -> Evaluator:is_solved(Metrics);
-                false -> false
-            end
+            ask_evaluator(Evaluator, Metrics)
+    end.
+
+%% @private
+%% ensure_loaded first: erlang:function_exported/3 answers false
+%% for a module that simply has not been loaded yet, which would
+%% silently skip the callback on the first evaluation and lose the
+%% earliest solve.
+ask_evaluator(Evaluator, Metrics) ->
+    _ = code:ensure_loaded(Evaluator),
+    case erlang:function_exported(Evaluator, is_solved, 1) of
+        true  -> Evaluator:is_solved(Metrics);
+        false -> false
     end.
 
 %% @private

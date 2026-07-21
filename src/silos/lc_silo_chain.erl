@@ -427,20 +427,24 @@ maybe_update_network(Level, State) ->
 
     case Counter rem Tau =:= 0 andalso length(History) >= 10 of
         true ->
-            Network = case Level of
-                l0 -> State#state.l0_network;
-                l1 -> State#state.l1_network;
-                l2 -> State#state.l2_network
-            end,
-            CurrentReward = avg_list(History),
-            UpdatedNetwork = es_update(Network, CurrentReward, State#state.noise_std),
-            case Level of
-                l0 -> State#state{l0_network = UpdatedNetwork};
-                l1 -> State#state{l1_network = UpdatedNetwork};
-                l2 -> State#state{l2_network = UpdatedNetwork}
-            end;
+            apply_es_update(Level, History, State);
         false ->
             State
+    end.
+
+%% @private Perform the ES weight update for the given level.
+apply_es_update(Level, History, State) ->
+    Network = case Level of
+        l0 -> State#state.l0_network;
+        l1 -> State#state.l1_network;
+        l2 -> State#state.l2_network
+    end,
+    CurrentReward = avg_list(History),
+    UpdatedNetwork = es_update(Network, CurrentReward, State#state.noise_std),
+    case Level of
+        l0 -> State#state{l0_network = UpdatedNetwork};
+        l1 -> State#state{l1_network = UpdatedNetwork};
+        l2 -> State#state{l2_network = UpdatedNetwork}
     end.
 
 %% @private ES-style weight update.

@@ -420,14 +420,16 @@ forward_pass(Inputs, Cortex) ->
     FaninIds = Actuator#actuator.fanin_ids,
 
     lists:flatmap(
-        fun(NId) ->
-            case maps:get(NId, FinalActivations, [0.0]) of
-                V when is_list(V) -> V;
-                V -> [V]
-            end
-        end,
+        fun(NId) -> actuator_input(NId, FinalActivations) end,
         FaninIds
     ).
+
+%% @private Read a fan-in activation as a list of values.
+actuator_input(NId, FinalActivations) ->
+    case maps:get(NId, FinalActivations, [0.0]) of
+        V when is_list(V) -> V;
+        V -> [V]
+    end.
 
 %% @private Process a single neuron in the forward pass.
 process_neuron(Neuron, Activations) ->

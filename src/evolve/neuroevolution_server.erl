@@ -445,10 +445,14 @@ get_strategy_module(Config) ->
             Module;
         _ ->
             %% Auto-detect: continuous evolution indicators trigger steady_state
-            case detect_evolution_mode(Config) of
-                continuous -> steady_state_strategy;
-                generational -> generational_strategy
-            end
+            strategy_module_for_mode(Config)
+    end.
+
+%% @private Map detected evolution mode to a strategy module.
+strategy_module_for_mode(Config) ->
+    case detect_evolution_mode(Config) of
+        continuous -> steady_state_strategy;
+        generational -> generational_strategy
     end.
 
 %% @private Detect evolution mode from config indicators.
@@ -493,11 +497,15 @@ extract_population_from_snapshot(_Snapshot, StrategyState) ->
             Population;
         _ ->
             %% Fallback: try to get from state if it's a record
-            try
-                element(5, StrategyState)  % Population is usually 5th element in gen_state
-            catch
-                _:_ -> []
-            end
+            population_from_state_fallback(StrategyState)
+    end.
+
+%% @private Best-effort population extraction from an unknown strategy state.
+population_from_state_fallback(StrategyState) ->
+    try
+        element(5, StrategyState)  % Population is usually 5th element in gen_state
+    catch
+        _:_ -> []
     end.
 
 %% @private Process lifecycle events from strategy.
@@ -809,14 +817,8 @@ evaluate_batches(Population, MaxConcurrent, EvaluatorModule, Options, Acc, Event
             ParentPid = self(),
             %% Distribute across schedulers: Index mod NumSchedulers + 1
             SchedulerHint = (Index rem NumSchedulers) + 1,
-            Pid = spawn_opt(
-                fun() ->
-                    Result = neuroevolution_evaluator:evaluate_individual(
-                        Individual, EvaluatorModule, Options
-                    ),
-                    ParentPid ! {eval_result, Ref, Result}
-                end,
-                [{scheduler, SchedulerHint}, link]
+            Pid = spawn_eval_worker(
+                Individual, EvaluatorModule, Options, ParentPid, Ref, SchedulerHint
             ),
             {Ref, Pid, Individual}
         end,
@@ -827,6 +829,18 @@ evaluate_batches(Population, MaxConcurrent, EvaluatorModule, Options, Acc, Event
 
     evaluate_batches(Remaining, MaxConcurrent, EvaluatorModule, Options,
                      lists:reverse(BatchResults) ++ Acc, EventCtx, NewCompleted).
+
+%% @private Spawn a single evaluation worker on the hinted scheduler.
+spawn_eval_worker(Individual, EvaluatorModule, Options, ParentPid, Ref, SchedulerHint) ->
+    spawn_opt(
+        fun() ->
+            Result = neuroevolution_evaluator:evaluate_individual(
+                Individual, EvaluatorModule, Options
+            ),
+            ParentPid ! {eval_result, Ref, Result}
+        end,
+        [{scheduler, SchedulerHint}, link]
+    ).
 
 %% @private
 split_list(List, N) when N >= length(List) ->
@@ -854,14 +868,7 @@ collect_eval_results(RefsWithPids, Acc, EventCtx, Completed, Timeout) ->
             CleanedIndividual = strip_compiled_ref_from_individual(EvaluatedIndividual),
             collect_eval_results(NewRefs, [CleanedIndividual | Acc], EventCtx, NewCompleted, Timeout);
         {eval_result, Ref, {error, _Reason}} ->
-            case lists:keyfind(Ref, 1, RefsWithPids) of
-                {Ref, _Pid, Original} ->
-                    NewRefs = lists:keydelete(Ref, 1, RefsWithPids),
-                    NewCompleted = Completed + 1,
-                    collect_eval_results(NewRefs, [Original | Acc], EventCtx, NewCompleted, Timeout);
-                false ->
-                    collect_eval_results(RefsWithPids, Acc, EventCtx, Completed, Timeout)
-            end
+            handle_eval_error_result(Ref, RefsWithPids, Acc, EventCtx, Completed, Timeout)
     after Timeout ->
         %% CRITICAL: Kill all remaining worker processes to prevent zombie memory leaks.
         %% Without this, timed-out workers continue running and consuming memory/CPU.
@@ -880,6 +887,17 @@ collect_eval_results(RefsWithPids, Acc, EventCtx, Completed, Timeout) ->
         ),
         Remaining = [Ind || {_, _, Ind} <- RefsWithPids],
         {lists:reverse(Acc) ++ Remaining, Completed + NumPending}
+    end.
+
+%% @private Handle an {error, _} eval result: drop the ref and keep the original.
+handle_eval_error_result(Ref, RefsWithPids, Acc, EventCtx, Completed, Timeout) ->
+    case lists:keyfind(Ref, 1, RefsWithPids) of
+        {Ref, _Pid, Original} ->
+            NewRefs = lists:keydelete(Ref, 1, RefsWithPids),
+            NewCompleted = Completed + 1,
+            collect_eval_results(NewRefs, [Original | Acc], EventCtx, NewCompleted, Timeout);
+        false ->
+            collect_eval_results(RefsWithPids, Acc, EventCtx, Completed, Timeout)
     end.
 
 %% @private
@@ -981,16 +999,20 @@ handle_distributed_eval_result(Result, State) ->
             NewPending = maps:remove(RequestId, PendingEvaluations),
             NewState = State#neuro_state{pending_evaluations = NewPending},
 
-            case maps:size(NewPending) of
-                0 ->
-                    finish_distributed_evaluation(NewState, [EvaluatedInd]);
-                _ ->
-                    AccumulatedResults = get_accumulated_results(State),
-                    NewAccumulated = [EvaluatedInd | AccumulatedResults],
-                    {noreply, store_accumulated_results(NewState, NewAccumulated)}
-            end;
+            finish_or_accumulate_eval(NewPending, NewState, EvaluatedInd, State);
         error ->
             {noreply, State}
+    end.
+
+%% @private Finish the batch when no evaluations remain, else accumulate.
+finish_or_accumulate_eval(NewPending, NewState, EvaluatedInd, State) ->
+    case maps:size(NewPending) of
+        0 ->
+            finish_distributed_evaluation(NewState, [EvaluatedInd]);
+        _ ->
+            AccumulatedResults = get_accumulated_results(State),
+            NewAccumulated = [EvaluatedInd | AccumulatedResults],
+            {noreply, store_accumulated_results(NewState, NewAccumulated)}
     end.
 
 %% @private
@@ -1058,28 +1080,32 @@ clear_accumulated_results(State) ->
 maybe_start_mesh_sup(Config) ->
     case Config#neuro_config.evaluation_mode of
         mesh ->
-            MeshConfig = case Config#neuro_config.mesh_config of
-                undefined -> #{mesh_enabled => true, realm => Config#neuro_config.realm};
-                M when is_map(M) -> M#{mesh_enabled => true, realm => Config#neuro_config.realm}
-            end,
-            case mesh_sup:start_link(MeshConfig) of
-                {ok, Pid} ->
-                    error_logger:info_msg(
-                        "[neuroevolution_server] Started mesh supervisor ~p~n",
-                        [Pid]
-                    ),
-                    ok;
-                {error, {already_started, _}} ->
-                    ok;  % Already running, that's fine
-                {error, Reason} ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] Failed to start mesh supervisor: ~p~n",
-                        [Reason]
-                    ),
-                    error
-            end;
+            start_mesh_sup(Config);
         _ ->
             ok
+    end.
+
+%% @private Build mesh config and start the mesh supervisor.
+start_mesh_sup(Config) ->
+    MeshConfig = case Config#neuro_config.mesh_config of
+        undefined -> #{mesh_enabled => true, realm => Config#neuro_config.realm};
+        M when is_map(M) -> M#{mesh_enabled => true, realm => Config#neuro_config.realm}
+    end,
+    case mesh_sup:start_link(MeshConfig) of
+        {ok, Pid} ->
+            error_logger:info_msg(
+                "[neuroevolution_server] Started mesh supervisor ~p~n",
+                [Pid]
+            ),
+            ok;
+        {error, {already_started, _}} ->
+            ok;  % Already running, that's fine
+        {error, Reason} ->
+            error_logger:error_msg(
+                "[neuroevolution_server] Failed to start mesh supervisor: ~p~n",
+                [Reason]
+            ),
+            error
     end.
 
 %% @private Start mesh-based evaluation using distributed_evaluator.
@@ -1113,20 +1139,7 @@ start_mesh_evaluation(Population, State) ->
 
         %% Combine results with original individuals
         EvaluatedPopulation = lists:zipwith(
-            fun(Ind, Result) ->
-                case Result of
-                    {ok, Fitness} when is_number(Fitness) ->
-                        Ind#individual{
-                            fitness = Fitness,
-                            metrics = #{mesh_evaluated => true}
-                        };
-                    {ok, Metrics} when is_map(Metrics) ->
-                        Ind#individual{metrics = Metrics};
-                    {error, _Reason} ->
-                        %% Keep original individual on error
-                        Ind
-                end
-            end,
+            fun merge_mesh_result/2,
             Population,
             Results
         ),
@@ -1135,6 +1148,21 @@ start_mesh_evaluation(Population, State) ->
     end),
 
     State.
+
+%% @private Merge a single mesh evaluation result into its individual.
+merge_mesh_result(Ind, Result) ->
+    case Result of
+        {ok, Fitness} when is_number(Fitness) ->
+            Ind#individual{
+                fitness = Fitness,
+                metrics = #{mesh_evaluated => true}
+            };
+        {ok, Metrics} when is_map(Metrics) ->
+            Ind#individual{metrics = Metrics};
+        {error, _Reason} ->
+            %% Keep original individual on error
+            Ind
+    end.
 
 %%% ============================================================================
 %%% Internal Functions - Generation Complete (Strategy Delegation)
@@ -1228,15 +1256,7 @@ handle_evaluation_complete(State, EvaluatedPopulation) ->
             %% Legacy path: Task Silo already incorporates L2 guidance via maybe_query_l2_guidance()
             %% If task_silo is active, use its recommendations exclusively (it already queries meta_controller)
             %% Only fall back to meta_controller if task_silo is not running
-            case whereis(task_silo) of
-                undefined ->
-                    %% No task_silo - use meta_controller directly
-                    maybe_update_meta_controller(GenStats, Config, State);
-                TaskSiloPid when is_pid(TaskSiloPid) ->
-                    %% Task silo is active - it already incorporates L2 guidance
-                    %% Don't also call meta_controller to avoid oscillation
-                    maybe_update_task_silo(GenStats, Config, State)
-            end;
+            update_hyperparams_legacy(GenStats, Config, State);
         _LcChainPid ->
             %% New path: Chained LTC TWEANN controller
             maybe_update_lc_chain(GenStats, Config, State)
@@ -1326,13 +1346,29 @@ handle_evaluation_complete(State, EvaluatedPopulation) ->
             StoppedState = NewState#neuro_state{running = false},
             {noreply, StoppedState};
         false ->
-            _ = case NewState#neuro_state.running of
-                true ->
-                    erlang:send_after(500, self(), evaluate_generation);
-                false ->
-                    ok
-            end,
+            _ = maybe_schedule_next_generation(NewState),
             {noreply, NewState}
+    end.
+
+%% @private Choose the legacy hyperparameter update path (task_silo vs meta_controller).
+update_hyperparams_legacy(GenStats, Config, State) ->
+    case whereis(task_silo) of
+        undefined ->
+            %% No task_silo - use meta_controller directly
+            maybe_update_meta_controller(GenStats, Config, State);
+        TaskSiloPid when is_pid(TaskSiloPid) ->
+            %% Task silo is active - it already incorporates L2 guidance
+            %% Don't also call meta_controller to avoid oscillation
+            maybe_update_task_silo(GenStats, Config, State)
+    end.
+
+%% @private Schedule the next generation evaluation when still running.
+maybe_schedule_next_generation(State) ->
+    case State#neuro_state.running of
+        true ->
+            erlang:send_after(500, self(), evaluate_generation);
+        false ->
+            ok
     end.
 
 %% @private Process strategy actions and extract next population.
@@ -1489,20 +1525,28 @@ should_stop(#neuro_state{
             {true, target_fitness_reached};
         _ ->
             %% Check max_evaluations first (preferred stopping condition)
-            case Config#neuro_config.max_evaluations of
-                MaxEvals when is_integer(MaxEvals), TotalEvaluations >= MaxEvals ->
-                    {true, max_evaluations_reached};
-                _ ->
-                    %% Fall back to max_generations (deprecated)
-                    case Config#neuro_config.max_generations of
-                        infinity ->
-                            false;
-                        MaxGen when is_integer(MaxGen), Generation > MaxGen ->
-                            {true, max_generations_reached};
-                        _ ->
-                            false
-                    end
-            end
+            check_eval_limits(Config, TotalEvaluations, Generation)
+    end.
+
+%% @private Check the max_evaluations stopping condition, then generations.
+check_eval_limits(Config, TotalEvaluations, Generation) ->
+    case Config#neuro_config.max_evaluations of
+        MaxEvals when is_integer(MaxEvals), TotalEvaluations >= MaxEvals ->
+            {true, max_evaluations_reached};
+        _ ->
+            %% Fall back to max_generations (deprecated)
+            check_generation_limit(Config, Generation)
+    end.
+
+%% @private Check the deprecated max_generations stopping condition.
+check_generation_limit(Config, Generation) ->
+    case Config#neuro_config.max_generations of
+        infinity ->
+            false;
+        MaxGen when is_integer(MaxGen), Generation > MaxGen ->
+            {true, max_generations_reached};
+        _ ->
+            false
     end.
 
 %% @private
@@ -1557,8 +1601,7 @@ maybe_record_solve(#neuro_state{evaluations_to_solve = N} = State, _Pop, _Evals)
   when N =/= undefined ->
     State;
 maybe_record_solve(State, Population, TotalEvaluations) ->
-    case lists:any(fun(I) -> maps:get('$solved', I#individual.metrics, false) end,
-                   Population) of
+    case lists:any(fun is_solved_individual/1, Population) of
         true ->
             error_logger:info_msg(
                 "[neuroevolution_server] SOLVED after ~p evaluations~n",
@@ -1567,6 +1610,10 @@ maybe_record_solve(State, Population, TotalEvaluations) ->
         false ->
             State
     end.
+
+%% @private True when an individual's metrics mark it as having solved the task.
+is_solved_individual(I) ->
+    maps:get('$solved', I#individual.metrics, false).
 
 %% @private
 %% @doc Seed this process's RNG when a run seed is configured.
@@ -1589,15 +1636,19 @@ notify_event_callback(Config, Event) ->
         undefined ->
             ok;
         {Module, InitArg} ->
-            try
-                Module:handle_event(Event, InitArg)
-            catch
-                Class:Reason ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] Event handler error: ~p:~p~n",
-                        [Class, Reason]
-                    )
-            end
+            invoke_event_handler(Module, InitArg, Event)
+    end.
+
+%% @private Invoke a configured event handler, logging any crash.
+invoke_event_handler(Module, InitArg, Event) ->
+    try
+        Module:handle_event(Event, InitArg)
+    catch
+        Class:Reason ->
+            error_logger:error_msg(
+                "[neuroevolution_server] Event handler error: ~p:~p~n",
+                [Class, Reason]
+            )
     end.
 
 %% @private
@@ -1774,15 +1825,19 @@ compute_diversity_index(Population, AvgFitness) ->
         1 -> 0.0;
         _ ->
             %% Compute variance
-            SumSqDiff = lists:foldl(
-                fun(F, Acc) -> Acc + math:pow(F - AvgFitness, 2) end,
-                0.0,
-                Fitnesses
-            ),
-            Variance = SumSqDiff / N,
+            Variance = diversity_variance(Fitnesses, AvgFitness, N),
             %% Normalize: assume max reasonable variance is 0.25 (for 0-1 fitness)
             min(1.0, math:sqrt(Variance) * 2.0)
     end.
+
+%% @private Population fitness variance around a known mean.
+diversity_variance(Fitnesses, AvgFitness, N) ->
+    SumSqDiff = lists:foldl(
+        fun(F, Acc) -> Acc + math:pow(F - AvgFitness, 2) end,
+        0.0,
+        Fitnesses
+    ),
+    SumSqDiff / N.
 
 %% @private Compute average network complexity from top individuals.
 %% Returns normalized value 0.0-1.0.
@@ -1855,21 +1910,25 @@ maybe_start_meta_controller(Config) ->
         undefined ->
             undefined;
         MetaConfig ->
-            case meta_controller:start_link(MetaConfig) of
-                {ok, Pid} ->
-                    error_logger:info_msg(
-                        "[neuroevolution_server] Started meta-controller ~p~n",
-                        [Pid]
-                    ),
-                    _ = meta_controller:start_training(Pid),
-                    Pid;
-                {error, Reason} ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] Failed to start meta-controller: ~p~n",
-                        [Reason]
-                    ),
-                    undefined
-            end
+            start_meta_controller(MetaConfig)
+    end.
+
+%% @private Start the meta-controller and kick off its training.
+start_meta_controller(MetaConfig) ->
+    case meta_controller:start_link(MetaConfig) of
+        {ok, Pid} ->
+            error_logger:info_msg(
+                "[neuroevolution_server] Started meta-controller ~p~n",
+                [Pid]
+            ),
+            _ = meta_controller:start_training(Pid),
+            Pid;
+        {error, Reason} ->
+            error_logger:error_msg(
+                "[neuroevolution_server] Failed to start meta-controller: ~p~n",
+                [Reason]
+            ),
+            undefined
     end.
 
 %% @private
@@ -1878,19 +1937,23 @@ maybe_update_meta_controller(GenStats, Config, State) ->
         undefined ->
             {Config, State};
         MetaPid ->
-            try
-                NewParams = meta_controller:update(MetaPid, GenStats),
-                UpdatedConfig = apply_config_params(Config, NewParams),
-                log_param_changes(Config, UpdatedConfig, State#neuro_state.generation),
-                {UpdatedConfig, State}
-            catch
-                Class:Reason ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] Meta-controller update failed: ~p:~p~n",
-                        [Class, Reason]
-                    ),
-                    {Config, State}
-            end
+            run_meta_controller_update(MetaPid, GenStats, Config, State)
+    end.
+
+%% @private Run a meta-controller update, falling back to the current config on error.
+run_meta_controller_update(MetaPid, GenStats, Config, State) ->
+    try
+        NewParams = meta_controller:update(MetaPid, GenStats),
+        UpdatedConfig = apply_config_params(Config, NewParams),
+        log_param_changes(Config, UpdatedConfig, State#neuro_state.generation),
+        {UpdatedConfig, State}
+    catch
+        Class:Reason ->
+            error_logger:error_msg(
+                "[neuroevolution_server] Meta-controller update failed: ~p:~p~n",
+                [Class, Reason]
+            ),
+            {Config, State}
     end.
 
 %%% ============================================================================
@@ -1903,20 +1966,24 @@ maybe_start_lc_chain(Config) ->
         undefined ->
             undefined;
         LcChainConfig ->
-            case lc_chain:start_link(LcChainConfig) of
-                {ok, Pid} ->
-                    error_logger:info_msg(
-                        "[neuroevolution_server] Started LC chain controller ~p~n",
-                        [Pid]
-                    ),
-                    Pid;
-                {error, Reason} ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] Failed to start LC chain: ~p~n",
-                        [Reason]
-                    ),
-                    undefined
-            end
+            start_lc_chain(LcChainConfig)
+    end.
+
+%% @private Start the chained LTC controller process.
+start_lc_chain(LcChainConfig) ->
+    case lc_chain:start_link(LcChainConfig) of
+        {ok, Pid} ->
+            error_logger:info_msg(
+                "[neuroevolution_server] Started LC chain controller ~p~n",
+                [Pid]
+            ),
+            Pid;
+        {error, Reason} ->
+            error_logger:error_msg(
+                "[neuroevolution_server] Failed to start LC chain: ~p~n",
+                [Reason]
+            ),
+            undefined
     end.
 
 %%% ============================================================================
@@ -1932,29 +1999,33 @@ maybe_update_lc_chain(GenStats, Config, State) ->
         undefined ->
             {Config, State};
         LcChainPid ->
-            try
-                %% Build evolution metrics for L2
-                EvoMetrics = build_evolution_metrics(GenStats, State),
+            run_lc_chain_update(LcChainPid, GenStats, Config, State)
+    end.
 
-                %% Build emergent metrics for L0
-                EmergentMetrics = build_emergent_metrics(Config, State),
+%% @private Run an LC chain forward pass, falling back to current config on error.
+run_lc_chain_update(LcChainPid, GenStats, Config, State) ->
+    try
+        %% Build evolution metrics for L2
+        EvoMetrics = build_evolution_metrics(GenStats, State),
 
-                %% Forward pass through L2→L1→L0 chain
-                Hyperparams = lc_chain:forward(LcChainPid, EvoMetrics, EmergentMetrics),
+        %% Build emergent metrics for L0
+        EmergentMetrics = build_emergent_metrics(Config, State),
 
-                %% Apply hyperparameters to config
-                UpdatedConfig = apply_lc_chain_params(Config, Hyperparams),
-                log_lc_chain_changes(Config, UpdatedConfig, State#neuro_state.generation),
+        %% Forward pass through L2→L1→L0 chain
+        Hyperparams = lc_chain:forward(LcChainPid, EvoMetrics, EmergentMetrics),
 
-                {UpdatedConfig, State}
-            catch
-                Class:Reason:Stack ->
-                    error_logger:error_msg(
-                        "[neuroevolution_server] LC chain forward failed: ~p:~p~n~p~n",
-                        [Class, Reason, Stack]
-                    ),
-                    {Config, State}
-            end
+        %% Apply hyperparameters to config
+        UpdatedConfig = apply_lc_chain_params(Config, Hyperparams),
+        log_lc_chain_changes(Config, UpdatedConfig, State#neuro_state.generation),
+
+        {UpdatedConfig, State}
+    catch
+        Class:Reason:Stack ->
+            error_logger:error_msg(
+                "[neuroevolution_server] LC chain forward failed: ~p:~p~n~p~n",
+                [Class, Reason, Stack]
+            ),
+            {Config, State}
     end.
 
 %% @private Build evolution_metrics record for LC chain L2 input.
@@ -2178,18 +2249,22 @@ update_task_l0_sensors(State, Sorted, CompetitiveEntry) ->
             %% task_l0_sensors not running, skip update
             ok;
         _Pid ->
-            try
-                %% Build stats map for task_l0_sensors:update_stats/1
-                Stats = build_task_l0_sensor_stats(State, Sorted, CompetitiveEntry),
-                task_l0_sensors:update_stats(Stats)
-            catch
-                Class:Reason ->
-                    error_logger:warning_msg(
-                        "[neuroevolution_server] Failed to update task_l0_sensors: ~p:~p~n",
-                        [Class, Reason]
-                    ),
-                    ok
-            end
+            push_task_l0_sensor_stats(State, Sorted, CompetitiveEntry)
+    end.
+
+%% @private Build and push L0 sensor stats, logging any failure.
+push_task_l0_sensor_stats(State, Sorted, CompetitiveEntry) ->
+    try
+        %% Build stats map for task_l0_sensors:update_stats/1
+        Stats = build_task_l0_sensor_stats(State, Sorted, CompetitiveEntry),
+        task_l0_sensors:update_stats(Stats)
+    catch
+        Class:Reason ->
+            error_logger:warning_msg(
+                "[neuroevolution_server] Failed to update task_l0_sensors: ~p:~p~n",
+                [Class, Reason]
+            ),
+            ok
     end.
 
 %% @private Build stats map for task_l0_sensors.
@@ -2245,24 +2320,23 @@ build_task_l0_sensor_stats(_State, _Sorted, _CompetitiveEntry) ->
 %% @private Calculate average network complexity from population.
 calculate_avg_network_complexity([]) -> 0.0;
 calculate_avg_network_complexity(Sorted) ->
-    Complexities = lists:filtermap(
-        fun(Ind) ->
-            case Ind#individual.network of
-                Network when is_map(Network) ->
-                    %% Try to get connection count as complexity proxy
-                    Conns = maps:get(connections, Network, []),
-                    Nodes = maps:get(neurons, Network, maps:get(nodes, Network, [])),
-                    Complexity = length(Conns) + length(Nodes),
-                    {true, Complexity};
-                _ ->
-                    false
-            end
-        end,
-        Sorted
-    ),
+    Complexities = lists:filtermap(fun network_complexity/1, Sorted),
     case Complexities of
         [] -> 0.0;
         _ -> lists:sum(Complexities) / length(Complexities)
+    end.
+
+%% @private Complexity (connections + nodes) of one individual's network, if a map.
+network_complexity(Ind) ->
+    case Ind#individual.network of
+        Network when is_map(Network) ->
+            %% Try to get connection count as complexity proxy
+            Conns = maps:get(connections, Network, []),
+            Nodes = maps:get(neurons, Network, maps:get(nodes, Network, [])),
+            Complexity = length(Conns) + length(Nodes),
+            {true, Complexity};
+        _ ->
+            false
     end.
 
 %%% ============================================================================
@@ -2403,12 +2477,16 @@ get_topology_field(Config, Field) ->
     case Config#neuro_config.topology_mutation_config of
         undefined -> undefined;
         MutConfig when is_record(MutConfig, mutation_config) ->
-            case Field of
-                add_node_rate -> MutConfig#mutation_config.add_node_rate;
-                add_connection_rate -> MutConfig#mutation_config.add_connection_rate;
-                toggle_connection_rate -> MutConfig#mutation_config.toggle_connection_rate;
-                _ -> undefined
-            end
+            topology_field_value(MutConfig, Field)
+    end.
+
+%% @private Read a named field from a mutation_config record.
+topology_field_value(MutConfig, Field) ->
+    case Field of
+        add_node_rate -> MutConfig#mutation_config.add_node_rate;
+        add_connection_rate -> MutConfig#mutation_config.add_connection_rate;
+        toggle_connection_rate -> MutConfig#mutation_config.toggle_connection_rate;
+        _ -> undefined
     end.
 
 %% @private
@@ -2524,10 +2602,14 @@ get_memory_pressure_pct() ->
     case Recommendations of
         #{memory_pressure := P} -> P * 100;
         _ ->
-            case resource_monitor:get_normalized_metrics() of
-                #{memory_pressure := P2} -> P2 * 100;
-                _ -> 0.0
-            end
+            memory_pressure_pct_direct()
+    end.
+
+%% @private Read memory pressure percentage directly from resource_monitor.
+memory_pressure_pct_direct() ->
+    case resource_monitor:get_normalized_metrics() of
+        #{memory_pressure := P2} -> P2 * 100;
+        _ -> 0.0
     end.
 
 %%% ============================================================================
@@ -2559,18 +2641,22 @@ maybe_init_checkpoint_manager(Config) ->
         undefined ->
             ok;
         CheckpointConfig when is_map(CheckpointConfig) ->
-            case checkpoint_manager:init(CheckpointConfig) of
-                ok ->
-                    error_logger:info_msg(
-                        "[neuroevolution_server] Checkpoint manager initialized: ~s~n",
-                        [checkpoint_manager:get_checkpoint_dir()]
-                    );
-                {error, Reason} ->
-                    error_logger:warning_msg(
-                        "[neuroevolution_server] Failed to init checkpoint manager: ~p~n",
-                        [Reason]
-                    )
-            end
+            init_checkpoint_manager(CheckpointConfig)
+    end.
+
+%% @private Initialize the checkpoint manager, logging success or failure.
+init_checkpoint_manager(CheckpointConfig) ->
+    case checkpoint_manager:init(CheckpointConfig) of
+        ok ->
+            error_logger:info_msg(
+                "[neuroevolution_server] Checkpoint manager initialized: ~s~n",
+                [checkpoint_manager:get_checkpoint_dir()]
+            );
+        {error, Reason} ->
+            error_logger:warning_msg(
+                "[neuroevolution_server] Failed to init checkpoint manager: ~p~n",
+                [Reason]
+            )
     end.
 
 %% @private Save a checkpoint for the best individual.
@@ -2583,25 +2669,32 @@ maybe_save_checkpoint(Reason, Best, State) ->
         undefined ->
             ok;
         CheckpointConfig when is_map(CheckpointConfig) ->
-            ShouldSave = case Reason of
-                fitness_record ->
-                    maps:get(save_on_fitness_record, CheckpointConfig, true);
-                generation_interval ->
-                    GenInterval = maps:get(generation_interval, CheckpointConfig, 0),
-                    GenInterval > 0 andalso
-                        State#neuro_state.generation rem GenInterval =:= 0;
-                training_complete ->
-                    true;
-                _ ->
-                    false
-            end,
+            maybe_save_checkpoint_for(Reason, Best, State, CheckpointConfig)
+    end.
 
-            case ShouldSave of
-                true ->
-                    save_checkpoint_internal(Reason, Best, State, CheckpointConfig);
-                false ->
-                    ok
-            end
+%% @private Save the checkpoint when the save policy for this reason is met.
+maybe_save_checkpoint_for(Reason, Best, State, CheckpointConfig) ->
+    ShouldSave = should_save_checkpoint(Reason, State, CheckpointConfig),
+    case ShouldSave of
+        true ->
+            save_checkpoint_internal(Reason, Best, State, CheckpointConfig);
+        false ->
+            ok
+    end.
+
+%% @private Decide whether a checkpoint should be saved for the given reason.
+should_save_checkpoint(Reason, State, CheckpointConfig) ->
+    case Reason of
+        fitness_record ->
+            maps:get(save_on_fitness_record, CheckpointConfig, true);
+        generation_interval ->
+            GenInterval = maps:get(generation_interval, CheckpointConfig, 0),
+            GenInterval > 0 andalso
+                State#neuro_state.generation rem GenInterval =:= 0;
+        training_complete ->
+            true;
+        _ ->
+            false
     end.
 
 %% @private Actually save the checkpoint.

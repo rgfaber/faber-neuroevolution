@@ -390,18 +390,19 @@ compute_species_entropy(SpeciesPerIsland) ->
     %% Count species per island and compute entropy
     Counts = [length(Species) || Species <- maps:values(SpeciesPerIsland)],
     Total = lists:sum(Counts),
-    case Total > 0 of
-        true ->
-            Probs = [C / Total || C <- Counts, C > 0],
-            Entropy = -lists:sum([P * math:log(P) || P <- Probs]),
-            %% Normalize by max entropy (log of island count)
-            MaxEntropy = math:log(max(1, maps:size(SpeciesPerIsland))),
-            case MaxEntropy > 0 of
-                true -> clamp(Entropy / MaxEntropy, 0.0, 1.0);
-                false -> 0.0
-            end;
-        false -> 0.0
-    end.
+    species_entropy(Total, Counts, SpeciesPerIsland).
+
+species_entropy(Total, _Counts, _SpeciesPerIsland) when Total =< 0 -> 0.0;
+species_entropy(Total, Counts, SpeciesPerIsland) ->
+    Probs = [C / Total || C <- Counts, C > 0],
+    Entropy = -lists:sum([P * math:log(P) || P <- Probs]),
+    %% Normalize by max entropy (log of island count)
+    MaxEntropy = math:log(max(1, maps:size(SpeciesPerIsland))),
+    normalize_species_entropy(Entropy, MaxEntropy).
+
+normalize_species_entropy(_Entropy, MaxEntropy) when MaxEntropy =< 0 -> 0.0;
+normalize_species_entropy(Entropy, MaxEntropy) ->
+    clamp(Entropy / MaxEntropy, 0.0, 1.0).
 
 %%% ============================================================================
 %%% Internal Functions - Utilities

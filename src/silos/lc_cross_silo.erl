@@ -497,11 +497,15 @@ notify_subscriber(Silo, State) ->
         undefined -> ok;
         Callback ->
             Signals = maps:get(Silo, State#state.signals, #{}),
-            try
-                Callback(Signals)
-            catch
-                _:_ -> ok
-            end
+            safe_notify(Callback, Signals)
+    end.
+
+%% @private Invoke a subscriber callback, ignoring failures.
+safe_notify(Callback, Signals) ->
+    try
+        Callback(Signals)
+    catch
+        _:_ -> ok
     end.
 
 %% @private Apply decay to old signals.
@@ -519,23 +523,25 @@ apply_decay(State) ->
 
     %% Decay old signals towards neutral (0.5 for ratios, 0.0 for pressures)
     NewSignals = maps:fold(
-        fun({_From, ToSilo, SignalName}, _Time, AccSignals) ->
-            SiloSignals = maps:get(ToSilo, AccSignals, #{}),
-            case maps:get(SignalName, SiloSignals, undefined) of
-                undefined -> AccSignals;
-                CurrentValue ->
-                    NeutralValue = get_neutral_value(SignalName),
-                    %% Decay 10% towards neutral
-                    DecayedValue = CurrentValue + (NeutralValue - CurrentValue) * 0.1,
-                    NewSiloSignals = maps:put(SignalName, DecayedValue, SiloSignals),
-                    maps:put(ToSilo, NewSiloSignals, AccSignals)
-            end
-        end,
+        fun decay_signal/3,
         State#state.signals,
         OldSignals
     ),
 
     State#state{signals = NewSignals}.
+
+%% @private Decay a single old signal towards its neutral value.
+decay_signal({_From, ToSilo, SignalName}, _Time, AccSignals) ->
+    SiloSignals = maps:get(ToSilo, AccSignals, #{}),
+    case maps:get(SignalName, SiloSignals, undefined) of
+        undefined -> AccSignals;
+        CurrentValue ->
+            NeutralValue = get_neutral_value(SignalName),
+            %% Decay 10% towards neutral
+            DecayedValue = CurrentValue + (NeutralValue - CurrentValue) * 0.1,
+            NewSiloSignals = maps:put(SignalName, DecayedValue, SiloSignals),
+            maps:put(ToSilo, NewSiloSignals, AccSignals)
+    end.
 
 %% @private Get neutral value for a signal type.
 %% Signals decay toward these values when not updated.

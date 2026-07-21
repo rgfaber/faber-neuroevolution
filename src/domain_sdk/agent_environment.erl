@@ -342,17 +342,19 @@ validate(Module) ->
         fun() -> validate_name(Module) end
     ],
     Errors = lists:filtermap(
-        fun(Check) ->
-            case Check() of
-                ok -> false;
-                {error, Reason} -> {true, Reason}
-            end
-        end,
+        fun run_check/1,
         Checks
     ),
     case Errors of
         [] -> ok;
         _ -> {error, Errors}
+    end.
+
+%% @private Run a validation check, keeping only its error reason.
+run_check(Check) ->
+    case Check() of
+        ok -> false;
+        {error, Reason} -> {true, Reason}
     end.
 
 %% Retrieves environment info from a module.
