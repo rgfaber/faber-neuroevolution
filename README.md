@@ -4,7 +4,7 @@ Population-based evolutionary training for neural networks.
 
 [![Hex.pm](https://img.shields.io/hexpm/v/faber_neuroevolution.svg)](https://hex.pm/packages/faber_neuroevolution)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-blue.svg)](https://hexdocs.pm/faber_neuroevolution)
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg)](https://buymeacoffee.com/rlefever)
+[![GitHub Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-support-ea4aaa.svg?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rgfaber)
 
 ## Overview
 
