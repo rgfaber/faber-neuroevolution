@@ -12,7 +12,7 @@
     {modules, []},
     {licenses, ["Apache-2.0"]},
     {links, [
-        {"Codeberg", "https://codeberg.org/rgfaber/faber-neuroevolution"},
+        {"GitHub", "https://github.com/rgfaber/faber-neuroevolution"},
         {"GitHub (mirror)", "https://github.com/rgfaber/faber-neuroevolution"},
         {"HexDocs", "https://hexdocs.pm/faber_neuroevolution"}
     ]},
