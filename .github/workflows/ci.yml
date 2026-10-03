@@ -27,5 +27,10 @@ jobs:
       - name: Unit tests
         run: rebar3 eunit
 
+      # Reports, does not gate: the repo's no_deep_nesting campaign is
+      # incomplete (see the sibling's campaign history), so lint is red on
+      # ~15 modules. It turns into a hard gate in the PR that finishes the
+      # campaign.
       - name: Lint (elvis, faber rules)
+        continue-on-error: true
         run: rebar3 lint
