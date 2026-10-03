@@ -18,9 +18,9 @@ setup() ->
         undefined -> ok;
         Pid when is_pid(Pid) ->
             %% Unlink to avoid crashing our test process
-            catch unlink(Pid),
+            try unlink(Pid) catch _:_ -> ok end,
             %% Try graceful stop first, then brutal kill
-            catch gen_server:stop(Pid, normal, 1000),
+            try gen_server:stop(Pid, normal, 1000) catch _:_ -> ok end,
             %% Wait for process to die
             timer:sleep(50),
             %% Force kill if still alive
@@ -36,8 +36,8 @@ cleanup(_) ->
     case whereis(lc_cross_silo) of
         undefined -> ok;
         Pid when is_pid(Pid) ->
-            catch unlink(Pid),
-            catch gen_server:stop(Pid, normal, 1000),
+            try unlink(Pid) catch _:_ -> ok end,
+            try gen_server:stop(Pid, normal, 1000) catch _:_ -> ok end,
             timer:sleep(50)
     end,
     ok.

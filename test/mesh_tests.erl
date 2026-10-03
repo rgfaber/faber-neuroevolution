@@ -25,12 +25,12 @@ setup() ->
 cleanup(_) ->
     %% Stop any started processes
     catch gen_server:stop(evaluator_pool_registry),
-    catch gen_server:stop(macula_mesh),
-    catch gen_server:stop(distributed_evaluator),
+    try gen_server:stop(macula_mesh) catch _:_ -> ok end,
+    try gen_server:stop(distributed_evaluator) catch _:_ -> ok end,
     catch supervisor:terminate_child(mesh_sup, evaluator_pool_registry),
-    catch supervisor:terminate_child(mesh_sup, macula_mesh),
-    catch supervisor:terminate_child(mesh_sup, distributed_evaluator),
-    catch gen_server:stop(mesh_sup),
+    try supervisor:terminate_child(mesh_sup, macula_mesh) catch _:_ -> ok end,
+    try supervisor:terminate_child(mesh_sup, distributed_evaluator) catch _:_ -> ok end,
+    try gen_server:stop(mesh_sup) catch _:_ -> ok end,
     ok.
 
 %%% ============================================================================
@@ -240,7 +240,7 @@ macula_mesh_test_() ->
          fun() ->
              %% Ensure clean state
              catch gen_server:stop(evaluator_pool_registry),
-             catch gen_server:stop(macula_mesh),
+             try gen_server:stop(macula_mesh) catch _:_ -> ok end,
              timer:sleep(10),
 
              {ok, PoolPid} = evaluator_pool_registry:start_link(#{}),
@@ -262,7 +262,7 @@ macula_mesh_test_() ->
          fun() ->
              %% Ensure clean state by stopping any existing processes
              catch gen_server:stop(evaluator_pool_registry),
-             catch gen_server:stop(macula_mesh),
+             try gen_server:stop(macula_mesh) catch _:_ -> ok end,
              timer:sleep(10),
 
              {ok, PoolPid} = evaluator_pool_registry:start_link(#{}),

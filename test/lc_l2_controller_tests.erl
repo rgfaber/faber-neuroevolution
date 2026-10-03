@@ -13,11 +13,11 @@
 %%% ============================================================================
 
 setup() ->
-    catch gen_server:stop(lc_l2_test),
+    try gen_server:stop(lc_l2_test) catch _:_ -> ok end,
     ok.
 
 cleanup(_) ->
-    catch gen_server:stop(lc_l2_test),
+    try gen_server:stop(lc_l2_test) catch _:_ -> ok end,
     ok.
 
 %%% ============================================================================
