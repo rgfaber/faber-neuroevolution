@@ -462,7 +462,7 @@ terminate(_Reason, State) ->
     %% Clean up ETS tables
     maps:foreach(
         fun(_Name, Table) ->
-            catch ets:delete(Table)
+            try ets:delete(Table) catch _:_ -> ok end
         end,
         State#state.ets_tables
     ),

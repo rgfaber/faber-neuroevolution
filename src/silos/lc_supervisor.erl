@@ -164,7 +164,7 @@ do_enable_silo(SiloType, ModuleName, Config) ->
             %% Store config in ETS
             store_silo_config(SiloType, Config),
             %% Notify sensor publisher to start polling this silo
-            catch lc_sensor_publisher:enable_silo(SiloType),
+            try lc_sensor_publisher:enable_silo(SiloType) catch _:_ -> ok end,
             %% Publish silo activation event
             publish_silo_event(SiloType, enabled),
             ok;
@@ -204,7 +204,7 @@ terminate_silo_child(SiloType, ModuleName) ->
             %% Remove config from ETS
             delete_silo_config(SiloType),
             %% Notify sensor publisher to stop polling this silo
-            catch lc_sensor_publisher:disable_silo(SiloType),
+            try lc_sensor_publisher:disable_silo(SiloType) catch _:_ -> ok end,
             %% Publish silo deactivation event
             publish_silo_event(SiloType, disabled),
             supervisor:delete_child(?SERVER, ModuleName);
