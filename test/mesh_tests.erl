@@ -24,10 +24,10 @@ setup() ->
 
 cleanup(_) ->
     %% Stop any started processes
-    catch gen_server:stop(evaluator_pool_registry),
+    try gen_server:stop(evaluator_pool_registry) catch _:_ -> ok end,
     try gen_server:stop(macula_mesh) catch _:_ -> ok end,
     try gen_server:stop(distributed_evaluator) catch _:_ -> ok end,
-    catch supervisor:terminate_child(mesh_sup, evaluator_pool_registry),
+    try supervisor:terminate_child(mesh_sup, evaluator_pool_registry) catch _:_ -> ok end,
     try supervisor:terminate_child(mesh_sup, macula_mesh) catch _:_ -> ok end,
     try supervisor:terminate_child(mesh_sup, distributed_evaluator) catch _:_ -> ok end,
     try gen_server:stop(mesh_sup) catch _:_ -> ok end,
@@ -239,7 +239,7 @@ macula_mesh_test_() ->
         {"Advertise evaluator without mesh falls back to local registration",
          fun() ->
              %% Ensure clean state
-             catch gen_server:stop(evaluator_pool_registry),
+             try gen_server:stop(evaluator_pool_registry) catch _:_ -> ok end,
              try gen_server:stop(macula_mesh) catch _:_ -> ok end,
              timer:sleep(10),
 
@@ -261,7 +261,7 @@ macula_mesh_test_() ->
         {"Discover evaluators without mesh returns local only",
          fun() ->
              %% Ensure clean state by stopping any existing processes
-             catch gen_server:stop(evaluator_pool_registry),
+             try gen_server:stop(evaluator_pool_registry) catch _:_ -> ok end,
              try gen_server:stop(macula_mesh) catch _:_ -> ok end,
              timer:sleep(10),
 
