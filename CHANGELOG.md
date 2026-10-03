@@ -5,6 +5,21 @@ All notable changes to faber-neuroevolution will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.4] - 2026-07-20
+
+### Changed
+
+- Package contents move to `.app.src` so ROADMAP.md ships.
+
+### Fixed
+
+- Unsatisfiable `faber_tweann` constraint; version pins corrected.
+- Publish hard-fails on test failure; rebar.lock untracked.
+
+### Removed
+
+- Unbacked EDoc claims cleared; ROADMAP.md added; URLs rewritten to the canonical home.
+
 ## [1.2.3] - 2026-02-17
 
 ### Fixed
