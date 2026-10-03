@@ -1,0 +1,36 @@
+name: CI
+
+# eunit + elvis lint on every push and pull request. These repos had no
+# CI before 2026-10-03; this workflow is the gate the ROADMAP's own rule
+# implies: nothing ships that has not run.
+#
+# OTP pinned from .tool-versions (asdf); the lint rules are the repo's
+# rebar3_lint/elvis config in rebar.config (`rebar3 lint`).
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Erlang/OTP and rebar3
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "29.0.2"
+          rebar3-version: "3"
+
+      - name: Unit tests
+        run: rebar3 eunit
+
+      # Reports, does not gate: the repo's no_deep_nesting campaign is
+      # incomplete (see the sibling's campaign history), so lint is red on
+      # ~15 modules. It turns into a hard gate in the PR that finishes the
+      # campaign.
+      - name: Lint (elvis, faber rules)
+        continue-on-error: true
+        run: rebar3 lint

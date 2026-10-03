@@ -257,7 +257,7 @@ terminate(_Reason, State) ->
 
     case PeerPid of
         undefined -> ok;
-        Pid -> catch stop_macula_peer(Pid)
+        Pid -> try stop_macula_peer(Pid) catch _:_ -> ok end
     end,
 
     ok.

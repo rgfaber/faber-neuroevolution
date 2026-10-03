@@ -16,7 +16,7 @@ setup() ->
     case whereis(communication_silo) of
         undefined -> ok;
         Pid ->
-            catch gen_server:stop(Pid, normal, 1000),
+            try gen_server:stop(Pid, normal, 1000) catch _:_ -> ok end,
             timer:sleep(50)
     end,
     ok.
@@ -25,7 +25,7 @@ cleanup(_) ->
     case whereis(communication_silo) of
         undefined -> ok;
         Pid ->
-            catch gen_server:stop(Pid, normal, 1000),
+            try gen_server:stop(Pid, normal, 1000) catch _:_ -> ok end,
             timer:sleep(50)
     end,
     ok.

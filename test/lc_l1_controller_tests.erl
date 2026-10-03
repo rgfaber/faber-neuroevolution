@@ -15,11 +15,11 @@
 %% @doc Create a mock morphology module for testing.
 setup() ->
     %% Stop any existing controller
-    catch gen_server:stop(lc_l1_test),
+    try gen_server:stop(lc_l1_test) catch _:_ -> ok end,
     ok.
 
 cleanup(_) ->
-    catch gen_server:stop(lc_l1_test),
+    try gen_server:stop(lc_l1_test) catch _:_ -> ok end,
     ok.
 
 %%% ============================================================================

@@ -78,7 +78,7 @@ cleanup_supervisor(Pid) ->
         true ->
             %% Disable any extension silos we enabled
             lists:foreach(
-                fun(Silo) -> catch lc_supervisor:disable_silo(Silo) end,
+                fun(Silo) -> try lc_supervisor:disable_silo(Silo) catch _:_ -> ok end end,
                 [temporal, competitive, social, cultural, ecological,
                  morphological, developmental, regulatory, economic,
                  communication, distribution]

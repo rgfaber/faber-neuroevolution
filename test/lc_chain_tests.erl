@@ -18,12 +18,12 @@ setup() ->
     %% Ensure faber_tweann application is started
     _ = application:ensure_all_started(faber_tweann),
     %% Stop any existing lc_chain
-    catch gen_server:stop(lc_chain),
+    try gen_server:stop(lc_chain) catch _:_ -> ok end,
     ok.
 
 %% @doc Cleanup after each test.
 cleanup(_) ->
-    catch gen_server:stop(lc_chain),
+    try gen_server:stop(lc_chain) catch _:_ -> ok end,
     ok.
 
 %%% ============================================================================

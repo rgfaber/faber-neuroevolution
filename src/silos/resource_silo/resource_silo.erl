@@ -474,7 +474,7 @@ gc_all_processes() ->
 
 %% @private Request GC on a single process, ignoring failures.
 gc_process(Pid) ->
-    catch erlang:garbage_collect(Pid).
+    try erlang:garbage_collect(Pid) catch _:_ -> ok end.
 
 %% @private Check if pressure is rising based on history.
 %% Uses L2-controlled pressure_change_threshold from state.

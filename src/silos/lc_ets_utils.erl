@@ -100,7 +100,7 @@ create_tables(SiloType, Realm, TableSpecs) ->
 delete_tables(Tables) ->
     maps:foreach(
         fun(_Name, Tid) ->
-            catch ets:delete(Tid)
+            try ets:delete(Tid) catch _:_ -> ok end
         end,
         Tables
     ),
